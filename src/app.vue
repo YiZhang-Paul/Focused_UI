@@ -1,4 +1,5 @@
 <template>
+    <div class="header-displays"></div>
     <work-items-management class="work-items-management"></work-items-management>
 </template>
 
@@ -18,6 +19,8 @@ export default class App extends Vue {}
 <style lang="scss">
 @import './styles/presets.scss';
 
+$header-displays-height: 20%;
+
 html, body, #app {
     box-sizing: border-box;
     margin: 0;
@@ -35,8 +38,13 @@ html, body, #app {
     font-size: 16px;
 }
 
+.header-displays {
+    width: 100%;
+    height: $header-displays-height;
+}
+
 .work-items-management {
     width: 100%;
-    height: 75%;
+    height: calc(100% - #{$header-displays-height});
 }
 </style>
