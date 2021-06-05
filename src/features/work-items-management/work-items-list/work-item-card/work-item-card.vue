@@ -69,7 +69,8 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         justify-content: space-evenly;
         align-items: center;
         margin-left: 1%;
-        width: 5%;
+        margin-right: 1%;
+        width: 4.5%;
         height: 70%;
 
         .separator {

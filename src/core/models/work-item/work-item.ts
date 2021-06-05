@@ -12,7 +12,7 @@ export class WorkItem {
     public priority = WorkItemPriority.NotUrgentNotImportant;
     public estimation = 0;
     public recur: boolean[] = [];
-    public checklists: ChecklistEntry[] = [];
+    public checklist: ChecklistEntry[] = [];
     public timeInfo = new TimeInfo();
     public isCompleted = false;
 }
