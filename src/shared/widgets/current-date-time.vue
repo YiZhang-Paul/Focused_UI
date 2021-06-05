@@ -1,6 +1,9 @@
 <template>
     <div class="current-date-time-container">
-        <span class="time">{{ time }}</span>
+        <div class="time">
+            <span>{{ time }}</span>
+            <component class="icon" :is="timeIcon.content" :style="{ color: timeIcon.color }"></component>
+        </div>
 
         <div class="date">
             <span>{{ date }}</span>
@@ -13,6 +16,9 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
+import { IconMeta } from '../../core/models/generic/icon-meta';
+import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
+
 export default class CurrentDateTime extends Vue {
     private current = new Date();
 
@@ -21,6 +27,10 @@ export default class CurrentDateTime extends Vue {
             hour: 'numeric',
             minute: '2-digit'
         });
+    }
+
+    get timeIcon(): IconMeta {
+        return IconUtility.getTimeIcon(this.current);
     }
 
     get date(): string {
@@ -74,7 +84,14 @@ export default class CurrentDateTime extends Vue {
     align-items: center;
 
     .time {
+        display: flex;
+        align-items: center;
         font-size: var(--font-sizes-900);
+
+        .icon {
+            margin-left: 1vh;
+            transition: color 0.8s;
+        }
     }
 
     .date {
