@@ -3,7 +3,7 @@
         <div class="priority" :style="priorityStyle"></div>
 
         <display-panel class="meta-data">
-            <span>{{ item.type }}</span>
+            <component :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
             <div class="separator"></div>
             <span>{{ item.estimation }}</span>
         </display-panel>
@@ -15,7 +15,9 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { IconMeta } from '../../../../core/models/generic/icon-meta';
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
+import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 
 class WorkItemCardProp {
@@ -39,6 +41,10 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
                 var(--priority-colors-${this.item.priority}04) 100%
             )`
         };
+    }
+
+    get typeIcon(): IconMeta {
+        return IconUtility.getWorkItemIcon(this.item.type);
     }
 }
 </script>
@@ -68,7 +74,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
         .separator {
             width: 1px;
-            height: 50%;
+            height: 55%;
             background-color: var(--font-colors-000);
             opacity: 0.25;
         }
