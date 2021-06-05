@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('assets/fonts/Roboto-Regular.ttf');
+}
+
+:root {
+    // primary colors
+    --primary-colors-800: rgb(59, 68, 91);
+    --primary-colors-801: rgba(59, 68, 91, 0.1);
+    --primary-colors-803: rgba(59, 68, 91, 0.3);
+    --primary-colors-1000: rgb(15, 18, 26);
+    // font colors
+    --font-colors-000: rgb(255, 255, 255);
+    // font sizes (16px as baseline)
+    --font-sizes-000: 0.5rem; // 8px
+    --font-sizes-100: 0.625rem; // 10px
+    --font-sizes-200: 0.75rem; // 12px
+    --font-sizes-300: 0.875rem; // 14px
+    --font-sizes-400: 1rem; // 16px
+    --font-sizes-500: 1.25rem; // 20px
+    --font-sizes-600: 1.5rem; // 24px
+    --font-sizes-700: 2rem; // 32px
+    --font-sizes-800: 3rem; // 48px
+    --font-sizes-900: 4.5rem; // 72px
+    --font-sizes-1000: 6.75rem; // 108px
+}

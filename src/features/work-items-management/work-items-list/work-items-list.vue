@@ -34,6 +34,7 @@ export default class WorkItemsList extends Vue {
 .work-items-list-container {
     display: flex;
     flex-direction: column;
+    background-color: var(--primary-colors-801);
 
     .work-item-card {
         width: 100%;

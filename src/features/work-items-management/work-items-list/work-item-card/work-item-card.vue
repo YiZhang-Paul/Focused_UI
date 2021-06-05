@@ -25,7 +25,8 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {}
     display: flex;
     align-items: center;
     padding: 2.75% 2.5%;
-    background-color: rgb(59, 68, 91, 0.3);
-    color: white;
+    background-color: var(--primary-colors-803);
+    color: var(--font-colors-000);
+    font-size: var(--font-sizes-400);
 }
 </style>

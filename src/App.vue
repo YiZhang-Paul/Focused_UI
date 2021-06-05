@@ -16,6 +16,8 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+@import './styles/presets.scss';
+
 html, body, #app {
     box-sizing: border-box;
     margin: 0;
@@ -23,13 +25,14 @@ html, body, #app {
     width: 100%;
     height: 100%;
     user-select: none;
-    background-color: transparent;
 }
 
 #app {
     display: flex;
     flex-direction: column;
-    background-color: rgb(15, 18, 26);
+    background-color: var(--primary-colors-1000);
+    font-family: 'Roboto';
+    font-size: 16px;
 }
 
 .work-items-management {

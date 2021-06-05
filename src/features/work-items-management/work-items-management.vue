@@ -34,7 +34,6 @@ export default class WorkItemsManagement extends Vue {
     .work-items-list {
         width: 80%;
         height: 80%;
-        background-color: rgb(59, 68, 91, 0.1);
     }
 }
 </style>
