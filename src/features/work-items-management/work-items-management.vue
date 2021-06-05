@@ -32,8 +32,8 @@ export default class WorkItemsManagement extends Vue {
     justify-content: center;
 
     .work-items-list {
-        width: 80%;
-        height: 80%;
+        width: 65%;
+        height: 92.5%;
     }
 }
 </style>
