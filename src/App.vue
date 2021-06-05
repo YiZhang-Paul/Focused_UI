@@ -5,7 +5,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import WorkItemsManagement from './features/work-items-management/WorkItemsManagement.vue';
+import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 
 @Options({
     components: {
@@ -29,6 +29,7 @@ html, body, #app {
 #app {
     display: flex;
     flex-direction: column;
+    background-color: rgb(15, 18, 26);
 }
 
 .work-items-management {
