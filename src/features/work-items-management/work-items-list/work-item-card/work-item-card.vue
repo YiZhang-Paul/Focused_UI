@@ -1,6 +1,6 @@
 <template>
     <div v-if="item" class="work-item-card-container">
-        <div class="priority"></div>
+        <div class="priority" :style="priorityStyle"></div>
 
         <div class="content">
             <span>{{ item.type }}</span>
@@ -19,7 +19,20 @@ class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
 }
 
-export default class WorkItemCard extends Vue.with(WorkItemCardProp) {}
+export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
+
+    get priorityStyle(): { [key: string]: string } {
+        return {
+            background: `linear-gradient(
+                180deg,
+                var(--priority-colors-${this.item.priority}04) 0%,
+                var(--priority-colors-${this.item.priority}09) 35%,
+                var(--priority-colors-${this.item.priority}09) 65%,
+                var(--priority-colors-${this.item.priority}04) 100%
+            )`
+        };
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -34,13 +47,6 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {}
         max-width: 5px;
         width: 0.225%;
         height: 100%;
-        background: linear-gradient(
-            180deg,
-            var(--priority-colors-304) 0%,
-            var(--priority-colors-309) 35%,
-            var(--priority-colors-309) 65%,
-            var(--priority-colors-304) 100%
-        );
     }
 
     .content {
