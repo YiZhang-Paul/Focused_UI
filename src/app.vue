@@ -34,6 +34,7 @@ html, body, #app {
     display: flex;
     flex-direction: column;
     background-color: var(--primary-colors-1000);
+    color: var(--font-colors-000);
     font-family: 'Roboto';
     font-size: 16px;
 }
