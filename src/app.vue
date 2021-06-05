@@ -16,18 +16,22 @@
         <current-date-time></current-date-time>
     </div>
 
-    <work-items-management class="work-items-management"></work-items-management>
+    <content-view-panel class="content-view-panel">
+        <work-items-management class="work-items-management"></work-items-management>
+    </content-view-panel>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
+import ContentViewPanel from './shared/panels/content-view-panel.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
 
 @Options({
     components: {
         WorkItemsManagement,
+        ContentViewPanel,
         CurrentDateTime
     }
 })
@@ -133,8 +137,13 @@ html, body, #app {
     height: $header-displays-height;
 }
 
-.work-items-management {
+.content-view-panel {
     width: 100%;
     height: calc(100% - #{$header-displays-height});
+
+    .work-items-management {
+        width: 100%;
+        height: 100%;
+    }
 }
 </style>

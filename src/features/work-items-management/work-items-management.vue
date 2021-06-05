@@ -33,7 +33,7 @@ export default class WorkItemsManagement extends Vue {
 
     .work-items-list {
         width: 65%;
-        height: 92.5%;
+        height: 95%;
     }
 }
 </style>
