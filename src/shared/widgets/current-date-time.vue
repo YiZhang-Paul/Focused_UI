@@ -1,7 +1,12 @@
 <template>
     <div class="current-date-time-container">
         <span class="time">{{ time }}</span>
-        <span class="date">{{ date }}</span>
+
+        <div class="date">
+            <span>{{ date }}</span>
+            <span class="suffix">{{ dateSuffix }}</span>
+            <span>, {{ year }}</span>
+        </div>
     </div>
 </template>
 
@@ -19,12 +24,36 @@ export default class CurrentDateTime extends Vue {
     }
 
     get date(): string {
-        return this.current.toLocaleDateString('en-US', {
+        const date = this.current.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+
+        return date.replace(/, \d+/, '');
+    }
+
+    get dateSuffix(): string {
+        const date = this.current.getDate().toString();
+
+        if (date !== '11' && date.endsWith('1')) {
+            return 'st';
+        }
+
+        if (date !== '12' && date.endsWith('2')) {
+            return 'nd';
+        }
+
+        if (date !== '13' && date.endsWith('3')) {
+            return 'rd';
+        }
+
+        return 'th';
+    }
+
+    get year(): number {
+        return this.current.getFullYear();
     }
 
     public created(): void {
@@ -49,7 +78,14 @@ export default class CurrentDateTime extends Vue {
     }
 
     .date {
+        display: flex;
         font-size: var(--font-sizes-700);
+
+        .suffix {
+            align-self: flex-start;
+            margin-left: 2px;
+            font-size: var(--font-sizes-400);
+        }
     }
 }
 </style>
