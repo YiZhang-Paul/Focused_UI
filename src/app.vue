@@ -6,6 +6,12 @@
     </div>
 
     <content-view-panel class="content-view-panel">
+        <template v-slot:actions>
+            <div class="work-items-actions">
+                <creation-button @click="onClick()"></creation-button>
+            </div>
+        </template>
+
         <work-items-management class="work-items-management"></work-items-management>
     </content-view-panel>
 </template>
@@ -14,6 +20,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
+import CreationButton from './shared/buttons/creation-button.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
 import ContentViewPanel from './shared/panels/content-view-panel.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
@@ -21,12 +28,18 @@ import CurrentDateTime from './shared/widgets/current-date-time.vue';
 @Options({
     components: {
         WorkItemsManagement,
+        CreationButton,
         LightsourcePanel,
         ContentViewPanel,
         CurrentDateTime
     }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+
+    public onClick(): void {
+        console.log('click');
+    }
+}
 </script>
 
 <style lang="scss">
@@ -71,9 +84,15 @@ html, body, #app {
     width: 100%;
     height: calc(100% - #{$header-displays-height});
 
-    .work-items-management {
+    .work-items-actions, .work-items-management {
         width: 100%;
         height: 100%;
+    }
+
+    .work-items-actions {
+        display: flex;
+        align-items: center;
+        padding: 0 2.5vh;
     }
 }
 </style>

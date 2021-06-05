@@ -42,7 +42,7 @@ export default class ContentViewPanel extends Vue {}
 
     .actions {
         position: absolute;
-        top: 4%;
+        top: 6%;
         width: 55vw;
         height: 7.5vh;
     }
@@ -51,7 +51,7 @@ export default class ContentViewPanel extends Vue {}
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 85%;
+        height: 83.5%;
     }
 }
 </style>
