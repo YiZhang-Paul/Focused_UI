@@ -1,5 +1,8 @@
 <template>
-    <div class="header-displays"></div>
+    <div class="header-displays">
+        <current-date-time></current-date-time>
+    </div>
+
     <work-items-management class="work-items-management"></work-items-management>
 </template>
 
@@ -7,10 +10,12 @@
 import { Options, Vue } from 'vue-class-component';
 
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
+import CurrentDateTime from './shared/widgets/current-date-time.vue';
 
 @Options({
     components: {
-        WorkItemsManagement
+        WorkItemsManagement,
+        CurrentDateTime
     }
 })
 export default class App extends Vue {}
@@ -40,6 +45,9 @@ html, body, #app {
 }
 
 .header-displays {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
     width: 100%;
     height: $header-displays-height;
 }
