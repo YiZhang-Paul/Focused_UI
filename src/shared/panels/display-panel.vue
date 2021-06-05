@@ -14,8 +14,8 @@ export default class DisplayPanel extends Vue { }
 
 <style lang="scss" scoped>
 .display-panel-container {
-    $line-width: 2px;
-    $min-length: 10px;
+    $line-width: 1px;
+    $min-length: 8px;
     $max-length: 25px;
 
     position: relative;
@@ -23,7 +23,7 @@ export default class DisplayPanel extends Vue { }
     .guards {
         position: absolute;
         background-color: var(--primary-colors-000);
-        box-shadow: 0 0 4px var(--primary-colors-006);
+        box-shadow: 0 0 4px var(--primary-colors-000);
 
         &:nth-child(1), &:nth-child(5) {
             left: 0;
@@ -49,7 +49,7 @@ export default class DisplayPanel extends Vue { }
     .guard-horizontal {
         min-width: $min-length;
         max-width: $max-length;
-        width: 15%;
+        width: 0.5rem;
         height: $line-width;
     }
 
@@ -57,7 +57,7 @@ export default class DisplayPanel extends Vue { }
         width: $line-width;
         min-height: $min-length;
         max-height: $max-length;
-        height: 15%;
+        height: 0.5rem;
     }
 }
 </style>

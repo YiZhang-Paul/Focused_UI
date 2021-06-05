@@ -2,7 +2,7 @@
     <div v-if="item" class="work-item-card-container">
         <div class="priority" :style="priorityStyle"></div>
 
-        <display-panel class="meta-data">
+        <display-panel class="core-information">
             <component :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
             <div class="separator"></div>
             <span>{{ item.estimation }}</span>
@@ -64,14 +64,14 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         height: 100%;
     }
 
-    .meta-data {
+    .core-information {
         display: flex;
         justify-content: space-evenly;
         align-items: center;
         margin-left: 1%;
         margin-right: 1%;
-        width: 4.5%;
-        height: 70%;
+        width: 4.25%;
+        height: 65%;
 
         .separator {
             width: 1px;
