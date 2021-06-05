@@ -8,17 +8,25 @@
             <span>{{ item.estimation }}</span>
         </display-panel>
 
-        <span>{{ item.name }}</span>
+        <span class="name">{{ item.name }}</span>
+
+        <div class="other-information">
+            <item-progression :progress="item.subtaskProgress"></item-progression>
+            <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
+import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
+import { FormatListCheckbox } from 'mdue';
 
 import { IconMeta } from '../../../../core/models/generic/icon-meta';
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import ItemProgression from '../../../../shared/widgets/item-progression.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
@@ -26,7 +34,8 @@ class WorkItemCardProp {
 
 @Options({
     components: {
-        DisplayPanel
+        DisplayPanel,
+        ItemProgression
     }
 })
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
@@ -45,6 +54,10 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
     get typeIcon(): IconMeta {
         return IconUtility.getWorkItemIcon(this.item.type);
+    }
+
+    get checklistIcon(): any {
+        return markRaw(FormatListCheckbox);
     }
 }
 </script>
@@ -79,6 +92,16 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
             background-color: var(--font-colors-000);
             opacity: 0.25;
         }
+    }
+
+    .name {
+        width: 45%;
+    }
+
+    .other-information {
+        display: flex;
+        justify-content: space-between;
+        width: 10%;
     }
 }
 </style>
