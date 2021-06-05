@@ -1,9 +1,12 @@
 <template>
     <div v-if="item" class="work-item-card-container">
-        <span>{{ item.priority }}</span>
-        <span>{{ item.type }}</span>
-        <span>{{ item.estimation }}</span>
-        <span>{{ item.name }}</span>
+        <div class="priority"></div>
+
+        <div class="content">
+            <span>{{ item.type }}</span>
+            <span>{{ item.estimation }}</span>
+            <span>{{ item.name }}</span>
+        </div>
     </div>
 </template>
 
@@ -23,10 +26,27 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {}
 .work-item-card-container {
     box-sizing: border-box;
     display: flex;
-    align-items: center;
-    padding: 2.75% 2.5%;
     background-color: var(--primary-colors-803);
     color: var(--font-colors-000);
     font-size: var(--font-sizes-400);
+
+    .priority {
+        max-width: 5px;
+        width: 0.225%;
+        height: 100%;
+        background: linear-gradient(
+            180deg,
+            var(--priority-colors-304) 0%,
+            var(--priority-colors-309) 35%,
+            var(--priority-colors-309) 65%,
+            var(--priority-colors-304) 100%
+        );
+    }
+
+    .content {
+        margin-left: 1%;
+        display: flex;
+        align-items: center;
+    }
 }
 </style>
