@@ -1,26 +1,42 @@
 <template>
     <div class="display-panel-container">
-        <div class="guards guard-horizontal" v-for="i in 4" :key="i"></div>
-        <div class="guards guard-vertical" v-for="i in 4" :key="i"></div>
+        <div :style="horizontalGuardStyle" v-for="i in 4" :key="i"></div>
+        <div :style="verticalGuardStyle" v-for="i in 4" :key="i"></div>
         <slot></slot>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 
-export default class DisplayPanel extends Vue { }
+class DisplayPanelProp {
+    public lineWidth = prop<string>({ default: '1px' });
+    public lineLength = prop<string>({ default: '0.5vh' });
+}
+
+export default class DisplayPanel extends Vue.with(DisplayPanelProp) {
+
+    get horizontalGuardStyle(): { [key: string]: string } {
+        return {
+            width: this.lineLength,
+            height: this.lineWidth
+        };
+    }
+
+    get verticalGuardStyle(): { [key: string]: string } {
+        return {
+            width: this.lineWidth,
+            height: this.lineLength
+        };
+    }
+}
 </script>
 
 <style lang="scss" scoped>
 .display-panel-container {
-    $line-width: 1px;
-    $min-length: 8px;
-    $max-length: 25px;
-
     position: relative;
 
-    .guards {
+    & > div {
         position: absolute;
         background-color: var(--primary-colors-000);
         box-shadow: 0 0 4px var(--primary-colors-000);
@@ -44,20 +60,6 @@ export default class DisplayPanel extends Vue { }
             left: 0;
             bottom: 0;
         }
-    }
-
-    .guard-horizontal {
-        min-width: $min-length;
-        max-width: $max-length;
-        width: 0.5rem;
-        height: $line-width;
-    }
-
-    .guard-vertical {
-        width: $line-width;
-        min-height: $min-length;
-        max-height: $max-length;
-        height: 0.5rem;
     }
 }
 </style>
