@@ -90,7 +90,6 @@ export default class CurrentDateTime extends Vue {
 
         .icon {
             margin-left: 1vh;
-            transition: color 0.8s;
         }
     }
 
