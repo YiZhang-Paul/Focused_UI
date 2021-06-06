@@ -1,5 +1,5 @@
 <template>
-    <div class="toggle-button-container">
+    <div class="toggle-button-container" :class="{ 'active-button': isActive }">
         <svg v-if="type === 'left'" width="36" height="26" viewBox="0 0 36 26" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M34.6 1H1V25H31.4L34.6 1Z" />
         </svg>
@@ -40,18 +40,15 @@ export default class ToggleButton extends Vue.with(ToggleButtonProp) {}
     justify-content: center;
     cursor: pointer;
 
-    &:hover {
+    &.active-button path, &:hover path {
+        fill: rgb(90, 176, 255);
+        fill-opacity: 0.35;
+        stroke: rgb(90, 176, 255);
+        stroke-opacity: 0.85;
+    }
 
-        path {
-            fill: rgb(90, 176, 255);
-            fill-opacity: 0.35;
-            stroke: rgb(90, 176, 255);
-            stroke-opacity: 0.85;
-        }
-
-        .icon {
-            color: var(--font-colors-000);
-        }
+    &:hover .icon {
+        color: var(--font-colors-000);
     }
 
     path {
