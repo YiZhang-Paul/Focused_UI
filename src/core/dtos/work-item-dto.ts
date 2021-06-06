@@ -9,4 +9,5 @@ export class WorkItemDto {
     public estimation = 0;
     public subtaskProgress = new ProgressionCounter<number>();
     public checklistProgress = new ProgressionCounter<number>();
+    public isCompleted = false;
 }
