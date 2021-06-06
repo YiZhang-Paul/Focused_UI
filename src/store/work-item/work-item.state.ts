@@ -1,6 +1,7 @@
 import { ActionContext } from 'vuex';
 
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
 const workItemHttpService = new WorkItemHttpService();
@@ -38,8 +39,9 @@ const actions = {
             await dispatch('loadWorkItems');
         }
     },
-    async loadWorkItems(context: ActionContext<IWorkItemState, any>): Promise<void> {
-        context.commit('setWorkItems', await workItemHttpService.getWorkItems());
+    async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
+        const query = payload ?? new WorkItemQuery();
+        context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));
     }
 };
 

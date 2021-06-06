@@ -29,7 +29,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public created(): void {
-        store.dispatch(`${workItemKey}/loadWorkItems`);
+        store.dispatch(`${workItemKey}/loadWorkItems`, null);
     }
 
     public cancelCreate(): void {
