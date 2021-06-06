@@ -5,7 +5,7 @@
         <display-panel class="core-information">
             <component :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
             <div class="separator"></div>
-            <span>{{ item.estimation }}</span>
+            <span>{{ item.estimatedHours }}</span>
         </display-panel>
 
         <span v-if="!isEditMode" class="name">{{ item.name }}</span>

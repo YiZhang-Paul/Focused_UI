@@ -3,6 +3,7 @@ import { WorkItemPriority } from '../../enums/work-item-priority.enum';
 import { WorkItemStatus } from '../../enums/work-item-status.enum';
 import { TimeInfo } from '../generic/time-info';
 
+import { TimeSeries } from './time-series';
 import { ChecklistEntry } from './checklist-entry';
 
 export class WorkItem {
@@ -12,7 +13,8 @@ export class WorkItem {
     public type = WorkItemType.Regular;
     public priority = WorkItemPriority.NotUrgentNotImportant;
     public status = WorkItemStatus.Idle;
-    public estimation = 0;
+    public estimatedHours = 0;
+    public timeSeries = new TimeSeries();
     public recur: boolean[] = [];
     public checklist: ChecklistEntry[] = [];
     public timeInfo = new TimeInfo();
