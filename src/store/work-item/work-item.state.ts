@@ -30,6 +30,14 @@ const mutations = {
 };
 
 const actions = {
+    async createWorkItem(context: ActionContext<IWorkItemState, any>): Promise<void> {
+        const { state, commit, dispatch } = context;
+
+        if (state.pendingWorkItem && await workItemHttpService.createWorkItem(state.pendingWorkItem)) {
+            commit('setPendingWorkItem', null);
+            await dispatch('loadWorkItems');
+        }
+    },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>): Promise<void> {
         context.commit('setWorkItems', await workItemHttpService.getWorkItems());
     }
