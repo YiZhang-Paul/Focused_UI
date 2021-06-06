@@ -87,7 +87,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
         .status-menu {
             $width: 4vh;
-            $height: 135%;
+            $height: 130%;
 
             position: absolute;
             top: calc(50% - #{$height} / 2);
