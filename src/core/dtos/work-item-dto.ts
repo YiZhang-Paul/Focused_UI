@@ -4,6 +4,7 @@ import { WorkItemPriority } from '../enums/work-item-priority.enum';
 import { WorkItemStatus } from '../enums/work-item-status.enum';
 
 export class WorkItemDto {
+    public id!: string;
     public name = '';
     public type = WorkItemType.Regular;
     public priority = WorkItemPriority.NotUrgentNotImportant;

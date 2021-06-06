@@ -3,7 +3,8 @@
         <component v-for="option of options"
             :key="option.status"
             :class="getClasses(option.status)"
-            :is="option.icon">
+            :is="option.icon"
+            @click="onSelect(option.status)">
         </component>
     </div>
 </template>
@@ -25,7 +26,8 @@ class WorkItemStatusMenuProp {
         CheckboxMarkedCircleOutline,
         PlayCircle,
         Target
-    }
+    },
+    emits: ['select']
 })
 export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp) {
     public options = [
@@ -49,6 +51,10 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
             'invisible-option': !this.showOptions,
             'active-option': this.activeOption === status
         };
+    }
+
+    public onSelect(status: WorkItemStatus): void {
+        this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
     }
 }
 </script>

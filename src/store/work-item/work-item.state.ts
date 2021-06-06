@@ -39,6 +39,11 @@ const actions = {
             await dispatch('loadWorkItems');
         }
     },
+    async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<void> {
+        if (await workItemHttpService.updateWorkItemMeta(payload)) {
+            await context.dispatch('loadWorkItems');
+        }
+    },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();
         context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));

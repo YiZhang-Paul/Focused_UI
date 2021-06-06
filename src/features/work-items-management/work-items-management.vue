@@ -23,7 +23,8 @@
             <work-items-list class="work-items-list"
                 :pendingItem="pendingItem"
                 @create:cancel="cancelCreate()"
-                @create:confirm="confirmCreate()">
+                @create:confirm="confirmCreate()"
+                @update:meta="onItemMetaUpdate($event)">
             </work-items-list>
         </div>
     </content-view-panel>
@@ -97,6 +98,10 @@ export default class WorkItemsManagement extends Vue {
 
     public confirmCreate(): void {
         store.dispatch(`${workItemKey}/createWorkItem`);
+    }
+
+    public onItemMetaUpdate(item: WorkItemDto): void {
+        store.dispatch(`${workItemKey}/updateWorkItemMeta`, item);
     }
 
     public onSearch(text: string): void {

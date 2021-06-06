@@ -16,7 +16,8 @@
 
             <work-item-status-menu class="status-menu"
                 :activeOption="item.status"
-                :showOptions="activeIndex === index">
+                :showOptions="activeIndex === index"
+                @select="onStatusSelected(item, $event)">
             </work-item-status-menu>
 
             <work-item-card class="item-card" :item="item"></work-item-card>
@@ -30,6 +31,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
+import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
@@ -47,7 +49,8 @@ class WorkItemsListProp {
     },
     emits: [
         'create:cancel',
-        'create:confirm'
+        'create:confirm',
+        'update:meta'
     ]
 })
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
@@ -55,6 +58,10 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
     get workItems(): WorkItemDto[] {
         return store.getters[`${workItemKey}/workItems`];
+    }
+
+    public onStatusSelected(item: WorkItemDto, status: WorkItemStatus): void {
+        this.$emit('update:meta', { ...item, status } as WorkItemDto);
     }
 }
 </script>
