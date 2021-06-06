@@ -1,5 +1,6 @@
 import { WorkItemType } from '../../enums/work-item-type.enum';
 import { WorkItemPriority } from '../../enums/work-item-priority.enum';
+import { WorkItemStatus } from '../../enums/work-item-status.enum';
 import { TimeInfo } from '../generic/time-info';
 
 import { ChecklistEntry } from './checklist-entry';
@@ -10,9 +11,9 @@ export class WorkItem {
     public description = '';
     public type = WorkItemType.Regular;
     public priority = WorkItemPriority.NotUrgentNotImportant;
+    public status = WorkItemStatus.Idle;
     public estimation = 0;
     public recur: boolean[] = [];
     public checklist: ChecklistEntry[] = [];
     public timeInfo = new TimeInfo();
-    public isCompleted = false;
 }

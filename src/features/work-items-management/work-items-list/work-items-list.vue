@@ -15,7 +15,7 @@
             @mouseleave="activeIndex = -1">
 
             <work-item-status-menu class="status-menu"
-                :activeOption="getWorkItemStatus(item)"
+                :activeOption="item.status"
                 :showOptions="activeIndex === index">
             </work-item-status-menu>
 
@@ -30,7 +30,6 @@ import { Options, Vue, prop } from 'vue-class-component';
 import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
-import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
@@ -56,10 +55,6 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
     get workItems(): WorkItemDto[] {
         return store.getters[`${workItemKey}/workItems`];
-    }
-
-    public getWorkItemStatus(item: WorkItemDto): WorkItemStatus | null {
-        return item.isCompleted ? WorkItemStatus.Completed : null;
     }
 }
 </script>
@@ -92,7 +87,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
         .status-menu {
             $width: 4vh;
-            $height: 120%;
+            $height: 135%;
 
             position: absolute;
             top: calc(50% - #{$height} / 2);

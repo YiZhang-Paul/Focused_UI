@@ -60,7 +60,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
 
         &:hover, &.active-option {
             cursor: pointer;
-            color: var(--font-colors-000);
+            color: var(--font-colors-100);
             font-size: var(--font-sizes-600);
             opacity: 1;
         }
