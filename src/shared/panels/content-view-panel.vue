@@ -1,6 +1,6 @@
 <template>
     <div class="content-view-panel-container">
-        <view-name-panel :name="'work items'"></view-name-panel>
+        <view-name-display :name="'work items'"></view-name-display>
         <content-view-separator class="content-view-separator"></content-view-separator>
 
         <div class="actions">
@@ -18,11 +18,11 @@ import { Options, Vue } from 'vue-class-component';
 
 import ContentViewSeparator from '../separators/content-view-separator.vue';
 
-import ViewNamePanel from './view-name-panel.vue';
+import ViewNameDisplay from '../displays/view-name-display.vue';
 
 @Options({
     components: {
-        ViewNamePanel,
+        ViewNameDisplay,
         ContentViewSeparator
     }
 })
