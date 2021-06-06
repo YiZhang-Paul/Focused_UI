@@ -66,7 +66,7 @@ export default class SegmentedControl extends Vue.with(SegmentedControlProp) {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5vh 2.5vh;
+    padding: 0.5vh 2.25vh;
     background-color: var(--primary-colors-803);
 
     .title {

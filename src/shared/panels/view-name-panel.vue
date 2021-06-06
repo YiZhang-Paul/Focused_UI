@@ -63,6 +63,7 @@ export default class ViewNamePanel extends Vue.with(ViewNamePanelProp) {}
     }
 
     .name {
+        font-size: var(--font-sizes-300);
         text-transform: uppercase;
         opacity: 0.8;
     }

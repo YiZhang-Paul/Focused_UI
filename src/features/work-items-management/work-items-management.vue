@@ -7,8 +7,14 @@
 
                 <segmented-control class="filter-group"
                     :title="'completed'"
-                    :options="completionFilterOptions"
+                    :options="genericFilterOptions"
                     @select="onCompletionFilter($event.name)">
+                </segmented-control>
+
+                <segmented-control class="filter-group"
+                    :title="'highlighted'"
+                    :options="genericFilterOptions"
+                    @select="onHighlightFilter($event.name)">
                 </segmented-control>
 
                 <segmented-control class="filter-group"
@@ -31,15 +37,13 @@
 </template>
 
 <script lang="ts">
-import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { RecordCircleOutline } from 'mdue';
 
 import store from '../../store';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
-import { IconMeta } from '../../core/models/generic/icon-meta';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
@@ -59,20 +63,14 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
     }
 })
 export default class WorkItemsManagement extends Vue {
-    public readonly allTypeButton = {
-        name: 'all',
-        content: markRaw(RecordCircleOutline),
-        color: 'rgb(120, 255, 255)'
-    } as IconMeta;
-
-    public readonly completionFilterOptions = [
-        this.allTypeButton,
-        IconUtility.getCompletionFilterIcon(true),
-        IconUtility.getCompletionFilterIcon(false)
+    public readonly genericFilterOptions = [
+        IconUtility.getGenericFilterIcon(GenericFilterType.All),
+        IconUtility.getGenericFilterIcon(GenericFilterType.Yes),
+        IconUtility.getGenericFilterIcon(GenericFilterType.No)
     ];
 
     public readonly typeFilterOptions = [
-        this.allTypeButton,
+        IconUtility.getGenericFilterIcon(GenericFilterType.All),
         IconUtility.getWorkItemIcon(WorkItemType.Regular),
         IconUtility.getWorkItemIcon(WorkItemType.Recurring),
         IconUtility.getWorkItemIcon(WorkItemType.Interruption)
@@ -110,11 +108,22 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public onCompletionFilter(name: string): void {
-        if (name === this.completionFilterOptions[0].name) {
+        if (name === this.genericFilterOptions[0].name) {
             this.query.isCompleted = undefined;
         }
         else {
-            this.query.isCompleted = name === this.completionFilterOptions[1].name;
+            this.query.isCompleted = name === this.genericFilterOptions[1].name;
+        }
+
+        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+    }
+
+    public onHighlightFilter(name: string): void {
+        if (name === this.genericFilterOptions[0].name) {
+            this.query.isHighlighted = undefined;
+        }
+        else {
+            this.query.isHighlighted = name === this.genericFilterOptions[1].name;
         }
 
         store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
@@ -151,7 +160,7 @@ export default class WorkItemsManagement extends Vue {
         padding: 0 7.5vh 0 2.5vh;
 
         .search-box {
-            width: 40%;
+            width: 35%;
             height: 80%;
         }
 

@@ -1,16 +1,27 @@
 import { markRaw } from 'vue';
-import { Check, Close, Flash, Repeat, Selection, WeatherNight, WeatherSunset, WhiteBalanceSunny } from 'mdue';
+import { Check, Close, Flash, RecordCircleOutline, Repeat, Selection, WeatherNight, WeatherSunset, WhiteBalanceSunny } from 'mdue';
 
 import { IconMeta } from '../../models/generic/icon-meta';
+import { GenericFilterType } from '../../enums/generic-filter-type.enum';
 import { WorkItemType } from '../../enums/work-item-type.enum';
 
 export class IconUtility {
 
-    public static getCompletionFilterIcon(isCompleted: boolean): IconMeta {
+    public static getGenericFilterIcon(type: GenericFilterType): IconMeta {
+        if (type === GenericFilterType.All) {
+            return {
+                name: 'all',
+                content: markRaw(RecordCircleOutline),
+                color: 'rgb(120, 255, 255)'
+            };
+        }
+
+        const isYes = type === GenericFilterType.Yes;
+
         return {
-            name: isCompleted ? 'completed' : 'incomplete',
-            content: isCompleted ? markRaw(Check) : markRaw(Close),
-            color: isCompleted ? 'rgb(15, 255, 39)' : 'rgb(255, 0, 0)'
+            name: isYes ? 'yes' : 'no',
+            content: isYes ? markRaw(Check) : markRaw(Close),
+            color: isYes ? 'rgb(15, 255, 39)' : 'rgb(255, 0, 0)'
         };
     }
 
