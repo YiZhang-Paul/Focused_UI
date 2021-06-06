@@ -1,6 +1,12 @@
 <template>
     <display-panel class="work-items-list-container" :lineLength="'1.25vh'">
-        <work-item-card v-if="pendingItem" class="work-item-card" :item="pendingItem"></work-item-card>
+        <work-item-card v-if="pendingItem"
+            class="work-item-card"
+            :item="pendingItem"
+            :isEditMode="true"
+            @edit:cancel="$emit('create:cancel')"
+            @edit:confirm="$emit('create:confirm')">
+        </work-item-card>
 
         <work-item-card class="work-item-card"
             v-for="(item, index) of workItems"
@@ -11,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
@@ -20,17 +26,21 @@ import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
 import WorkItemCard from './work-item-card/work-item-card.vue';
 
+class WorkItemsListProp {
+    public pendingItem = prop<WorkItemDto>({ default: null });
+}
+
 @Options({
     components: {
         DisplayPanel,
         WorkItemCard
-    }
+    },
+    emits: [
+        'create:cancel',
+        'create:confirm'
+    ]
 })
-export default class WorkItemsList extends Vue {
-
-    get pendingItem(): WorkItemDto | null {
-        return store.getters[`${workItemKey}/pendingWorkItem`];
-    }
+export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
     get workItems(): WorkItemDto[] {
         return store.getters[`${workItemKey}/workItems`];

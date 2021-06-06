@@ -21,8 +21,8 @@ const getters = {
 };
 
 const mutations = {
-    setPendingWorkItem(state: IWorkItemState): void {
-        state.pendingWorkItem = state.pendingWorkItem ?? new WorkItemDto();
+    setPendingWorkItem(state: IWorkItemState, item: WorkItemDto | null): void {
+        state.pendingWorkItem = item;
     },
     setWorkItems(state: IWorkItemState, items: WorkItemDto[]): void {
         state.workItems = items.slice();

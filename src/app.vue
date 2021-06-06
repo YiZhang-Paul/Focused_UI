@@ -21,6 +21,7 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from './store';
 import { workItemKey } from './store/work-item/work-item.state';
+import { WorkItemDto } from './core/dtos/work-item-dto';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import CreationButton from './shared/buttons/creation-button.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
@@ -39,7 +40,7 @@ import CurrentDateTime from './shared/widgets/current-date-time.vue';
 export default class App extends Vue {
 
     public startCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`);
+        store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
     }
 }
 </script>

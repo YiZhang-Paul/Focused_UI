@@ -8,7 +8,17 @@
             <span>{{ item.estimation }}</span>
         </display-panel>
 
-        <span class="name">{{ item.name }}</span>
+        <span v-if="!isEditMode" class="name">{{ item.name }}</span>
+
+        <input v-if="isEditMode"
+            type="text"
+            class="name-input"
+            ref="nameInput"
+            v-model="item.name"
+            @keyup.esc="$emit('edit:cancel')"
+            @keyup.enter="onEditConfirm()"
+            @blur="$emit('edit:cancel')"
+            maxlength="80" />
 
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
@@ -30,13 +40,18 @@ import ItemProgression from '../../../../shared/widgets/item-progression.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
+    public isEditMode = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
         DisplayPanel,
         ItemProgression
-    }
+    },
+    emits: [
+        'edit:cancel',
+        'edit:confirm'
+    ]
 })
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
@@ -58,6 +73,27 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
     get checklistIcon(): any {
         return markRaw(FormatListCheckbox);
+    }
+
+    public mounted(): void {
+        if (!this.isEditMode) {
+            return;
+        }
+
+        setTimeout(() => {
+            if (this.$refs.nameInput) {
+                (this.$refs.nameInput as any).focus();
+            }
+        });
+    }
+
+    public onEditConfirm(): void {
+        const name = this.item?.name?.trim() ?? '';
+
+        if (name) {
+            this.item.name = name;
+            this.$emit('edit:confirm');
+        }
     }
 }
 </script>
@@ -92,13 +128,24 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         }
     }
 
-    .name {
+    .name, .name-input {
         width: 45%;
+    }
+
+    .name-input {
+        box-sizing: border-box;
+        padding: 0.25rem 0;
+        border: none;
+        outline: none;
+        background-color: var(--primary-colors-800);
+        color: var(--font-colors-000);
+        font-size: var(--font-sizes-400);
     }
 
     .other-information {
         display: flex;
         justify-content: space-between;
+        margin-left: 1%;
         width: 10%;
     }
 }
