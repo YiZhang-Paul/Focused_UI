@@ -26,13 +26,14 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { Check, Close, RecordCircleOutline } from 'mdue';
+import { RecordCircleOutline } from 'mdue';
 
 import store from '../../store';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button.vue';
@@ -50,22 +51,16 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
     }
 })
 export default class WorkItemsManagement extends Vue {
+    public readonly allTypeButton = {
+        name: 'all',
+        content: markRaw(RecordCircleOutline),
+        color: 'rgb(120, 255, 255)'
+    } as IconMeta;
+
     public readonly completionFilterOptions = [
-        {
-            name: 'all',
-            content: markRaw(RecordCircleOutline),
-            color: 'rgb(120, 255, 255)'
-        } as IconMeta,
-        {
-            name: 'completed',
-            content: markRaw(Check),
-            color: 'rgb(15, 255, 39)'
-        } as IconMeta,
-        {
-            name: 'incomplete',
-            content: markRaw(Close),
-            color: 'rgb(255, 0, 0)'
-        } as IconMeta
+        this.allTypeButton,
+        IconUtility.getCompletionFilterIcon(true),
+        IconUtility.getCompletionFilterIcon(false)
     ];
 
     private query = new WorkItemQuery();

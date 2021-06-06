@@ -1,10 +1,18 @@
 import { markRaw } from 'vue';
-import { Flash, Repeat, Selection, WeatherNight, WeatherSunset, WhiteBalanceSunny } from 'mdue';
+import { Check, Close, Flash, Repeat, Selection, WeatherNight, WeatherSunset, WhiteBalanceSunny } from 'mdue';
 
 import { IconMeta } from '../../models/generic/icon-meta';
 import { WorkItemType } from '../../enums/work-item-type.enum';
 
 export class IconUtility {
+
+    public static getCompletionFilterIcon(isCompleted: boolean): IconMeta {
+        return {
+            name: isCompleted ? 'completed' : 'incomplete',
+            content: isCompleted ? markRaw(Check) : markRaw(Close),
+            color: isCompleted ? 'rgb(15, 255, 39)' : 'rgb(255, 0, 0)'
+        };
+    }
 
     public static getWorkItemIcon(type: WorkItemType): IconMeta {
         if (type === WorkItemType.Interruption) {
