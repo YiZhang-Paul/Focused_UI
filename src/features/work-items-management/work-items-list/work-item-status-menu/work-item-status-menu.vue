@@ -27,22 +27,18 @@ class WorkItemStatusMenuProp {
         PlayCircle,
         Target
     },
+    watch: {
+        activeOption(): void {
+            this.initializeOptions();
+        }
+    },
     emits: ['select']
 })
 export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp) {
-    public options = [
-        { icon: markRaw(Target), status: WorkItemStatus.Highlighted },
-        { icon: markRaw(PlayCircle), status: WorkItemStatus.Ongoing },
-        { icon: markRaw(CheckboxMarkedCircleOutline), status: WorkItemStatus.Completed }
-    ];
+    public options: { icon: any; status: WorkItemStatus }[] = [];
 
     public created(): void {
-        const active = this.options.find(_ => _.status === this.activeOption);
-
-        if (active) {
-            const inactive = this.options.filter(_ => _.status !== this.activeOption);
-            this.options = [inactive[0], active, ...inactive.slice(1)];
-        }
+        this.initializeOptions();
     }
 
     public getClasses(status: WorkItemStatus): { [key: string]: boolean } {
@@ -56,6 +52,21 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     public onSelect(status: WorkItemStatus): void {
         this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
     }
+
+    private initializeOptions(): void {
+        this.options = [
+            { icon: markRaw(Target), status: WorkItemStatus.Highlighted },
+            { icon: markRaw(PlayCircle), status: WorkItemStatus.Ongoing },
+            { icon: markRaw(CheckboxMarkedCircleOutline), status: WorkItemStatus.Completed }
+        ]
+
+        const active = this.options.find(_ => _.status === this.activeOption);
+
+        if (active) {
+            const inactive = this.options.filter(_ => _.status !== this.activeOption);
+            this.options = [inactive[0], active, ...inactive.slice(1)];
+        }
+    }
 }
 </script>
 
@@ -68,9 +79,9 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     justify-content: space-around;
 
     .icon {
-        color: var(--font-colors-500);
-        font-size: var(--font-sizes-00);
-        transition: font-size 0.1s, opacity 0.05s, color 0.3s;
+        color: var(--font-colors-600);
+        font-size: var(--font-sizes-400);
+        transition: font-size 0.1s, opacity 0.05s, color 0.2s;
 
         &.invisible-option {
             opacity: 0;
@@ -78,9 +89,12 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
 
         &:hover, &.active-option {
             cursor: pointer;
-            color: var(--font-colors-100);
             font-size: var(--font-sizes-600);
             opacity: 1;
+        }
+
+        &.active-option {
+            color: var(--font-colors-100);
         }
     }
 }
