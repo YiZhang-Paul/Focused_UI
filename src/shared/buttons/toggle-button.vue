@@ -13,6 +13,7 @@
         </svg>
 
         <component class="icon"
+            :class="{ 'left-icon': type === 'left', 'right-icon': type === 'right' }"
             :is="option.content"
             :style="{ color: isActive ? option.color : null }">
         </component>
@@ -64,6 +65,14 @@ export default class ToggleButton extends Vue.with(ToggleButtonProp) {}
         color: var(--font-colors-500);
         font-size: var(--font-sizes-500);
         transition: color 0.3s;
+
+        &.left-icon {
+            transform: translateX(-0.075rem);
+        }
+
+        &.right-icon {
+            transform: translateX(0.075rem);
+        }
     }
 }
 </style>

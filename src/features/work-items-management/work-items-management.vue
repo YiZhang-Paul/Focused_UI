@@ -10,6 +10,12 @@
                     :options="completionFilterOptions"
                     @select="onCompletionFilter($event.name)">
                 </segmented-control>
+
+                <segmented-control class="filter-group"
+                    :title="'work item type'"
+                    :options="typeFilterOptions"
+                    @select="onTypeFilter($event.name)">
+                </segmented-control>
             </div>
         </template>
 
@@ -33,6 +39,7 @@ import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control.vue';
@@ -61,6 +68,13 @@ export default class WorkItemsManagement extends Vue {
         this.allTypeButton,
         IconUtility.getCompletionFilterIcon(true),
         IconUtility.getCompletionFilterIcon(false)
+    ];
+
+    public readonly typeFilterOptions = [
+        this.allTypeButton,
+        IconUtility.getWorkItemIcon(WorkItemType.Regular),
+        IconUtility.getWorkItemIcon(WorkItemType.Recurring),
+        IconUtility.getWorkItemIcon(WorkItemType.Interruption)
     ];
 
     private query = new WorkItemQuery();
@@ -98,6 +112,19 @@ export default class WorkItemsManagement extends Vue {
             this.query.isCompleted = name === this.completionFilterOptions[1].name;
         }
 
+        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+    }
+
+    public onTypeFilter(name: string): void {
+        const types = [
+            undefined,
+            WorkItemType.Regular,
+            WorkItemType.Recurring,
+            WorkItemType.Interruption
+        ];
+
+        const index = this.typeFilterOptions.findIndex(_ => name === _.name);
+        this.query.type = types[index];
         store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }
