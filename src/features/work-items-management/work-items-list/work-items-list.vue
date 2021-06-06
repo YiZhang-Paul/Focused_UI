@@ -1,5 +1,7 @@
 <template>
     <display-panel class="work-items-list-container" :lineLength="'1.25vh'">
+        <work-item-card v-if="pendingItem" class="work-item-card" :item="pendingItem"></work-item-card>
+
         <work-item-card class="work-item-card"
             v-for="(item, index) of workItems"
             :key="index"
@@ -25,6 +27,10 @@ import WorkItemCard from './work-item-card/work-item-card.vue';
     }
 })
 export default class WorkItemsList extends Vue {
+
+    get pendingItem(): WorkItemDto | null {
+        return store.getters[`${workItemKey}/pendingWorkItem`];
+    }
 
     get workItems(): WorkItemDto[] {
         return store.getters[`${workItemKey}/workItems`];

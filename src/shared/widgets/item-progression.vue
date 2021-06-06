@@ -1,7 +1,7 @@
 <template>
     <div class="item-progression-container" :class="{ completed: isCompleted }">
         <component class="icon" :is="progressIcon"></component>
-        <span class="counters">{{ progress.current }}/{{ progress.target }}</span>
+        <span class="counters">{{ progress.current ?? 0 }}/{{ progress.target ?? 0 }}</span>
     </div>
 </template>
 

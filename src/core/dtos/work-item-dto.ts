@@ -7,6 +7,6 @@ export class WorkItemDto {
     public type = WorkItemType.Regular;
     public priority = WorkItemPriority.NotUrgentNotImportant;
     public estimation = 0;
-    public subtasksProgress = new ProgressionCounter<number>();
+    public subtaskProgress = new ProgressionCounter<number>();
     public checklistProgress = new ProgressionCounter<number>();
 }

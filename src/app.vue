@@ -8,7 +8,7 @@
     <content-view-panel class="content-view-panel">
         <template v-slot:actions>
             <div class="work-items-actions">
-                <creation-button @click="onClick()"></creation-button>
+                <creation-button @click="startCreate()"></creation-button>
             </div>
         </template>
 
@@ -19,6 +19,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from './store';
+import { workItemKey } from './store/work-item/work-item.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import CreationButton from './shared/buttons/creation-button.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
@@ -36,8 +38,8 @@ import CurrentDateTime from './shared/widgets/current-date-time.vue';
 })
 export default class App extends Vue {
 
-    public onClick(): void {
-        console.log('click');
+    public startCreate(): void {
+        store.commit(`${workItemKey}/setPendingWorkItem`);
     }
 }
 </script>

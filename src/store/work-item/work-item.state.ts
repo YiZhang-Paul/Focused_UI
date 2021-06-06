@@ -6,18 +6,24 @@ import { WorkItemHttpService } from '../../core/services/http/work-item-http/wor
 const workItemHttpService = new WorkItemHttpService();
 
 export interface IWorkItemState {
+    pendingWorkItem: WorkItemDto | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
+    pendingWorkItem: null,
     workItems: []
 });
 
 const getters = {
+    pendingWorkItem: (state: IWorkItemState): WorkItemDto | null => state.pendingWorkItem,
     workItems: (state: IWorkItemState): WorkItemDto[] => state.workItems
 };
 
 const mutations = {
+    setPendingWorkItem(state: IWorkItemState): void {
+        state.pendingWorkItem = state.pendingWorkItem ?? new WorkItemDto();
+    },
     setWorkItems(state: IWorkItemState, items: WorkItemDto[]): void {
         state.workItems = items.slice();
     }
