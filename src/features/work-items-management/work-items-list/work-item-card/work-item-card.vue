@@ -23,6 +23,11 @@
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
             <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
+
+            <percentage-progression class="percentage-progression"
+                :progress="{ current: item.actualHours, target: item.estimatedHours }"
+                :isCompleted="item.status === workItemStatus.Completed">
+            </percentage-progression>
         </div>
     </div>
 </template>
@@ -34,9 +39,11 @@ import { FormatListCheckbox } from 'mdue';
 
 import { IconMeta } from '../../../../core/models/generic/icon-meta';
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
+import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import ItemProgression from '../../../../shared/widgets/item-progression.vue';
+import PercentageProgression from '../../../../shared/widgets/percentage-progression.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
@@ -46,7 +53,8 @@ class WorkItemCardProp {
 @Options({
     components: {
         DisplayPanel,
-        ItemProgression
+        ItemProgression,
+        PercentageProgression
     },
     emits: [
         'edit:cancel',
@@ -54,6 +62,7 @@ class WorkItemCardProp {
     ]
 })
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
+    public workItemStatus = WorkItemStatus;
 
     get priorityStyle(): { [key: string]: string } {
         return {
@@ -129,7 +138,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     .name, .name-input {
-        width: 45%;
+        width: 52.5%;
     }
 
     .name-input {
@@ -146,7 +155,12 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         display: flex;
         justify-content: space-between;
         margin-left: 1%;
-        width: 10%;
+        width: 37.5%;
+
+        .percentage-progression {
+            width: 60%;
+            height: 2vh;
+        }
     }
 }
 </style>

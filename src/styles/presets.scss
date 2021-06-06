@@ -7,7 +7,6 @@
     // primary colors
     --primary-colors-000: rgb(255, 255, 255);
     --primary-colors-001: rgba(255, 255, 255, 0.1);
-    --primary-colors-006: rgba(255, 255, 255, 0.6);
     --primary-colors-600: rgb(110, 110, 110);
     --primary-colors-601: rgba(110, 110, 110, 0.1);
     --primary-colors-800: rgb(59, 68, 91);
@@ -25,6 +24,17 @@
     --work-item-type-colors-regular: rgb(255, 255, 255);
     --work-item-type-colors-recurring: rgb(196, 222, 142);
     --work-item-type-colors-interruption: rgb(250, 0, 255);
+    // progression colors
+    --progression-colors-000: rgb(255, 255, 255);
+    --progression-colors-004: rgba(255, 255, 255, 0.4);
+    --progression-colors-100: rgb(98, 236, 255);
+    --progression-colors-104: rgba(98, 236, 255, 0.4);
+    --progression-colors-200: rgb(98, 255, 142);
+    --progression-colors-204: rgba(98, 255, 142, 0.4);
+    --progression-colors-300: rgb(255, 203, 69);
+    --progression-colors-304: rgba(255, 203, 69, 0.4);
+    --progression-colors-400: rgb(255, 100, 100);
+    --progression-colors-404: rgba(255, 100, 100, 0.4);
     // priority colors
     --priority-colors-000: rgb(255, 26, 26);
     --priority-colors-004: rgba(255, 26, 26, 0.4);
