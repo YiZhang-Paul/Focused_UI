@@ -7,7 +7,8 @@
 
                 <segmented-control class="filter-group"
                     :title="'completed'"
-                    :options="completionFilterOptions">
+                    :options="completionFilterOptions"
+                    @select="onCompletionFilter($event.name)">
                 </segmented-control>
             </div>
         </template>
@@ -91,6 +92,17 @@ export default class WorkItemsManagement extends Vue {
 
     public onSearch(text: string): void {
         this.query.searchText = text;
+        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+    }
+
+    public onCompletionFilter(name: string): void {
+        if (name === this.completionFilterOptions[0].name) {
+            this.query.isCompleted = undefined;
+        }
+        else {
+            this.query.isCompleted = name === this.completionFilterOptions[1].name;
+        }
+
         store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }

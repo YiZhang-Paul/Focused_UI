@@ -51,8 +51,10 @@ export default class SegmentedControl extends Vue.with(SegmentedControlProp) {
     public activeIndex = 0;
 
     public onSelect(index: number): void {
-        this.activeIndex = index;
-        this.$emit('select', this.options[index]);
+        if (this.activeIndex !== index) {
+            this.activeIndex = index;
+            this.$emit('select', this.options[index]);
+        }
     }
 }
 </script>
