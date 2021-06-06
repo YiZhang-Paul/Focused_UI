@@ -11,7 +11,6 @@ import { ProgressionCounter } from '../../core/models/generic/progression-counte
 
 class PercentageProgressionProp {
     public progress = prop<ProgressionCounter<number>>({ default: null });
-    public isCompleted = prop<boolean>({ default: false });
 }
 
 export default class PercentageProgression extends Vue.with(PercentageProgressionProp) {
@@ -26,7 +25,7 @@ export default class PercentageProgression extends Vue.with(PercentageProgressio
     }
 
     public getClasses(index: number): { [key: string]: boolean } | null {
-        const { current, target } = this.progress;
+        const { current, target, isCompleted } = this.progress;
 
         if (!target) {
             return null;
@@ -45,8 +44,8 @@ export default class PercentageProgression extends Vue.with(PercentageProgressio
 
         return {
             normal: index <= normalCount,
-            faster: this.isCompleted && !this.isWarning ? index > normalCount : false,
-            warning: this.isCompleted && this.isWarning ? index > normalCount : false
+            faster: isCompleted && !this.isWarning ? index > normalCount : false,
+            warning: isCompleted && this.isWarning ? index > normalCount : false
         };
     }
 }

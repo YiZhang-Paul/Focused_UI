@@ -5,7 +5,7 @@
         <display-panel class="core-information">
             <component :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
             <div class="separator"></div>
-            <span>{{ item.estimatedHours }}</span>
+            <span>{{ item.itemProgress.target }}</span>
         </display-panel>
 
         <span v-if="!isEditMode" class="name">{{ item.name }}</span>
@@ -23,11 +23,7 @@
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
             <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
-
-            <percentage-progression class="percentage-progression"
-                :progress="{ current: item.actualHours, target: item.estimatedHours }"
-                :isCompleted="item.status === workItemStatus.Completed">
-            </percentage-progression>
+            <percentage-progression class="percentage-progression" :progress="item.itemProgress"></percentage-progression>
         </div>
     </div>
 </template>

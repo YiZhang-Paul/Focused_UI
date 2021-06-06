@@ -1,5 +1,5 @@
 <template>
-    <div class="item-progression-container" :class="{ completed: isCompleted }">
+    <div class="item-progression-container" :class="{ completed: progress.isCompleted }">
         <component class="icon" :is="progressIcon"></component>
         <span class="counters">{{ progress.current ?? 0 }}/{{ progress.target ?? 0 }}</span>
     </div>
@@ -18,10 +18,6 @@ class ItemProgressionProp {
 }
 
 export default class ItemProgression extends Vue.with(ItemProgressionProp) {
-
-    get isCompleted(): boolean {
-        return this.progress.current === this.progress.target;
-    }
 
     get progressIcon(): any {
         return this.icon ?? markRaw(FileTree);
