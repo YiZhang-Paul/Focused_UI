@@ -5,54 +5,24 @@
         <current-date-time></current-date-time>
     </div>
 
-    <content-view-panel class="content-view-panel">
-        <template v-slot:actions>
-            <div class="work-items-actions">
-                <creation-button @click="startCreate()"></creation-button>
-                <search-box class="search-box" @search="onSearch($event)"></search-box>
-            </div>
-        </template>
-
-        <work-items-management class="work-items-management"></work-items-management>
-    </content-view-panel>
+    <work-items-management class="work-items-management"></work-items-management>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from './store';
-import { workItemKey } from './store/work-item/work-item.state';
-import { WorkItemDto } from './core/dtos/work-item-dto';
-import { WorkItemQuery } from './core/models/work-item/work-item-query';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
-import CreationButton from './shared/buttons/creation-button.vue';
-import SearchBox from './shared/inputs/search-box.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
-import ContentViewPanel from './shared/panels/content-view-panel.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
 
 @Options({
     components: {
         WorkItemsManagement,
-        CreationButton,
-        SearchBox,
         LightsourcePanel,
-        ContentViewPanel,
         CurrentDateTime
     }
 })
-export default class App extends Vue {
-    private query = new WorkItemQuery();
-
-    public startCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
-    }
-
-    public onSearch(text: string): void {
-        this.query.searchText = text;
-        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
-    }
-}
+export default class App extends Vue {}
 </script>
 
 <style lang="scss">
@@ -93,26 +63,8 @@ html, body, #app {
     height: $header-displays-height;
 }
 
-.content-view-panel {
+.work-items-management {
     width: 100%;
     height: calc(100% - #{$header-displays-height});
-
-    .work-items-actions, .work-items-management {
-        width: 100%;
-        height: 100%;
-    }
-
-    .work-items-actions {
-        box-sizing: border-box;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 7.5vh 0 2.5vh;
-
-        .search-box {
-            width: 40%;
-            height: 80%;
-        }
-    }
 }
 </style>
