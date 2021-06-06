@@ -9,6 +9,7 @@ export class IconUtility {
     public static getWorkItemIcon(type: WorkItemType): IconMeta {
         if (type === WorkItemType.Interruption) {
             return {
+                name: 'interruption',
                 content: markRaw(Flash),
                 color: 'var(--work-item-type-colors-interruption)'
             };
@@ -16,12 +17,14 @@ export class IconUtility {
 
         if (type === WorkItemType.Recurring) {
             return {
+                name: 'recurring',
                 content: markRaw(Repeat),
                 color: 'var(--work-item-type-colors-recurring)'
             };
         }
 
         return {
+            name: 'regular',
             content: markRaw(Selection),
             color: 'var(--work-item-type-colors-regular)'
         };
@@ -30,8 +33,9 @@ export class IconUtility {
     public static getTimeIcon(time: Date): IconMeta {
         const hour = time.getHours();
 
-        if (hour >= 8 && hour < 17) {
+        if (hour >= 7 && hour < 17) {
             return {
+                name: 'day',
                 content: markRaw(WhiteBalanceSunny),
                 color: 'rgb(255, 226, 72)'
             };
@@ -39,12 +43,14 @@ export class IconUtility {
 
         if (hour >= 17 && hour < 20) {
             return {
+                name: 'sunset',
                 content: markRaw(WeatherSunset),
                 color: 'rgb(248, 136, 44)'
             };
         }
 
         return {
+            name: 'night',
             content: markRaw(WeatherNight),
             color: 'rgb(255, 239, 183)'
         };
