@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
+import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
 const workItemHttpService = new WorkItemHttpService();
 
@@ -25,6 +26,13 @@ const mutations = {
     setPendingWorkItem(state: IWorkItemState, item: WorkItemDto | null): void {
         state.pendingWorkItem = item;
     },
+    setWorkItem(state: IWorkItemState, item: WorkItemDto): void {
+        const index = state.workItems.findIndex(_ => _.id === item.id);
+
+        if (index !== -1) {
+            state.workItems = GenericUtility.replaceAt(state.workItems, item, index);
+        }
+    },
     setWorkItems(state: IWorkItemState, items: WorkItemDto[]): void {
         state.workItems = items.slice();
     }
@@ -44,7 +52,7 @@ const actions = {
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<void> {
         if (await workItemHttpService.updateWorkItemMeta(payload)) {
-            await context.dispatch('loadWorkItems');
+            context.commit('setWorkItem', payload);
         }
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
