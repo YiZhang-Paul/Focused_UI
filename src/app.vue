@@ -11,6 +11,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from './store';
+import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
@@ -22,7 +24,12 @@ import CurrentDateTime from './shared/widgets/current-date-time.vue';
         CurrentDateTime
     }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+
+    public created(): void {
+        store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
+    }
+}
 </script>
 
 <style lang="scss">
