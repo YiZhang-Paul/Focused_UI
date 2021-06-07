@@ -33,8 +33,8 @@ export default class LightsourcePanel extends Vue {}
         height: 150vh;
         background: radial-gradient(
             57.36% 57.36% at 50% 42.64%,
-            rgba(255, 255, 255, 0.125) 0%,
-            rgba(248, 248, 248, 0.125) 0.01%,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(248, 248, 248, 0.25) 0.01%,
             rgba(138, 138, 138, 0) 100%
         );
     }

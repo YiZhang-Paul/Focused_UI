@@ -31,13 +31,16 @@ const mutations = {
 };
 
 const actions = {
-    async createWorkItem(context: ActionContext<IWorkItemState, any>): Promise<void> {
-        const { state, commit, dispatch } = context;
+    async createWorkItem(context: ActionContext<IWorkItemState, any>): Promise<boolean> {
+        const { state, commit } = context;
 
-        if (state.pendingWorkItem && await workItemHttpService.createWorkItem(state.pendingWorkItem)) {
-            commit('setPendingWorkItem', null);
-            await dispatch('loadWorkItems');
+        if (!state.pendingWorkItem || !await workItemHttpService.createWorkItem(state.pendingWorkItem)) {
+            return false;
         }
+
+        commit('setPendingWorkItem', null);
+
+        return true;
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<void> {
         if (await workItemHttpService.updateWorkItemMeta(payload)) {

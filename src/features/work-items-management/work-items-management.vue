@@ -83,7 +83,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public created(): void {
-        store.dispatch(`${workItemKey}/loadWorkItems`, null);
+        this.loadWorkItems();
     }
 
     public startCreate(): void {
@@ -94,8 +94,10 @@ export default class WorkItemsManagement extends Vue {
         store.commit(`${workItemKey}/setPendingWorkItem`, null);
     }
 
-    public confirmCreate(): void {
-        store.dispatch(`${workItemKey}/createWorkItem`);
+    public async confirmCreate(): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/createWorkItem`)) {
+            await this.loadWorkItems();
+        }
     }
 
     public onItemMetaUpdate(item: WorkItemDto): void {
@@ -104,7 +106,7 @@ export default class WorkItemsManagement extends Vue {
 
     public onSearch(text: string): void {
         this.query.searchText = text;
-        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        this.loadWorkItems();
     }
 
     public onCompletionFilter(name: string): void {
@@ -115,7 +117,7 @@ export default class WorkItemsManagement extends Vue {
             this.query.isCompleted = name === this.genericFilterOptions[1].name;
         }
 
-        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        this.loadWorkItems();
     }
 
     public onHighlightFilter(name: string): void {
@@ -126,7 +128,7 @@ export default class WorkItemsManagement extends Vue {
             this.query.isHighlighted = name === this.genericFilterOptions[1].name;
         }
 
-        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        this.loadWorkItems();
     }
 
     public onTypeFilter(name: string): void {
@@ -139,7 +141,11 @@ export default class WorkItemsManagement extends Vue {
 
         const index = this.typeFilterOptions.findIndex(_ => name === _.name);
         this.query.type = types[index];
-        store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        this.loadWorkItems();
+    }
+
+    private async loadWorkItems(): Promise<void> {
+        await store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }
 </script>
