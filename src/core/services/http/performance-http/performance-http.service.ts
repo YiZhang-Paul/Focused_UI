@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
 export class PerformanceHttpService {
@@ -17,6 +18,17 @@ export class PerformanceHttpService {
                 target: 8,
                 isCompleted: false
             } as ProgressionCounter<number>;
+        }
+    }
+
+    public async getDailyActivityBreakdown(year: number, month: number, day: number): Promise<ActivityBreakdownDto> {
+        try {
+            const endpoint = `${this._api}/daily-activity-breakdown/${year}/${month}/${day}`;
+
+            return (await axios.get(endpoint)).data;
+        }
+        catch {
+            return new ActivityBreakdownDto();
         }
     }
 }
