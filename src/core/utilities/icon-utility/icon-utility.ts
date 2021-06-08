@@ -30,7 +30,7 @@ export class IconUtility {
             return {
                 name: 'interruption',
                 content: markRaw(Flash),
-                color: 'var(--work-item-type-colors-interruption)'
+                color: 'var(--activity-colors-interruption-00)'
             };
         }
 
@@ -38,14 +38,14 @@ export class IconUtility {
             return {
                 name: 'recurring',
                 content: markRaw(Repeat),
-                color: 'var(--work-item-type-colors-recurring)'
+                color: 'var(--activity-colors-recurring-00)'
             };
         }
 
         return {
             name: 'regular',
             content: markRaw(Selection),
-            color: 'var(--work-item-type-colors-regular)'
+            color: 'var(--activity-colors-regular-00)'
         };
     }
 

@@ -21,10 +21,15 @@
     --font-colors-400: rgb(175, 175, 175);
     --font-colors-500: rgb(140, 140, 140);
     --font-colors-600: rgb(110, 110, 110);
-    // work item type colors
-    --work-item-type-colors-regular: rgb(255, 255, 255);
-    --work-item-type-colors-recurring: rgb(196, 222, 142);
-    --work-item-type-colors-interruption: rgb(250, 0, 255);
+    // activity colors
+    --activity-colors-regular-00: rgb(255, 255, 255);
+    --activity-colors-regular-04: rgba(255, 255, 255, 0.4);
+    --activity-colors-recurring-00: rgb(196, 222, 142);
+    --activity-colors-recurring-04: rgba(196, 222, 142, 0.4);
+    --activity-colors-interruption-00: rgb(250, 0, 255);
+    --activity-colors-interruption-04: rgba(250, 0, 255, 0.4);
+    --activity-colors-overlearning-00: rgb(98, 236, 255);
+    --activity-colors-overlearning-04: rgba(98, 236, 255, 0.4);
     // generic colors
     --generic-colors-000: rgb(255, 255, 255);
     --generic-colors-005: rgba(255, 255, 255, 0.5);
@@ -35,14 +40,12 @@
     // progression colors
     --progression-colors-000: rgb(255, 255, 255);
     --progression-colors-004: rgba(255, 255, 255, 0.4);
-    --progression-colors-100: rgb(98, 236, 255);
-    --progression-colors-104: rgba(98, 236, 255, 0.4);
-    --progression-colors-200: rgb(98, 255, 142);
-    --progression-colors-204: rgba(98, 255, 142, 0.4);
-    --progression-colors-300: rgb(255, 203, 69);
-    --progression-colors-304: rgba(255, 203, 69, 0.4);
-    --progression-colors-400: rgb(255, 100, 100);
-    --progression-colors-404: rgba(255, 100, 100, 0.4);
+    --progression-colors-100: rgb(98, 255, 142);
+    --progression-colors-104: rgba(98, 255, 142, 0.4);
+    --progression-colors-200: rgb(255, 203, 69);
+    --progression-colors-204: rgba(255, 203, 69, 0.4);
+    --progression-colors-300: rgb(255, 100, 100);
+    --progression-colors-304: rgba(255, 100, 100, 0.4);
     // priority colors
     --priority-colors-000: rgb(255, 26, 26);
     --priority-colors-004: rgba(255, 26, 26, 0.4);
