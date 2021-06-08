@@ -38,8 +38,8 @@ import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
-import ItemProgression from '../../../../shared/widgets/item-progression.vue';
 import PercentageProgression from '../../../../shared/widgets/percentage-progression.vue';
+import ItemProgression from '../../../../shared/displays/item-progression.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
