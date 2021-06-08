@@ -23,7 +23,7 @@
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
             <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
-            <percentage-progression class="percentage-progression" :progress="item.itemProgress"></percentage-progression>
+            <item-completion-progress class="item-completion-progress" :progress="item.itemProgress"></item-completion-progress>
         </div>
     </div>
 </template>
@@ -38,8 +38,8 @@ import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
-import PercentageProgression from '../../../../shared/widgets/percentage-progression.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
+import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
@@ -50,7 +50,7 @@ class WorkItemCardProp {
     components: {
         DisplayPanel,
         ItemProgression,
-        PercentageProgression
+        ItemCompletionProgress
     },
     emits: [
         'edit:cancel',
@@ -153,7 +153,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         margin-left: 1%;
         width: 37.5%;
 
-        .percentage-progression {
+        .item-completion-progress {
             width: 60%;
             height: 2vh;
         }
