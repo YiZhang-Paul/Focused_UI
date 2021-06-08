@@ -27,6 +27,7 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
     }
 
     get series(): PercentageSeries[] {
+        const prefix = 'progress-colors-';
         const { current, target, isCompleted } = this.progress;
 
         if (!target) {
@@ -34,17 +35,20 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
         }
 
         if (current > target) {
+            const percent = target / current * 100;
+
             return [
-                { percent: target / current * 100, colorType: 'normal' },
-                { percent: (current - target) / current * 100, colorType: 'underestimate' },
+                { percent, colorType: `${prefix}normal` },
+                { percent: 1 - percent, colorType: `${prefix}underestimate` },
             ];
         }
 
         const percent = current / target * 100;
+        const colorType = this.isOverestimate ? `${prefix}overestimate` : `${prefix}faster`;
 
         return [
-            { percent, colorType: 'normal' },
-            { percent: isCompleted ? 1 - percent : 0, colorType: this.isOverestimate ? 'overestimate' : 'faster' }
+            { percent, colorType: `${prefix}normal` },
+            { percent: isCompleted ? 1 - percent : 0, colorType }
         ];
     }
 }
