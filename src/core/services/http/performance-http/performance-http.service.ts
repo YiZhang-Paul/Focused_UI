@@ -21,11 +21,15 @@ export class PerformanceHttpService {
         }
     }
 
-    public async getDailyActivityBreakdown(year: number, month: number, day: number): Promise<ActivityBreakdownDto> {
+    public async getActivityBreakdown(start?: Date, end?: Date): Promise<ActivityBreakdownDto> {
         try {
-            const endpoint = `${this._api}/daily-activity-breakdown/${year}/${month}/${day}`;
+            const endpoint = `${this._api}/activity-breakdown`;
+            const startQuery = start ? `start=${start.toISOString()}` : '';
+            const endQuery = end ? `end=${end.toISOString()}` : '';
+            const queries = [startQuery, endQuery].filter(Boolean);
+            const queryString = queries.length ? `?${queries.join('&')}` : '';
 
-            return (await axios.get(endpoint)).data;
+            return (await axios.get(endpoint + queryString)).data;
         }
         catch {
             return new ActivityBreakdownDto();

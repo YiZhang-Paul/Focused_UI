@@ -32,20 +32,16 @@ const mutations = {
 
 const actions = {
     async loadCurrentDayProgression(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const progression = await performanceHttpService.getDailyProgression(...getCurrentDate());
+        const now = new Date();
+        const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];
+        const progression = await performanceHttpService.getDailyProgression(year, month, day);
         context.commit('setCurrentDayProgression', progression);
     },
     async loadActivityBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const breakdown = await performanceHttpService.getDailyActivityBreakdown(...getCurrentDate());
+        const breakdown = await performanceHttpService.getActivityBreakdown();
         context.commit('setActivityBreakdown', breakdown);
     }
 };
-
-function getCurrentDate(): [number, number, number] {
-    const now = new Date();
-
-    return [now.getFullYear(), now.getMonth() + 1, now.getDate()];
-}
 
 export const performanceKey = 'performance';
 
