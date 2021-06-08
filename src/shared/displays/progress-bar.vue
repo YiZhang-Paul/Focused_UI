@@ -57,7 +57,7 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: var(--primary-colors-001);
+    background-color: var(--primary-colors-0-01);
 
     & > div {
         $total-blocks: 27;

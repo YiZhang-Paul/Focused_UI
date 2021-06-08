@@ -73,7 +73,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     flex-direction: column;
     align-items: center;
     padding: 2.5vh 5vh;
-    background-color: var(--primary-colors-801);
+    background-color: var(--primary-colors-8-01);
 
     .pending-item-card, .card-wrapper {
         width: 95%;

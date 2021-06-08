@@ -43,7 +43,7 @@ export default class SearchBox extends Vue {
     display: flex;
     align-items: center;
     padding: 0 1.5vh;
-    background-color: var(--primary-colors-803);
+    background-color: var(--primary-colors-8-03);
 
     input {
         background-color: transparent;

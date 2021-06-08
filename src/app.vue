@@ -54,7 +54,7 @@ html, body, #app {
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: var(--primary-colors-1000);
+    background-color: var(--primary-colors-10-00);
     color: var(--font-colors-000);
     font-family: 'Roboto';
     font-size: 16px;

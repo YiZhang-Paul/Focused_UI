@@ -108,7 +108,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    background-color: var(--primary-colors-803);
+    background-color: var(--primary-colors-8-03);
     font-size: var(--font-sizes-400);
 
     .priority {
@@ -142,7 +142,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         padding: 0.25rem 0;
         border: none;
         outline: none;
-        background-color: var(--primary-colors-800);
+        background-color: var(--primary-colors-8-00);
         color: var(--font-colors-000);
         font-size: var(--font-sizes-400);
     }

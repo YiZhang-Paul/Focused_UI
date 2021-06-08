@@ -64,7 +64,7 @@ export default class LightsourcePanel extends Vue {}
 
             & > div {
                 position: absolute;
-                background-color: var(--primary-colors-601);
+                background-color: var(--primary-colors-6-01);
 
                 &:first-of-type {
                     top: 0;

@@ -38,8 +38,8 @@ export default class DisplayPanel extends Vue.with(DisplayPanelProp) {
 
     & > div {
         position: absolute;
-        background-color: var(--primary-colors-000);
-        box-shadow: 0 0 4px var(--primary-colors-000);
+        background-color: var(--primary-colors-0-00);
+        box-shadow: 0 0 4px var(--primary-colors-0-00);
 
         &:nth-child(1), &:nth-child(5) {
             left: 0;
