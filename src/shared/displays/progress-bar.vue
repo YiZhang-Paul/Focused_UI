@@ -24,8 +24,8 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
     get blockGroups(): BlockGroup[] {
         const groups: BlockGroup[] = this.series.filter(_ => _.percent).map(_ => {
             const total = Math.round(_.percent / 100 * this.totalBlocks);
-            const backgroundColor = `var(--progression-colors-${_.colorCode}00)`;
-            const shadowColor = `var(--progression-colors-${_.colorCode}04)`;
+            const backgroundColor = `var(--progress-colors-${_.colorType}-00)`;
+            const shadowColor = `var(--progress-colors-${_.colorType}-04)`;
 
             return { total, backgroundColor, shadowColor };
         });

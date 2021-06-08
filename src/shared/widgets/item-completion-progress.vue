@@ -18,7 +18,7 @@ class ItemCompletionProgressProp {
 })
 export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgressProp) {
 
-    get isWarning(): boolean {
+    get isOverestimate(): boolean {
         const { current, target } = this.progress;
         const exceedThreeHours = target - current > 3;
         const exceedSixtyPercent = (target - current) / target >= 0.6;
@@ -35,16 +35,16 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
 
         if (current > target) {
             return [
-                { percent: target / current * 100, colorCode: 0 },
-                { percent: (current - target) / current * 100, colorCode: 3 },
+                { percent: target / current * 100, colorType: 'normal' },
+                { percent: (current - target) / current * 100, colorType: 'underestimate' },
             ];
         }
 
         const percent = current / target * 100;
 
         return [
-            { percent, colorCode: 0 },
-            { percent: isCompleted ? 1 - percent : 0, colorCode: this.isWarning ? 2 : 1 }
+            { percent, colorType: 'normal' },
+            { percent: isCompleted ? 1 - percent : 0, colorType: this.isOverestimate ? 'overestimate' : 'faster' }
         ];
     }
 }
