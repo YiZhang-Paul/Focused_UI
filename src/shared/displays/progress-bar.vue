@@ -1,17 +1,18 @@
 <template>
     <div class="progress-bar-container">
-        <template v-for="block of blocks">
-            <div v-for="n in block.total" :key="n" :style="{ 'background-color': block.color }"></div>
+        <template v-for="group of blockGroups">
+            <div v-for="n in group.total" :key="n" :style="getGroupStyle(group)"></div>
         </template>
 
-        <div v-for="n in remainingBlocks" :key="n"></div>
+        <div v-for="n in placeholders" :key="n"></div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
 
-import { PercentageSeries } from '../../core/models/generic/percentage-series';
+import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
+import { BlockGroup } from '../../core/models/progress-bar/block-group';
 
 class ProgressBarProp {
     public series = prop<PercentageSeries[]>({ default: [] });
@@ -20,25 +21,31 @@ class ProgressBarProp {
 export default class ProgressBar extends Vue.with(ProgressBarProp) {
     public readonly totalBlocks = 27;
 
-    get remainingBlocks(): number {
-        return this.totalBlocks - this.blocks.reduce((sum, _) => sum + _.total, 0);
-    }
-
-    get blocks(): { total: number; color: string }[] {
-        const settings = this.series.map(({ percent, color }) => {
-            const blocks = Math.round(percent / 100 * this.totalBlocks);
-            const total = Math.min(blocks, this.totalBlocks);
-
-            return { total, color };
+    get blockGroups(): BlockGroup[] {
+        const groups: BlockGroup[] = this.series.filter(_ => _.percent).map(_ => {
+            return {
+                total: Math.round(_.percent / 100 * this.totalBlocks),
+                color: _.color
+            };
         });
 
-        if (settings.length > 1) {
-            const otherBlocks = settings.slice(0, -1);
-            const prefixSum = otherBlocks.reduce((sum, _) => sum + _.total, 0);
-            settings.slice(-1)[0].total = this.totalBlocks - prefixSum;
+        if (groups.length > 1) {
+            const otherBlocks = groups.slice(0, -1).reduce((total, _) => total + _.total, 0);
+            groups.slice(-1)[0].total = this.totalBlocks - otherBlocks;
         }
 
-        return settings;
+        return groups;
+    }
+
+    get placeholders(): number {
+        return this.totalBlocks - this.blockGroups.reduce((total, _) => total + _.total, 0);
+    }
+
+    public getGroupStyle(group: BlockGroup): { [key: string]: string } {
+        return {
+            'background-color': group.color,
+            'box-shadow': `0 0 4px ${group.color}`
+        };
     }
 }
 </script>

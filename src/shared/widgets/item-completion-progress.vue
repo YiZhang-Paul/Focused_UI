@@ -5,7 +5,7 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { PercentageSeries } from '../../core/models/generic/percentage-series';
+import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 import ProgressBar from '../displays/progress-bar.vue';
 
@@ -40,15 +40,11 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
             ];
         }
 
-        if (!isCompleted) {
-            return [{ percent: current / target * 100, color: 'var(--progression-colors-000)' }];
-        }
-
         const color = this.isWarning ? 'var(--progression-colors-300)' : 'var(--progression-colors-200)';
 
         return [
             { percent: current / target * 100, color: 'var(--progression-colors-000)' },
-            { percent: (target - current) / target * 100, color }
+            { percent: isCompleted ? (target - current) / target * 100 : 0, color }
         ];
     }
 }
