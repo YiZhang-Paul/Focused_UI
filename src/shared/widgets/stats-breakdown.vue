@@ -1,8 +1,11 @@
 <template>
     <display-panel class="stats-breakdown-container">
-        <span>{{ title }}</span>
-        <span>{{ content }}</span>
-        <progress-bar :series="series"></progress-bar>
+        <div class="content">
+            <span>{{ title }}</span>
+            <span>{{ content }}</span>
+        </div>
+
+        <progress-bar class="progress-bar" :series="series"></progress-bar>
     </display-panel>
 </template>
 
@@ -29,5 +32,26 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
 </script>
 
 <style lang="scss" scoped>
+.stats-breakdown-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4.5% 6%;
+    background-color: var(--primary-colors-8-01);
 
+    .content {
+        display: flex;
+        justify-content: space-between;
+
+        span:first-of-type {
+            text-transform: uppercase;
+        }
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 40%;
+    }
+}
 </style>

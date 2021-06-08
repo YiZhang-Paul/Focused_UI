@@ -26,7 +26,7 @@ export default class DailyFocusProgression extends Vue {
         const { current } = this.progression!;
         const total = current ? current.toFixed(1) : '0';
 
-        return `${total} hour${current >= 1 ? 's' : ''}`;
+        return `${total} hour${current > 1 ? 's' : ''}`;
     }
 
     get percentage(): string {
