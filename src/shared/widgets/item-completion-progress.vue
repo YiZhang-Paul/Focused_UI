@@ -35,16 +35,16 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
 
         if (current > target) {
             return [
-                { percent: target / current * 100, color: 'var(--progression-colors-000)' },
-                { percent: (current - target) / current * 100, color: 'var(--progression-colors-400)' },
+                { percent: target / current * 100, colorCode: 0 },
+                { percent: (current - target) / current * 100, colorCode: 4 },
             ];
         }
 
-        const color = this.isWarning ? 'var(--progression-colors-300)' : 'var(--progression-colors-200)';
+        const percent = current / target * 100;
 
         return [
-            { percent: current / target * 100, color: 'var(--progression-colors-000)' },
-            { percent: isCompleted ? (target - current) / target * 100 : 0, color }
+            { percent, colorCode: 0 },
+            { percent: isCompleted ? 1 - percent : 0, colorCode: this.isWarning ? 3 : 2 }
         ];
     }
 }

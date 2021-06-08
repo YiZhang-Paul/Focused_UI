@@ -23,10 +23,11 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
 
     get blockGroups(): BlockGroup[] {
         const groups: BlockGroup[] = this.series.filter(_ => _.percent).map(_ => {
-            return {
-                total: Math.round(_.percent / 100 * this.totalBlocks),
-                color: _.color
-            };
+            const total = Math.round(_.percent / 100 * this.totalBlocks);
+            const backgroundColor = `var(--progression-colors-${_.colorCode}00)`;
+            const shadowColor = `var(--progression-colors-${_.colorCode}04)`;
+
+            return { total, backgroundColor, shadowColor };
         });
 
         if (groups.length > 1) {
@@ -43,8 +44,8 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
 
     public getGroupStyle(group: BlockGroup): { [key: string]: string } {
         return {
-            'background-color': group.color,
-            'box-shadow': `0 0 4px ${group.color}`
+            'background-color': group.backgroundColor,
+            'box-shadow': `0 0 4px ${group.shadowColor}`
         };
     }
 }
