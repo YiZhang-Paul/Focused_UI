@@ -64,10 +64,10 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         return {
             background: `linear-gradient(
                 180deg,
-                var(--priority-colors-${this.item.priority}04) 0%,
-                var(--priority-colors-${this.item.priority}09) 35%,
-                var(--priority-colors-${this.item.priority}09) 65%,
-                var(--priority-colors-${this.item.priority}04) 100%
+                var(--priority-colors-${this.item.priority}-04) 0%,
+                var(--priority-colors-${this.item.priority}-09) 35%,
+                var(--priority-colors-${this.item.priority}-09) 65%,
+                var(--priority-colors-${this.item.priority}-04) 100%
             )`
         };
     }
