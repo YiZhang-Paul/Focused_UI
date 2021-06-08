@@ -49,7 +49,7 @@ export default class ToggleButton extends Vue.with(ToggleButtonProp) {}
     }
 
     &:hover .icon {
-        color: var(--font-colors-000);
+        color: var(--font-colors-0-00);
     }
 
     path {
@@ -62,7 +62,7 @@ export default class ToggleButton extends Vue.with(ToggleButtonProp) {}
 
     .icon {
         position: absolute;
-        color: var(--font-colors-500);
+        color: var(--font-colors-5-00);
         font-size: var(--font-sizes-500);
         transition: color 0.3s;
 

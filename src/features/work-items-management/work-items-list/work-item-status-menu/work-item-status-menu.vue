@@ -79,7 +79,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     justify-content: space-around;
 
     .icon {
-        color: var(--font-colors-600);
+        color: var(--font-colors-6-00);
         font-size: var(--font-sizes-400);
         transition: font-size 0.1s, opacity 0.05s, color 0.2s;
 
@@ -94,7 +94,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
         }
 
         &.active-option {
-            color: var(--font-colors-100);
+            color: var(--font-colors-1-00);
         }
     }
 }

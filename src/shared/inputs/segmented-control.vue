@@ -71,7 +71,7 @@ export default class SegmentedControl extends Vue.with(SegmentedControlProp) {
 
     .title {
         text-transform: uppercase;
-        text-shadow: 0 0 4px var(--font-colors-500);
+        text-shadow: 0 0 4px var(--font-colors-5-00);
         font-size: var(--font-sizes-200);
     }
 

@@ -50,7 +50,7 @@ export default class SearchBox extends Vue {
         width: 100%;
         border: none;
         outline: none;
-        color: var(--font-colors-000);
+        color: var(--font-colors-0-00);
         font-size: var(--font-sizes-400);
     }
 }

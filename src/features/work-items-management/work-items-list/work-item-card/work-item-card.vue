@@ -129,7 +129,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         .separator {
             width: 1px;
             height: 55%;
-            background-color: var(--font-colors-600);
+            background-color: var(--font-colors-6-00);
         }
     }
 
@@ -143,7 +143,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         border: none;
         outline: none;
         background-color: var(--primary-colors-8-00);
-        color: var(--font-colors-000);
+        color: var(--font-colors-0-00);
         font-size: var(--font-sizes-400);
     }
 

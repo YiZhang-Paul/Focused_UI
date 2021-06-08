@@ -30,7 +30,7 @@ export default class CreationButton extends Vue {}
         }
 
         .icon {
-            color: var(--font-colors-000);
+            color: var(--font-colors-0-00);
         }
     }
 
@@ -46,7 +46,7 @@ export default class CreationButton extends Vue {}
         position: absolute;
         bottom: 0.625rem;
         right: 0.625rem;
-        color: var(--font-colors-200);
+        color: var(--font-colors-2-00);
         font-size: var(--font-sizes-700);
         transition: color 0.3s;
     }

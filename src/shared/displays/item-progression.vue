@@ -32,7 +32,7 @@ export default class ItemProgression extends Vue.with(ItemProgressionProp) {
     align-items: flex-end;
 
     &.completed {
-        color: var(--font-colors-500);
+        color: var(--font-colors-5-00);
     }
 
     .icon {
