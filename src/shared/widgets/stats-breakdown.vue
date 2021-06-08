@@ -1,5 +1,5 @@
 <template>
-    <display-panel class="stats-breakdown-container">
+    <display-panel class="stats-breakdown-container" :lineLength="'1vh'">
         <div class="content">
             <span>{{ title }}</span>
             <span>{{ content }}</span>
@@ -37,7 +37,7 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 4.5% 6%;
+    padding: 5% 6.5%;
     background-color: var(--primary-colors-8-01);
 
     .content {
