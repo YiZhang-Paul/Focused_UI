@@ -30,13 +30,13 @@
     --activity-colors-interruption-04: rgba(250, 0, 255, 0.4);
     --activity-colors-overlearning-00: rgb(98, 236, 255);
     --activity-colors-overlearning-04: rgba(98, 236, 255, 0.4);
-    // generic colors
-    --generic-colors-000: rgb(255, 255, 255);
-    --generic-colors-005: rgba(255, 255, 255, 0.5);
-    --generic-colors-100: rgb(255, 203, 69);
-    --generic-colors-105: rgba(255, 203, 69, 0.5);
-    --generic-colors-200: rgb(255, 100, 100);
-    --generic-colors-205: rgba(255, 100, 100, 0.5);
+    // focus progress colors
+    --focus-progress-colors-insufficient-00: rgb(255, 203, 69);
+    --focus-progress-colors-insufficient-05: rgba(255, 203, 69, 0.5);
+    --focus-progress-colors-sufficient-00: rgb(255, 255, 255);
+    --focus-progress-colors-sufficient-05: rgba(255, 255, 255, 0.5);
+    --focus-progress-colors-overdoing-00: rgb(255, 100, 100);
+    --focus-progress-colors-overdoing-05: rgba(255, 100, 100, 0.5);
     // progression colors
     --progression-colors-000: rgb(255, 255, 255);
     --progression-colors-004: rgba(255, 255, 255, 0.4);

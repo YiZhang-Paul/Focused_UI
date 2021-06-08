@@ -36,19 +36,19 @@ export default class DailyFocusProgression extends Vue {
     }
 
     get percentageStyle(): { [key: string]: string } {
-        let colorCode = 2;
+        let type = 'overdoing';
         const { current } = this.progression!;
 
         if (current < 6) {
-            colorCode = 1;
+            type = 'insufficient';
         }
         else if (current < 12) {
-            colorCode = 0;
+            type = 'sufficient';
         }
 
         return {
-            color: `var(--generic-colors-${colorCode}00)`,
-            'text-shadow': `0 0 8px var(--generic-colors-${colorCode}05)`
+            color: `var(--focus-progress-colors-${type}-00)`,
+            'text-shadow': `0 0 8px var(--focus-progress-colors-${type}-05)`
         };
     }
 }
