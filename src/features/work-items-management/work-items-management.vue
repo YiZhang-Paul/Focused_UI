@@ -29,9 +29,9 @@
             <div class="stats-group">
                 <stats-breakdown v-if="activityBreakdown"
                     class="breakdown"
-                    :title="'total time spent'"
-                    :content="totalTimeSpent"
-                    :series="totalTimeSpentSeries">
+                    :title="'time tracked'"
+                    :content="timeTracked"
+                    :series="timeTrackedSeries">
                 </stats-breakdown>
             </div>
 
@@ -102,15 +102,15 @@ export default class WorkItemsManagement extends Vue {
         return store.getters[`${performanceKey}/activityBreakdown`];
     }
 
-    get totalTimeSpent(): string {
+    get timeTracked(): string {
         const { regular, recurring, interruption, overlearning } = this.activityBreakdown!;
         const days = (regular + recurring + interruption + overlearning) / 24;
-        const total = days ? days.toFixed(1) : '0';
+        const total = days.toFixed(days === Math.trunc(days) ? 0 : 1);
 
-        return `${total} day${days > 1 ? 's' : ''}`;
+        return `${total} / 30 days`;
     }
 
-    get totalTimeSpentSeries(): PercentageSeries[] {
+    get timeTrackedSeries(): PercentageSeries[] {
         const { regular, recurring, interruption, overlearning } = this.activityBreakdown!;
         const total = regular + recurring + interruption + overlearning;
 
