@@ -6,6 +6,13 @@
             :content="timeTracked"
             :series="timeTrackedSeries">
         </stats-breakdown>
+
+        <stats-breakdown v-if="estimationBreakdown"
+            class="breakdown"
+            :title="'inaccurate estimate'"
+            :content="inaccurateEstimate"
+            :series="inaccurateEstimateSeries">
+        </stats-breakdown>
     </div>
 </template>
 
@@ -15,6 +22,7 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../../store';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
+import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
 
@@ -48,6 +56,29 @@ export default class WorkItemStatsGroup extends Vue {
             { percent: overlearning / total * 100, colorType: 'activity-colors-overlearning' }
         ];
     }
+
+    get estimationBreakdown(): EstimationBreakdownDto | null {
+        return store.getters[`${performanceKey}/estimationBreakdown`];
+    }
+
+    get inaccurateEstimate(): string {
+        const { overestimate, underestimate } = this.estimationBreakdown!;
+        const hours = overestimate + underestimate;
+        const total = hours.toFixed(hours === Math.trunc(hours) ? 0 : 1);
+
+        return `${total} hour${hours > 1 ? 's' : ''}`;
+    }
+
+    get inaccurateEstimateSeries(): PercentageSeries[] {
+        const { normal, overestimate, underestimate } = this.estimationBreakdown!;
+        const total = normal + overestimate + underestimate;
+
+        return [
+            { percent: normal / total * 100, colorType: 'progress-colors-normal' },
+            { percent: overestimate / total * 100, colorType: 'progress-colors-overestimate' },
+            { percent: underestimate / total * 100, colorType: 'progress-colors-underestimate' }
+        ];
+    }
 }
 </script>
 
@@ -56,7 +87,7 @@ export default class WorkItemStatsGroup extends Vue {
 
     .breakdown {
         width: 100%;
-        height: 13.5%;
+        height: 12.5%;
     }
 }
 </style>

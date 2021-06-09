@@ -43,6 +43,7 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
     .content {
         display: flex;
         justify-content: space-between;
+        font-size: var(--font-sizes-300);
 
         span:first-of-type {
             text-transform: uppercase;
