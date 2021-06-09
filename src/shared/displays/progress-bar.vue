@@ -61,7 +61,7 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
 
     & > div {
         $total-blocks: 27;
-        $block-gap: 4px;
+        $block-gap: 3px;
         $side-gap: 5px;
         $width: calc((100% - #{$side-gap} - (#{$total-blocks} - 3) * #{$block-gap}) / (#{$total-blocks} - 2));
 
