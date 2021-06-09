@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
+import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
 export class PerformanceHttpService {
@@ -33,6 +34,21 @@ export class PerformanceHttpService {
         }
         catch {
             return new ActivityBreakdownDto();
+        }
+    }
+
+    public async getEstimationBreakdown(start?: Date, end?: Date): Promise<EstimationBreakdownDto> {
+        try {
+            const endpoint = `${this._api}/estimation-breakdown`;
+            const startQuery = start ? `start=${start.toISOString()}` : '';
+            const endQuery = end ? `end=${end.toISOString()}` : '';
+            const queries = [startQuery, endQuery].filter(Boolean);
+            const queryString = queries.length ? `?${queries.join('&')}` : '';
+
+            return (await axios.get(endpoint + queryString)).data;
+        }
+        catch {
+            return new EstimationBreakdownDto();
         }
     }
 }

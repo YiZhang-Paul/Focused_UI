@@ -32,6 +32,7 @@ export default class App extends Vue {
     public created(): void {
         store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
         store.dispatch(`${performanceKey}/loadActivityBreakdown`);
+        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
     }
 }
 </script>

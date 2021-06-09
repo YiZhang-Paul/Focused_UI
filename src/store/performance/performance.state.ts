@@ -1,6 +1,7 @@
 import { ActionContext } from 'vuex';
 
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
+import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
@@ -9,16 +10,19 @@ const performanceHttpService = new PerformanceHttpService();
 export interface IPerformanceState {
     currentDayProgression: ProgressionCounter<number> | null;
     activityBreakdown: ActivityBreakdownDto | null;
+    estimationBreakdown: EstimationBreakdownDto | null;
 }
 
 const state = (): IPerformanceState => ({
     currentDayProgression: null,
-    activityBreakdown: null
+    activityBreakdown: null,
+    estimationBreakdown: null
 });
 
 const getters = {
     currentDayProgression: (state: IPerformanceState): ProgressionCounter<number> | null => state.currentDayProgression,
-    activityBreakdown: (state: IPerformanceState): ActivityBreakdownDto | null => state.activityBreakdown
+    activityBreakdown: (state: IPerformanceState): ActivityBreakdownDto | null => state.activityBreakdown,
+    estimationBreakdown: (state: IPerformanceState): EstimationBreakdownDto | null => state.estimationBreakdown
 };
 
 const mutations = {
@@ -27,6 +31,9 @@ const mutations = {
     },
     setActivityBreakdown(state: IPerformanceState, breakdown: ActivityBreakdownDto | null): void {
         state.activityBreakdown = breakdown;
+    },
+    setEstimationBreakdown(state: IPerformanceState, breakdown: EstimationBreakdownDto | null): void {
+        state.estimationBreakdown = breakdown;
     }
 };
 
@@ -40,6 +47,10 @@ const actions = {
     async loadActivityBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
         const breakdown = await performanceHttpService.getActivityBreakdown();
         context.commit('setActivityBreakdown', breakdown);
+    },
+    async loadEstimationBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
+        const breakdown = await performanceHttpService.getEstimationBreakdown();
+        context.commit('setEstimationBreakdown', breakdown);
     }
 };
 
