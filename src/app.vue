@@ -38,6 +38,7 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+@import './styles/animations.scss';
 @import './styles/presets.scss';
 
 $header-displays-height: 20%;

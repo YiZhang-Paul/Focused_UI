@@ -1,5 +1,5 @@
 <template>
-    <div class="work-item-stats-group">
+    <div class="work-item-stats-group-container">
         <stats-breakdown v-if="activityBreakdown"
             class="breakdown"
             :title="'time tracked'"
@@ -13,6 +13,8 @@
             :content="inaccurateEstimate"
             :series="inaccurateEstimateSeries">
         </stats-breakdown>
+
+        <task-radar class="stats-graph"></task-radar>
     </div>
 </template>
 
@@ -25,10 +27,12 @@ import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto'
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
+import TaskRadar from '../../../shared/widgets/task-radar.vue';
 
 @Options({
     components: {
-        StatsBreakdown
+        StatsBreakdown,
+        TaskRadar
     }
 })
 export default class WorkItemStatsGroup extends Vue {
@@ -83,11 +87,18 @@ export default class WorkItemStatsGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.work-item-stats-group {
+.work-item-stats-group-container {
+
+    .breakdown, .stats-graph {
+        width: 100%;
+    }
 
     .breakdown {
-        width: 100%;
         height: 12.5%;
+    }
+
+    .stats-graph {
+        height: 40%;
     }
 }
 </style>
