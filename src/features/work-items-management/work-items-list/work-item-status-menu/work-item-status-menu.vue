@@ -14,6 +14,7 @@ import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
 import { CheckboxMarkedCircleOutline, PlayCircle, Target } from 'mdue';
 
+import { ClassConfig } from '../../../../core/models/generic/class-config';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 
 class WorkItemStatusMenuProp {
@@ -41,7 +42,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
         this.initializeOptions();
     }
 
-    public getClasses(status: WorkItemStatus): { [key: string]: boolean } {
+    public getClasses(status: WorkItemStatus): ClassConfig {
         return {
             icon: true,
             'invisible-option': !this.showOptions,

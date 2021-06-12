@@ -11,6 +11,7 @@
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
 
+import { StyleConfig } from '../../core/models/generic/style-config';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { BlockGroup } from '../../core/models/progress-bar/block-group';
 
@@ -42,7 +43,7 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
         return this.totalBlocks - this.blockGroups.reduce((total, _) => total + _.total, 0);
     }
 
-    public getGroupStyle(group: BlockGroup): { [key: string]: string } {
+    public getGroupStyle(group: BlockGroup): StyleConfig {
         return {
             'background-color': group.backgroundColor,
             'box-shadow': `0 0 4px ${group.shadowColor}`

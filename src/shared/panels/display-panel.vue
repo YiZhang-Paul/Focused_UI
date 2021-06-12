@@ -9,6 +9,8 @@
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
 
+import { StyleConfig } from '../../core/models/generic/style-config';
+
 class DisplayPanelProp {
     public lineWidth = prop<string>({ default: '1px' });
     public lineLength = prop<string>({ default: '0.5vh' });
@@ -16,14 +18,14 @@ class DisplayPanelProp {
 
 export default class DisplayPanel extends Vue.with(DisplayPanelProp) {
 
-    get horizontalGuardStyle(): { [key: string]: string } {
+    get horizontalGuardStyle(): StyleConfig {
         return {
             width: this.lineLength,
             height: this.lineWidth
         };
     }
 
-    get verticalGuardStyle(): { [key: string]: string } {
+    get verticalGuardStyle(): StyleConfig {
         return {
             width: this.lineWidth,
             height: this.lineLength

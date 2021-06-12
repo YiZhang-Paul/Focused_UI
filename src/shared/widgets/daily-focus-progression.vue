@@ -10,11 +10,12 @@
 </template>
 
 <script lang="ts">
-import { ProgressionCounter } from '@/core/models/generic/progression-counter';
 import { Vue } from 'vue-class-component';
 
 import store from '../../store';
 import { performanceKey } from '../../store/performance/performance.state';
+import { StyleConfig } from '../../core/models/generic/style-config';
+import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 
 export default class DailyFocusProgression extends Vue {
 
@@ -35,7 +36,7 @@ export default class DailyFocusProgression extends Vue {
         return `${Math.round(current / target * 100)}%`;
     }
 
-    get percentageStyle(): { [key: string]: string } {
+    get percentageStyle(): StyleConfig {
         let type = 'overdoing';
         const { current } = this.progression!;
 

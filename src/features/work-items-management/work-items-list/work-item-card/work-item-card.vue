@@ -33,8 +33,9 @@ import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
 import { FormatListCheckbox } from 'mdue';
 
-import { IconMeta } from '../../../../core/models/generic/icon-meta';
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
+import { IconMeta } from '../../../../core/models/generic/icon-meta';
+import { StyleConfig } from '../../../../core/models/generic/style-config';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
@@ -60,7 +61,7 @@ class WorkItemCardProp {
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     public workItemStatus = WorkItemStatus;
 
-    get priorityStyle(): { [key: string]: string } {
+    get priorityStyle(): StyleConfig {
         return {
             background: `linear-gradient(
                 180deg,

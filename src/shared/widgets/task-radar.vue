@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { StyleConfig } from '../../core/models/generic/style-config';
 import { RadarSeries } from '../../core/models/generic/radar-series';
 import DisplayPanel from '../panels/display-panel.vue';
 
@@ -48,14 +49,14 @@ class TaskRadarProp {
 export default class TaskRadar extends Vue.with(TaskRadarProp) {
     public showScanWave = false;
 
-    public getPointWrapperStyle(point: RadarSeries): { [key: string]: string } {
+    public getPointWrapperStyle(point: RadarSeries): StyleConfig {
         const seed = Math.max(0.2, Math.min(Math.random(), 0.8));
         const offset = (point.quadrant - 1) * 90;
 
         return { transform: `rotate(${seed * 90 - offset}deg)` };
     }
 
-    public getPointStyle(point: RadarSeries): { [key: string]: string | number } {
+    public getPointStyle(point: RadarSeries): StyleConfig {
         const { quadrant, value, colorType } = point;
         const percentage = Math.max(2, Math.min(value, 8));
         const dimension = `${0.5 + 0.04 * percentage}vh`;
