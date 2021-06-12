@@ -1,5 +1,24 @@
 <template>
     <display-panel class="activity-history-container" :lineLength="'1vh'">
+        <div class="focus-breakdowns">
+            <div class="breakdown" v-for="(history, index) of histories" :key="index">
+                <div class="filler-top"></div>
+                <div class="focus-lose"></div>
+                <div class="focus-level"></div>
+                <div class="focus-gain"></div>
+                <div class="filler-bottom"></div>
+            </div>
+
+            <div class="guideline"
+                v-for="(threshold, index) of thresholds"
+                :class="`guideline-${index}`"
+                :key="threshold"
+                :style="{ bottom: `${threshold / 24 * 100}%` }">
+
+                <span>{{ threshold }}</span>
+            </div>
+        </div>
+
         <div class="activity-breakdowns">
             <div class="breakdown" v-for="(history, index) of histories" :key="index">
                 <div v-if="history.interruption" class="interruption"></div>
@@ -24,26 +43,27 @@ class ActivityHistoryProp {
 @Options({
     components: { DisplayPanel }
 })
-export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {}
+export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
+    public readonly thresholds = [0, 6, 12, 24];
+}
 </script>
 
 <style lang="scss" scoped>
 .activity-history-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: var(--primary-colors-8-01);
 
-    .activity-breakdowns {
-        display: flex;
-        width: 80%;
-        height: 30%;
+    .focus-breakdowns, .activity-breakdowns {
+        width: 77.5%;
 
         .breakdown {
+            z-index: 1;
             display: flex;
             flex-direction: column;
             flex: 1;
-            background-color: var(--primary-colors-0-01);
 
             &:not(:first-of-type) {
                 margin-left: 1px;
@@ -52,6 +72,64 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {}
             & > div {
                 flex: 1;
             }
+        }
+    }
+
+    .focus-breakdowns {
+        display: flex;
+        position: relative;
+        margin-bottom: 10px;
+        height: 50%;
+
+        .focus-level {
+            max-height: 2px;
+            height: 2px;
+            background-color: var(--primary-colors-0-00);
+        }
+
+        .guideline {
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            color: var(--primary-colors-0-03);
+            background-color: var(--primary-colors-0-03);
+
+            &.guideline-0 {
+                color: var(--focus-progress-colors-insufficient-05);
+                background-color: var(--focus-progress-colors-insufficient-05);
+            }
+
+            &.guideline-1 {
+                color: var(--focus-progress-colors-sufficient-05);
+                background-color: var(--focus-progress-colors-sufficient-05);
+            }
+
+            &.guideline-2 {
+                color: var(--focus-progress-colors-overdoing-05);
+                background-color: var(--focus-progress-colors-overdoing-05);
+            }
+
+            span {
+                $font-size: var(--font-sizes-200);
+
+                position: absolute;
+                left: calc(#{$font-size} * -1.8);
+                width: calc(#{$font-size} * 1.5);
+                text-align: right;
+                font-size: $font-size;
+            }
+        }
+    }
+
+    .activity-breakdowns {
+        display: flex;
+        height: 30%;
+
+        .breakdown {
+            background-color: var(--primary-colors-0-01);
 
             .interruption {
                 background-color: var(--activity-colors-interruption-00);
