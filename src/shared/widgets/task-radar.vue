@@ -58,7 +58,7 @@ export default class TaskRadar extends Vue.with(TaskRadarProp) {
     public getPointStyle(point: RadarSeries): { [key: string]: string | number } {
         const { quadrant, value, colorType } = point;
         const percentage = Math.max(2, Math.min(value, 8));
-        const dimension = `${0.5 + 0.03 * percentage}vh`;
+        const dimension = `${0.5 + 0.04 * percentage}vh`;
 
         return {
             top: `${100 - percentage * 10}%`,

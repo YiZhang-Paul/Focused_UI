@@ -22,7 +22,7 @@ export class PerformanceHttpService {
         }
     }
 
-    public async getActivityBreakdown(start?: Date, end?: Date): Promise<ActivityBreakdownDto> {
+    public async getActivityBreakdownByDateRange(start?: Date, end?: Date): Promise<ActivityBreakdownDto> {
         try {
             const endpoint = `${this._api}/activity-breakdown`;
             const startQuery = start ? `start=${start.toISOString()}` : '';
@@ -34,6 +34,18 @@ export class PerformanceHttpService {
         }
         catch {
             return new ActivityBreakdownDto();
+        }
+    }
+
+    public async getActivityBreakdownByDays(start: Date, end: Date): Promise<ActivityBreakdownDto[]> {
+        try {
+            const dates = [start, end].map(_ => _.toISOString().split('T')[0]).join('/');
+            const endpoint = `${this._api}/activity-breakdown/${dates}`;
+
+            return (await axios.get(endpoint)).data;
+        }
+        catch {
+            return [];
         }
     }
 
