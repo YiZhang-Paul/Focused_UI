@@ -76,7 +76,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     background-color: var(--primary-colors-8-01);
 
     .pending-item-card, .card-wrapper {
-        width: 95%;
+        width: 97.5%;
         height: 5vh;
 
         &:not(:last-child) {

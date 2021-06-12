@@ -52,7 +52,7 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
 
     .progress-bar {
         width: 100%;
-        height: 47.5%;
+        height: 46.5%;
     }
 }
 </style>

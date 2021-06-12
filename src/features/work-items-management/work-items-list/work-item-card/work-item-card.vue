@@ -124,7 +124,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         align-items: center;
         margin-left: 1%;
         margin-right: 1%;
-        width: 4.25%;
+        width: 6.25%;
         height: 65%;
 
         .separator {
@@ -152,7 +152,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         display: flex;
         justify-content: space-between;
         margin-left: 1%;
-        width: 37.5%;
+        width: 36.5%;
 
         .item-completion-progress {
             width: 60%;

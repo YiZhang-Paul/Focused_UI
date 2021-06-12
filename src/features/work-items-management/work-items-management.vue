@@ -187,8 +187,8 @@ export default class WorkItemsManagement extends Vue {
     }
 
     .content {
-        $gap: 6%;
-        $list-width: 62.5%;
+        $gap: 5%;
+        $list-width: 63.5%;
 
         display: flex;
         align-items: center;
