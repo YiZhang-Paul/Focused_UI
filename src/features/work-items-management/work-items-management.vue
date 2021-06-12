@@ -68,7 +68,8 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         StatsBreakdown,
         WorkItemStatsGroup,
         WorkItemsList
-    }
+    },
+    emits: ['item:update']
 })
 export default class WorkItemsManagement extends Vue {
     public readonly genericFilterOptions = [
@@ -108,8 +109,10 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public onItemMetaUpdate(item: WorkItemDto): void {
-        store.dispatch(`${workItemKey}/updateWorkItemMeta`, item);
+    public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/updateWorkItemMeta`, item)) {
+            this.$emit('item:update');
+        }
     }
 
     public onSearch(text: string): void {

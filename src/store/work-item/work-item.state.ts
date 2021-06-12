@@ -50,12 +50,14 @@ const actions = {
 
         return true;
     },
-    async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<void> {
+    async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
         if (updated) {
             context.commit('setWorkItem', updated);
         }
+
+        return Boolean(updated);
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();
