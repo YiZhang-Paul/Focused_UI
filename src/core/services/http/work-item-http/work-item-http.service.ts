@@ -15,12 +15,12 @@ export class WorkItemHttpService {
         }
     }
 
-    public async updateWorkItemMeta(item: WorkItemDto): Promise<boolean> {
+    public async updateWorkItemMeta(item: WorkItemDto): Promise<WorkItemDto | null> {
         try {
             return (await axios.put(`${this._api}/${item.id}/meta`, item)).data;
         }
         catch {
-            return false;
+            return null;
         }
     }
 

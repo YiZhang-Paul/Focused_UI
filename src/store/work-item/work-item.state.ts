@@ -51,8 +51,10 @@ const actions = {
         return true;
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<void> {
-        if (await workItemHttpService.updateWorkItemMeta(payload)) {
-            context.commit('setWorkItem', payload);
+        const updated = await workItemHttpService.updateWorkItemMeta(payload);
+
+        if (updated) {
+            context.commit('setWorkItem', updated);
         }
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
