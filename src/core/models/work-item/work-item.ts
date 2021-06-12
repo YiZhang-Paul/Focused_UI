@@ -7,7 +7,9 @@ import { TimeSeries } from './time-series';
 import { ChecklistEntry } from './checklist-entry';
 
 export class WorkItem {
+    public id!: string;
     public parent: string | null = null;
+    public subtasks: WorkItem[] = [];
     public name = '';
     public description = '';
     public type = WorkItemType.Regular;

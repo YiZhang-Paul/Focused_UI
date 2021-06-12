@@ -1,6 +1,7 @@
 import { ActionContext } from 'vuex';
 
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
@@ -9,22 +10,28 @@ const workItemHttpService = new WorkItemHttpService();
 
 export interface IWorkItemState {
     pendingWorkItem: WorkItemDto | null;
+    editedWorkItem: WorkItem | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
     pendingWorkItem: null,
+    editedWorkItem: null,
     workItems: []
 });
 
 const getters = {
     pendingWorkItem: (state: IWorkItemState): WorkItemDto | null => state.pendingWorkItem,
+    editedWorkItem: (state: IWorkItemState): WorkItem | null => state.editedWorkItem,
     workItems: (state: IWorkItemState): WorkItemDto[] => state.workItems
 };
 
 const mutations = {
     setPendingWorkItem(state: IWorkItemState, item: WorkItemDto | null): void {
         state.pendingWorkItem = item;
+    },
+    setEditedWorkItem(state: IWorkItemState, item: WorkItem | null): void {
+        state.editedWorkItem = item;
     },
     setWorkItem(state: IWorkItemState, item: WorkItemDto): void {
         const index = state.workItems.findIndex(_ => _.id === item.id);
@@ -58,6 +65,9 @@ const actions = {
         }
 
         return Boolean(updated);
+    },
+    async loadEditedWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<void> {
+        context.commit('setEditedWorkItem', await workItemHttpService.getWorkItem(id));
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();

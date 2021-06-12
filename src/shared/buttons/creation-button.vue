@@ -44,8 +44,8 @@ export default class CreationButton extends Vue {}
 
     .icon {
         position: absolute;
-        bottom: 0.625rem;
-        right: 0.625rem;
+        bottom: 0.65rem;
+        right: 0.65rem;
         color: var(--font-colors-2-00);
         font-size: var(--font-sizes-700);
         transition: color 0.3s;

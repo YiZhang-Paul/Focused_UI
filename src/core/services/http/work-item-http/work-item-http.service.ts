@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { WorkItemDto } from '../../../dtos/work-item-dto';
+import { WorkItem } from '../../../models/work-item/work-item';
 import { WorkItemQuery } from '../../../models/work-item/work-item-query';
 
 export class WorkItemHttpService {
@@ -12,6 +13,15 @@ export class WorkItemHttpService {
         }
         catch {
             return false;
+        }
+    }
+
+    public async getWorkItem(id: string): Promise<WorkItem | null> {
+        try {
+            return (await axios.get(`${this._api}/${id}`)).data;
+        }
+        catch {
+            return null;
         }
     }
 
