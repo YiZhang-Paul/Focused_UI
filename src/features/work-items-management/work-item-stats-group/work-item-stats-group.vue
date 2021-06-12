@@ -15,6 +15,7 @@
         </stats-breakdown>
 
         <task-radar class="stats-graph" :series="radarSeries"></task-radar>
+        <activity-history class="stats-graph" :histories="activityHistories"></activity-history>
     </div>
 </template>
 
@@ -31,17 +32,23 @@ import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
 import TaskRadar from '../../../shared/widgets/task-radar.vue';
+import ActivityHistory from '../../../shared/widgets/activity-history.vue';
 
 @Options({
     components: {
         StatsBreakdown,
-        TaskRadar
+        TaskRadar,
+        ActivityHistory
     }
 })
 export default class WorkItemStatsGroup extends Vue {
 
     get activityBreakdown(): ActivityBreakdownDto | null {
         return store.getters[`${performanceKey}/activityBreakdown`];
+    }
+
+    get activityHistories(): ActivityBreakdownDto[] {
+        return store.getters[`${performanceKey}/activityHistories`];
     }
 
     get timeTracked(): string {

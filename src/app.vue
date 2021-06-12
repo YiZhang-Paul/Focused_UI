@@ -14,6 +14,7 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from './store';
 import { performanceKey } from './store/performance/performance.state';
+import { DateRange } from './core/models/generic/date-range';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
@@ -30,8 +31,12 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue'
 export default class App extends Vue {
 
     public created(): void {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const start = new Date(Date.now() - 14 * oneDay);
+        const range = { start, end: new Date() } as DateRange;
         store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
         store.dispatch(`${performanceKey}/loadActivityBreakdown`);
+        store.dispatch(`${performanceKey}/loadActivityHistories`, range);
         store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
     }
 
