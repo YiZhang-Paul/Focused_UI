@@ -15,7 +15,11 @@
         </stats-breakdown>
 
         <task-radar class="stats-graph" :series="radarSeries"></task-radar>
-        <activity-history class="stats-graph" :histories="activityHistories"></activity-history>
+
+        <activity-history class="stats-graph"
+            :dateRange="dateRange"
+            :histories="activityHistories">
+        </activity-history>
     </div>
 </template>
 
@@ -28,6 +32,7 @@ import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
+import { DateRange } from '../../../core/models/generic/date-range';
 import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
@@ -42,6 +47,10 @@ import ActivityHistory from '../../../shared/widgets/activity-history.vue';
     }
 })
 export default class WorkItemStatsGroup extends Vue {
+
+    get dateRange(): DateRange {
+        return store.getters[`${performanceKey}/dateRange`];
+    }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
         return store.getters[`${performanceKey}/activityBreakdown`];

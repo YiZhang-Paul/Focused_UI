@@ -25,6 +25,9 @@
                 <div v-if="history.overlearning" class="overlearning"></div>
                 <div v-if="history.recurring" class="recurring"></div>
             </div>
+
+            <span v-if="startDate">{{ startDate }}</span>
+            <span v-if="endDate">{{ endDate }}</span>
         </div>
     </display-panel>
 </template>
@@ -32,11 +35,13 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { DateRange } from '../../core/models/generic/date-range';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { StyleConfig } from '../../core/models/generic/style-config';
 import DisplayPanel from '../panels/display-panel.vue';
 
 class ActivityHistoryProp {
+    public dateRange = prop<DateRange>({ default: null });
     public histories = prop<ActivityBreakdownDto[]>({ default: [] });
 }
 
@@ -45,6 +50,18 @@ class ActivityHistoryProp {
 })
 export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     public readonly thresholds = [0, 6, 12, 24];
+
+    get startDate(): string {
+        const date = this.dateRange?.start?.toDateString();
+
+        return date.split(' ').slice(1, 3).join(' ');
+    }
+
+    get endDate(): string {
+        const date = this.dateRange?.end?.toDateString();
+
+        return date.split(' ').slice(1, 3).join(' ');
+    }
 
     public getFillerStyle(index: number): StyleConfig {
         const current = this.getFocus(this.histories[index]);
@@ -97,6 +114,8 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     background-color: var(--primary-colors-8-01);
 
     .focus-breakdowns, .activity-breakdowns {
+        display: flex;
+        position: relative;
         width: 77.5%;
 
         .breakdown {
@@ -116,10 +135,8 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     }
 
     .focus-breakdowns {
-        display: flex;
-        position: relative;
         margin-bottom: 10px;
-        height: 50%;
+        height: 40%;
 
         .focus-lose {
             background-color: var(--context-colors-decrease-00);
@@ -176,8 +193,7 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     }
 
     .activity-breakdowns {
-        display: flex;
-        height: 30%;
+        height: 25%;
 
         .breakdown {
             background-color: var(--primary-colors-0-01);
@@ -200,6 +216,22 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
             .recurring {
                 background-color: var(--activity-colors-recurring-00);
                 box-shadow: 0 0 8px var(--activity-colors-recurring-04);
+            }
+        }
+
+        span {
+            $font-size: var(--font-sizes-200);
+
+            position: absolute;
+            bottom: calc(#{$font-size} * -1.75);
+            font-size: $font-size;
+
+            &:first-of-type {
+                left: calc(#{$font-size} * -1.25);
+            }
+
+            &:last-of-type {
+                right: calc(#{$font-size} * -1.25);
             }
         }
     }

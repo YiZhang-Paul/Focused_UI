@@ -6,9 +6,11 @@ import { DateRange } from '../../core/models/generic/date-range';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
+const oneDay = 24 * 60 * 60 * 1000;
 const performanceHttpService = new PerformanceHttpService();
 
 export interface IPerformanceState {
+    dateRange: DateRange;
     currentDayProgression: ProgressionCounter<number> | null;
     activityBreakdown: ActivityBreakdownDto | null;
     activityHistories: ActivityBreakdownDto[];
@@ -16,6 +18,7 @@ export interface IPerformanceState {
 }
 
 const state = (): IPerformanceState => ({
+    dateRange: { start: new Date(Date.now() - 14 * oneDay), end: new Date() },
     currentDayProgression: null,
     activityBreakdown: null,
     activityHistories: [],
@@ -23,6 +26,7 @@ const state = (): IPerformanceState => ({
 });
 
 const getters = {
+    dateRange: (state: IPerformanceState): DateRange => state.dateRange,
     currentDayProgression: (state: IPerformanceState): ProgressionCounter<number> | null => state.currentDayProgression,
     activityBreakdown: (state: IPerformanceState): ActivityBreakdownDto | null => state.activityBreakdown,
     activityHistories: (state: IPerformanceState): ActivityBreakdownDto[] => state.activityHistories,
@@ -52,15 +56,18 @@ const actions = {
         context.commit('setCurrentDayProgression', progression);
     },
     async loadActivityBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const breakdown = await performanceHttpService.getActivityBreakdownByDateRange();
+        const { start, end } = context.state.dateRange;
+        const breakdown = await performanceHttpService.getActivityBreakdownByDateRange(start, end);
         context.commit('setActivityBreakdown', breakdown);
     },
-    async loadActivityHistories(context: ActionContext<IPerformanceState, any>, payload: DateRange): Promise<void> {
-        const histories = await performanceHttpService.getActivityBreakdownByDays(payload.start, payload.end);
+    async loadActivityHistories(context: ActionContext<IPerformanceState, any>): Promise<void> {
+        const { start, end } = context.state.dateRange;
+        const histories = await performanceHttpService.getActivityBreakdownByDays(start, end);
         context.commit('setActivityHistories', histories);
     },
     async loadEstimationBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const breakdown = await performanceHttpService.getEstimationBreakdown();
+        const { start, end } = context.state.dateRange;
+        const breakdown = await performanceHttpService.getEstimationBreakdown(start, end);
         context.commit('setEstimationBreakdown', breakdown);
     }
 };
