@@ -85,6 +85,9 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
 <style lang="scss" scoped>
 .work-items-list-container {
+    $content-width: 97.5%;
+    $card-height: 5vh;
+
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -93,8 +96,8 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     background-color: var(--primary-colors-8-01);
 
     .pending-item-card, .card-wrapper {
-        width: 97.5%;
-        height: 5vh;
+        width: $content-width;
+        height: $card-height;
 
         &:not(:last-child) {
             margin-bottom: 1.25vh;
@@ -112,17 +115,17 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        width: 97.5%;
+        width: $content-width;
         height: 100%;
 
         .item-card {
             width: 100%;
-            height: 5vh;
+            height: $card-height;
         }
 
         .item-editor {
             width: 99%;
-            height: calc(100% - 5vh - 10px);
+            height: calc(100% - #{$card-height} - 10px);
         }
     }
 
