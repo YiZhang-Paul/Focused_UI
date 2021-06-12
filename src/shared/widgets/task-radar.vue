@@ -4,18 +4,24 @@
             <div class="ring" v-for="n in 5" :key="n"></div>
             <div class="grid-line" v-for="n in 2" :key="n"></div>
 
-            <div class="point-wrapper"
-                v-for="(point, index) of series"
-                :key="index"
-                :style="getPointWrapperStyle(point)">
+            <template v-if="!showScanWave">
+                <div class="point-wrapper"
+                    v-for="(point, index) of series"
+                    :key="index"
+                    :style="getPointWrapperStyle(point)">
 
-                <div class="point" :style="getPointStyle(point)"></div>
-            </div>
+                    <div class="point" :style="getPointStyle(point)"></div>
+                </div>
+            </template>
         </div>
 
         <div class="scanner">
             <div class="scanner-center"></div>
             <div class="scanner-line"></div>
+        </div>
+
+        <div class="scanner-wave" v-if="showScanWave">
+            <div v-for="n in 3" :key="n"></div>
         </div>
     </display-panel>
 </template>
@@ -31,9 +37,16 @@ class TaskRadarProp {
 }
 
 @Options({
-    components: { DisplayPanel }
+    components: { DisplayPanel },
+    watch: {
+        series(): void {
+            this.showScanWave = true;
+            setTimeout(() => this.showScanWave = false, 1200);
+        }
+    }
 })
 export default class TaskRadar extends Vue.with(TaskRadarProp) {
+    public showScanWave = false;
 
     public getPointWrapperStyle(point: RadarSeries): { [key: string]: string } {
         const seed = Math.max(0.2, Math.min(Math.random(), 0.8));
@@ -54,7 +67,7 @@ export default class TaskRadar extends Vue.with(TaskRadarProp) {
             'background-color': `var(--${colorType}-00)`,
             'box-shadow': `0 0 6px 3px var(--${colorType}-07)`,
             opacity: 0,
-            animation: `glow-fast-3 4.8s ease ${quadrant * 0.6}s infinite`
+            animation: `glow-fast-3 4.8s ease ${quadrant * 0.4}s infinite`
         };
     }
 }
@@ -68,7 +81,7 @@ export default class TaskRadar extends Vue.with(TaskRadarProp) {
     background-color: var(--primary-colors-8-01);
     overflow: hidden;
 
-    .rings, .scanner {
+    .rings, .scanner, .scanner-wave {
         position: absolute;
         display: flex;
         align-items: center;
@@ -172,6 +185,34 @@ export default class TaskRadar extends Vue.with(TaskRadarProp) {
         @keyframes scan-wave {
             from { transform: rotateX(180deg) rotate(0); }
             to { transform: rotateX(180deg) rotate(360deg); }
+        }
+    }
+
+    .scanner-wave {
+        position: relative;
+
+        & > div {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            border: 4px solid var(--primary-colors-0-01);
+            background-color: var(--primary-colors-0-01);
+        }
+
+        & > div:nth-child(1) {
+            animation: expand 0.5s ease-in forwards,
+                       fade-out 0.1s linear 0.4s forwards;
+        }
+
+        & > div:nth-child(2) {
+            animation: expand 0.6s ease-in 0.2s forwards,
+                       fade-out 0.1s linear 0.7s forwards;
+        }
+
+        & > div:nth-child(3) {
+            animation: expand 0.8s ease-in 0.3s forwards,
+                       fade-out 0.1s linear 1s forwards;
         }
     }
 }
