@@ -41,7 +41,7 @@ class TaskRadarProp {
     watch: {
         series(): void {
             this.showScanWave = true;
-            setTimeout(() => this.showScanWave = false, 1200);
+            setTimeout(() => this.showScanWave = false, 1500);
         }
     }
 })
