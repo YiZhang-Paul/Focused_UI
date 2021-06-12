@@ -11,18 +11,25 @@ const workItemHttpService = new WorkItemHttpService();
 export interface IWorkItemState {
     pendingWorkItem: WorkItemDto | null;
     editedWorkItem: WorkItem | null;
+    editedWorkItemMeta: WorkItemDto | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
     pendingWorkItem: null,
     editedWorkItem: null,
+    editedWorkItemMeta: null,
     workItems: []
 });
 
 const getters = {
     pendingWorkItem: (state: IWorkItemState): WorkItemDto | null => state.pendingWorkItem,
     editedWorkItem: (state: IWorkItemState): WorkItem | null => state.editedWorkItem,
+    editedWorkItemMeta: (state: IWorkItemState): WorkItemDto | null => {
+        const id = state.editedWorkItem?.id ?? '';
+
+        return id ? state.workItems.find(_ => _.id === id) ?? null : null;
+    },
     workItems: (state: IWorkItemState): WorkItemDto[] => state.workItems
 };
 

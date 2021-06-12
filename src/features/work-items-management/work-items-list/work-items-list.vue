@@ -8,21 +8,28 @@
             @edit:confirm="$emit('create:confirm')">
         </work-item-card>
 
-        <div class="card-wrapper"
-            v-for="(item, index) of workItems"
-            :key="index"
-            @click="$emit('select', item)"
-            @mouseenter="activeIndex = index"
-            @mouseleave="activeIndex = -1">
-
-            <work-item-status-menu class="status-menu"
-                :activeOption="item.status"
-                :showOptions="activeIndex === index"
-                @select="onStatusSelected(item, $event)">
-            </work-item-status-menu>
-
-            <work-item-card class="item-card" :item="item"></work-item-card>
+        <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
+            <work-item-card class="item-card" :item="editedWorkItemMeta"></work-item-card>
+            <work-item-editor class="item-editor" :item="editedItem"></work-item-editor>
         </div>
+
+        <template v-if="!editedItem">
+            <div class="card-wrapper"
+                v-for="(item, index) of workItems"
+                :key="index"
+                @click="$emit('select', item)"
+                @mouseenter="activeIndex = index"
+                @mouseleave="activeIndex = -1">
+
+                <work-item-status-menu class="status-menu"
+                    :activeOption="item.status"
+                    :showOptions="activeIndex === index"
+                    @select="onStatusSelected(item, $event)">
+                </work-item-status-menu>
+
+                <work-item-card class="item-card" :item="item"></work-item-card>
+            </div>
+        </template>
     </display-panel>
 </template>
 
@@ -38,6 +45,7 @@ import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';
+import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 
 class WorkItemsListProp {
     public pendingItem = prop<WorkItemDto>({ default: null });
@@ -48,7 +56,8 @@ class WorkItemsListProp {
     components: {
         DisplayPanel,
         WorkItemStatusMenu,
-        WorkItemCard
+        WorkItemCard,
+        WorkItemEditor
     },
     emits: [
         'create:cancel',
@@ -59,6 +68,10 @@ class WorkItemsListProp {
 })
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
+
+    get editedWorkItemMeta(): WorkItemDto | null {
+        return store.getters[`${workItemKey}/editedWorkItemMeta`];
+    }
 
     get workItems(): WorkItemDto[] {
         return store.getters[`${workItemKey}/workItems`];
@@ -88,8 +101,28 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         }
 
         .item-card {
+            cursor: pointer;
             width: 100%;
             height: 100%;
+        }
+    }
+
+    .editor-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 97.5%;
+        height: 100%;
+
+        .item-card {
+            width: 100%;
+            height: 5vh;
+        }
+
+        .item-editor {
+            width: 99%;
+            height: calc(100% - 5vh - 10px);
         }
     }
 

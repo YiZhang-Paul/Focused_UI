@@ -1,7 +1,7 @@
 <template>
     <div class="display-panel-container">
-        <div :style="horizontalGuardStyle" v-for="i in 4" :key="i"></div>
-        <div :style="verticalGuardStyle" v-for="i in 4" :key="i"></div>
+        <div :style="getHorizontalGuardStyle(i - 1)" v-for="i in 4" :key="i"></div>
+        <div :style="getVerticalGuardStyle(i - 1)" v-for="i in 4" :key="i"></div>
         <slot></slot>
     </div>
 </template>
@@ -14,21 +14,24 @@ import { StyleConfig } from '../../core/models/generic/style-config';
 class DisplayPanelProp {
     public lineWidth = prop<string>({ default: '1px' });
     public lineLength = prop<string>({ default: '0.5vh' });
+    public corners = prop<[boolean, boolean, boolean, boolean]>({ default: [true, true, true, true] });
 }
 
 export default class DisplayPanel extends Vue.with(DisplayPanelProp) {
 
-    get horizontalGuardStyle(): StyleConfig {
+    public getHorizontalGuardStyle(index: number): StyleConfig {
         return {
             width: this.lineLength,
-            height: this.lineWidth
+            height: this.lineWidth,
+            opacity: this.corners[index] ? 1 : 0
         };
     }
 
-    get verticalGuardStyle(): StyleConfig {
+    public getVerticalGuardStyle(index: number): StyleConfig {
         return {
             width: this.lineWidth,
-            height: this.lineLength
+            height: this.lineLength,
+            opacity: this.corners[index] ? 1 : 0
         };
     }
 }
