@@ -2,11 +2,10 @@
     <display-panel class="activity-history-container" :lineLength="'1vh'">
         <div class="focus-breakdowns">
             <div class="breakdown" v-for="(history, index) of histories" :key="index">
-                <div class="filler-top"></div>
-                <div class="focus-lose"></div>
+                <div :style="getFillerStyle(index)"></div>
+                <div class="focus-lose" :style="getFocusChangeStyle(index, false)"></div>
                 <div class="focus-level"></div>
-                <div class="focus-gain"></div>
-                <div class="filler-bottom"></div>
+                <div class="focus-gain" :style="getFocusChangeStyle(index, true)"></div>
             </div>
 
             <div class="guideline"
@@ -34,6 +33,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
+import { StyleConfig } from '../../core/models/generic/style-config';
 import DisplayPanel from '../panels/display-panel.vue';
 
 class ActivityHistoryProp {
@@ -45,6 +45,46 @@ class ActivityHistoryProp {
 })
 export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     public readonly thresholds = [0, 6, 12, 24];
+
+    public getFillerStyle(index: number): StyleConfig {
+        const current = this.getFocus(this.histories[index]);
+
+        if (!index) {
+            const height = `${100 - current / 24 * 100}%`;
+
+            return { height, 'max-height': height };
+        }
+
+        const previous = this.getFocus(this.histories[index - 1]);
+        const difference = Math.max(0, previous - current);
+        const height = `${100 - (current - difference) / 24 * 100}%`;
+
+        return { height, 'max-height': height };
+    }
+
+    public getFocusChangeStyle(index: number, isGain: boolean): StyleConfig {
+        if (!index) {
+            return { height: 0, 'max-height': 0 };
+        }
+
+        const previous = this.getFocus(this.histories[index - 1]);
+        const current = this.getFocus(this.histories[index]);
+        const percentage = isGain ? current - previous : previous - current;
+        const height = Math.max(0, percentage / 24 * 100);
+
+        return {
+            'margin-top': isGain && height ? '1px' : 0,
+            'margin-bottom': !isGain && height ? '1px' : 0,
+            height: `${height}%`,
+            'max-height': `${height}%`
+        };
+    }
+
+    private getFocus(breakdown: ActivityBreakdownDto): number {
+        const { regular, recurring, overlearning, interruption } = breakdown;
+
+        return regular + recurring + overlearning + interruption;
+    }
 }
 </script>
 
@@ -81,10 +121,21 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
         margin-bottom: 10px;
         height: 50%;
 
+        .focus-lose {
+            background-color: var(--context-colors-decrease-00);
+            box-shadow: 0 0 8px var(--context-colors-decrease-04);
+        }
+
         .focus-level {
             max-height: 2px;
             height: 2px;
             background-color: var(--primary-colors-0-00);
+            box-shadow: 0 0 8px var(--primary-colors-0-03);
+        }
+
+        .focus-gain {
+            background-color: var(--context-colors-increase-00);
+            box-shadow: 0 0 8px var(--context-colors-increase-04);
         }
 
         .guideline {
@@ -133,18 +184,22 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
 
             .interruption {
                 background-color: var(--activity-colors-interruption-00);
+                box-shadow: 0 0 8px var(--activity-colors-interruption-04);
             }
 
             .regular {
                 background-color: var(--activity-colors-regular-00);
+                box-shadow: 0 0 8px var(--activity-colors-regular-04);
             }
 
             .overlearning {
                 background-color: var(--activity-colors-overlearning-00);
+                box-shadow: 0 0 8px var(--activity-colors-overlearning-04);
             }
 
             .recurring {
                 background-color: var(--activity-colors-recurring-00);
+                box-shadow: 0 0 8px var(--activity-colors-recurring-04);
             }
         }
     }
