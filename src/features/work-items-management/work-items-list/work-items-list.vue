@@ -11,6 +11,7 @@
         <div class="card-wrapper"
             v-for="(item, index) of workItems"
             :key="index"
+            @click="$emit('select', item)"
             @mouseenter="activeIndex = index"
             @mouseleave="activeIndex = -1">
 
@@ -31,6 +32,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
+import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
@@ -39,6 +41,7 @@ import WorkItemCard from './work-item-card/work-item-card.vue';
 
 class WorkItemsListProp {
     public pendingItem = prop<WorkItemDto>({ default: null });
+    public editedItem = prop<WorkItem>({ default: null });
 }
 
 @Options({
@@ -50,7 +53,8 @@ class WorkItemsListProp {
     emits: [
         'create:cancel',
         'create:confirm',
-        'update:meta'
+        'update:meta',
+        'select'
     ]
 })
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {

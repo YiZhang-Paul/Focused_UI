@@ -30,9 +30,11 @@
 
             <work-items-list class="work-items-list"
                 :pendingItem="pendingItem"
+                :editedItem="editedItem"
                 @create:cancel="cancelCreate()"
                 @create:confirm="confirmCreate()"
-                @update:meta="onItemMetaUpdate($event)">
+                @update:meta="onItemMetaUpdate($event)"
+                @select="onItemSelect($event.id)">
             </work-items-list>
 
             <div class="stats-group"></div>
@@ -46,6 +48,7 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../store';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -89,6 +92,10 @@ export default class WorkItemsManagement extends Vue {
 
     get pendingItem(): WorkItemDto | null {
         return store.getters[`${workItemKey}/pendingWorkItem`];
+    }
+
+    get editedItem(): WorkItem | null {
+        return store.getters[`${workItemKey}/editedWorkItem`];
     }
 
     public created(): void {
@@ -153,6 +160,10 @@ export default class WorkItemsManagement extends Vue {
         const index = this.typeFilterOptions.findIndex(_ => name === _.name);
         this.query.type = types[index];
         this.loadWorkItems();
+    }
+
+    public onItemSelect(id: string): void {
+        store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
     private async loadWorkItems(): Promise<void> {
