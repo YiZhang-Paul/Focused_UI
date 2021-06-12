@@ -3,6 +3,14 @@
         <div class="rings">
             <div class="ring" v-for="n in 5" :key="n"></div>
             <div class="grid-line" v-for="n in 2" :key="n"></div>
+
+            <div class="point-wrapper"
+                v-for="(point, index) of series"
+                :key="index"
+                :style="getPointWrapperStyle(point)">
+
+                <div class="point" :style="getPointStyle(point)"></div>
+            </div>
         </div>
 
         <div class="scanner">
@@ -13,14 +21,43 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
+import { RadarSeries } from '../../core/models/generic/radar-series';
 import DisplayPanel from '../panels/display-panel.vue';
+
+class TaskRadarProp {
+    public series = prop<RadarSeries[]>({ default: [] });
+}
 
 @Options({
     components: { DisplayPanel }
 })
-export default class TaskRadar extends Vue {}
+export default class TaskRadar extends Vue.with(TaskRadarProp) {
+
+    public getPointWrapperStyle(point: RadarSeries): { [key: string]: string } {
+        const seed = Math.max(0.2, Math.min(Math.random(), 0.8));
+        const offset = (point.quadrant - 1) * 90;
+
+        return { transform: `rotate(${seed * 90 - offset}deg)` };
+    }
+
+    public getPointStyle(point: RadarSeries): { [key: string]: string | number } {
+        const { quadrant, value, colorType } = point;
+        const percentage = Math.max(2, Math.min(value, 8));
+        const dimension = `${0.5 + 0.03 * percentage}vh`;
+
+        return {
+            top: `${100 - percentage * 10}%`,
+            width: dimension,
+            height: dimension,
+            'background-color': `var(--${colorType}-00)`,
+            'box-shadow': `0 0 6px 3px var(--${colorType}-07)`,
+            opacity: 0,
+            animation: `glow-fast-3 4.8s ease ${quadrant * 0.6}s infinite`
+        };
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -91,10 +128,23 @@ export default class TaskRadar extends Vue {}
                 height: 100%;
             }
         }
+
+        .point-wrapper {
+            position: absolute;
+            top: 0;
+            height: 50%;
+            transform-origin: 50% 100%;
+
+            .point {
+                position: absolute;
+                border-radius: 50%;
+            }
+        }
     }
 
     .scanner {
-        animation: rotate 2.5s linear infinite;
+        transform: rotateX(180deg);
+        animation: scan-wave 2.4s linear infinite;
         background: conic-gradient(
             from 90deg at 50% 50%,
             rgba(255, 255, 255, 0) 200deg,
@@ -117,6 +167,11 @@ export default class TaskRadar extends Vue {}
             left: 50%;
             width: 50%;
             height: 1px;
+        }
+
+        @keyframes scan-wave {
+            from { transform: rotateX(180deg) rotate(0); }
+            to { transform: rotateX(180deg) rotate(360deg); }
         }
     }
 }

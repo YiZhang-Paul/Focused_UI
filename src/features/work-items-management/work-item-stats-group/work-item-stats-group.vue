@@ -14,7 +14,7 @@
             :series="inaccurateEstimateSeries">
         </stats-breakdown>
 
-        <task-radar class="stats-graph"></task-radar>
+        <task-radar class="stats-graph" :series="radarSeries"></task-radar>
     </div>
 </template>
 
@@ -23,8 +23,11 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from '../../../store';
 import { performanceKey } from '../../../store/performance/performance.state';
+import { workItemKey } from '../../../store/work-item/work-item.state';
+import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
+import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
 import TaskRadar from '../../../shared/widgets/task-radar.vue';
@@ -82,6 +85,16 @@ export default class WorkItemStatsGroup extends Vue {
             { percent: overestimate / total * 100, colorType: 'progress-colors-overestimate' },
             { percent: underestimate / total * 100, colorType: 'progress-colors-underestimate' }
         ];
+    }
+
+    get radarSeries(): RadarSeries[] {
+        const items: WorkItemDto[] = store.getters[`${workItemKey}/workItems`] ?? [];
+
+        return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
+            quadrant: _.priority + 1,
+            value: _.itemProgress.target,
+            colorType: `priority-colors-${_.priority}`
+        }));
     }
 }
 </script>
