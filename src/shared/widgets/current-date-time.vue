@@ -34,14 +34,11 @@ export default class CurrentDateTime extends Vue {
     }
 
     get date(): string {
-        const date = this.current.toLocaleDateString('en-US', {
+        return this.current.toLocaleDateString('en-US', {
             weekday: 'long',
-            year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
-
-        return date.replace(/, \d+/, '');
     }
 
     get dateSuffix(): string {
