@@ -123,11 +123,11 @@ export default class WorkItemStatsGroup extends Vue {
     }
 
     .breakdown {
-        height: 12.5%;
+        height: 10.5%;
     }
 
     .stats-graph {
-        height: 40%;
+        height: 37%;
     }
 }
 </style>

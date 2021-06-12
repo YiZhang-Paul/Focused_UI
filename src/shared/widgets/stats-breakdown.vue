@@ -37,7 +37,7 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 4.75% 6.5%;
+    padding: 3.75% 6.5%;
     background-color: var(--primary-colors-8-01);
 
     .content {
@@ -52,7 +52,7 @@ export default class StatsBreakdown extends Vue.with(StatsBreakdownProp) {}
 
     .progress-bar {
         width: 100%;
-        height: 40%;
+        height: 47.5%;
     }
 }
 </style>
