@@ -25,9 +25,9 @@ export class WorkItemHttpService {
         }
     }
 
-    public async updateWorkItemMeta(item: WorkItemDto): Promise<WorkItemDto | null> {
+    public async updateWorkItem(item: WorkItem): Promise<WorkItem | null> {
         try {
-            return (await axios.put(`${this._api}/${item.id}/meta`, item)).data;
+            return (await axios.put(`${this._api}/${item.id}`, item)).data;
         }
         catch {
             return null;
@@ -43,12 +43,30 @@ export class WorkItemHttpService {
         }
     }
 
+    public async getWorkItemMeta(id: string): Promise<WorkItemDto | null> {
+        try {
+            return (await axios.get(`${this._api}/${id}/meta`)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
     public async getWorkItems(query: WorkItemQuery): Promise<WorkItemDto[]> {
         try {
             return (await axios.post(`${this._api}/summaries`, query)).data;
         }
         catch {
             return [];
+        }
+    }
+
+    public async updateWorkItemMeta(item: WorkItemDto): Promise<WorkItemDto | null> {
+        try {
+            return (await axios.put(`${this._api}/${item.id}/meta`, item)).data;
+        }
+        catch {
+            return null;
         }
     }
 }

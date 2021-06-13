@@ -65,6 +65,19 @@ const actions = {
 
         return true;
     },
+    async updateWorkItem(context: ActionContext<IWorkItemState, any>, payload: WorkItem): Promise<boolean> {
+        if (!await workItemHttpService.updateWorkItem(payload)) {
+            return false;
+        }
+
+        const meta = await workItemHttpService.getWorkItemMeta(payload.id);
+
+        if (meta) {
+            context.commit('setWorkItem', meta);
+        }
+
+        return true;
+    },
     async deleteWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<boolean> {
         if (!await workItemHttpService.deleteWorkItem(id)) {
             return false;
