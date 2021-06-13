@@ -28,7 +28,9 @@ const getters = {
 
         return id ? state.workItems.find(_ => _.id === id) ?? null : null;
     },
-    workItems: (state: IWorkItemState): WorkItemDto[] => state.workItems
+    workItems: (state: IWorkItemState): WorkItemDto[] => {
+        return state.workItems.slice().sort((a, b) => a.priority - b.priority);
+    }
 };
 
 const mutations = {
@@ -42,8 +44,7 @@ const mutations = {
         const index = state.workItems.findIndex(_ => _.id === item.id);
 
         if (index !== -1) {
-            const items = GenericUtility.replaceAt(state.workItems, item, index);
-            state.workItems = items.sort((a, b) => a.priority - b.priority);
+            state.workItems = GenericUtility.replaceAt(state.workItems, item, index);
         }
     },
     deleteWorkItem(state: IWorkItemState, id: string): void {
