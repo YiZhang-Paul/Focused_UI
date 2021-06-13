@@ -14,6 +14,7 @@
                 </div>
 
                 <estimation-selector class="estimation"
+                    v-model="item.estimatedHours"
                     :options="estimationOptions"
                     :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`">
                 </estimation-selector>
@@ -147,6 +148,8 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         height: $content-height;
 
         .core-information {
+            $name-font-size: var(--font-sizes-500);
+
             display: flex;
             align-items: center;
             width: 100%;
@@ -162,12 +165,14 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
             .estimation {
                 width: 10%;
+                height: calc(#{$name-font-size} * 1.75);
                 text-align: center;
                 font-size: var(--font-sizes-500);
             }
 
             .name {
-                font-size: var(--font-sizes-600);
+                margin-left: 1.5%;
+                font-size: $name-font-size;
             }
         }
 
