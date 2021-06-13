@@ -16,7 +16,8 @@
                 <estimation-selector class="estimation"
                     v-model="item.estimatedHours"
                     :options="estimationOptions"
-                    :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`">
+                    :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`"
+                    @update:modelValue="$emit('item:update')">
                 </estimation-selector>
 
                 <span class="name">{{ item.name }}</span>
@@ -88,7 +89,8 @@ class WorkItemEditorProp {
     },
     emits: [
         'item:close',
-        'item:delete',
+        'item:update',
+        'item:delete'
     ]
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {

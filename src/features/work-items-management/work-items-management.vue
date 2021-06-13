@@ -35,6 +35,7 @@
                 @create:confirm="confirmCreate()"
                 @update:meta="onItemMetaUpdate($event)"
                 @item:close="onItemClose()"
+                @item:update="onItemUpdate($event)"
                 @item:delete="onItemDelete($event.id)"
                 @item:select="onItemSelect($event.id)">
             </work-items-list>
@@ -129,6 +130,12 @@ export default class WorkItemsManagement extends Vue {
 
     public onItemClose(): void {
         store.commit(`${workItemKey}/setEditedWorkItem`, null);
+    }
+
+    public async onItemUpdate(item: WorkItem): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/updateWorkItem`, item)) {
+            this.$emit('item:update');
+        }
     }
 
     public async onItemDelete(id: string): Promise<void> {

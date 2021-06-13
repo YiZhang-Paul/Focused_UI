@@ -15,6 +15,7 @@
                 :meta="editedWorkItemMeta"
                 :item="editedItem"
                 @item:close="$emit('item:close')"
+                @item:update="$emit('item:update', editedItem)"
                 @item:delete="$emit('item:delete', editedItem)">
             </work-item-editor>
         </div>
@@ -70,6 +71,7 @@ class WorkItemsListProp {
         'create:confirm',
         'update:meta',
         'item:close',
+        'item:update',
         'item:delete',
         'item:select'
     ]
