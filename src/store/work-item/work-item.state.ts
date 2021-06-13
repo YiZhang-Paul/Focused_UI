@@ -11,14 +11,12 @@ const workItemHttpService = new WorkItemHttpService();
 export interface IWorkItemState {
     pendingWorkItem: WorkItemDto | null;
     editedWorkItem: WorkItem | null;
-    editedWorkItemMeta: WorkItemDto | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
     pendingWorkItem: null,
     editedWorkItem: null,
-    editedWorkItemMeta: null,
     workItems: []
 });
 
