@@ -117,7 +117,10 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async confirmCreate(): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/createWorkItem`)) {
+        const id = await store.dispatch(`${workItemKey}/createWorkItem`);
+
+        if (id) {
+            await this.onItemSelect(id);
             await this.loadWorkItems();
         }
     }
@@ -144,8 +147,8 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public onItemSelect(id: string): void {
-        store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+    public async onItemSelect(id: string): Promise<void> {
+        await store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
     public onSearch(text: string): void {

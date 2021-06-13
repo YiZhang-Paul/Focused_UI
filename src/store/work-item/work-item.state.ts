@@ -62,16 +62,20 @@ const mutations = {
 };
 
 const actions = {
-    async createWorkItem(context: ActionContext<IWorkItemState, any>): Promise<boolean> {
+    async createWorkItem(context: ActionContext<IWorkItemState, any>): Promise<string | null> {
         const { state, commit } = context;
 
-        if (!state.pendingWorkItem || !await workItemHttpService.createWorkItem(state.pendingWorkItem)) {
-            return false;
+        if (!state.pendingWorkItem) {
+            return null;
         }
 
-        commit('setPendingWorkItem', null);
+        const id = await workItemHttpService.createWorkItem(state.pendingWorkItem);
 
-        return true;
+        if (id) {
+            commit('setPendingWorkItem', null);
+        }
+
+        return id;
     },
     async updateWorkItem(context: ActionContext<IWorkItemState, any>, payload: WorkItem): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItem(payload);
