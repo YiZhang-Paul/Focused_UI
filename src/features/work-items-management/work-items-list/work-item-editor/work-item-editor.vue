@@ -31,7 +31,10 @@
                     </estimation-selector>
                 </display-panel>
 
-                <span class="name">{{ item.name }}</span>
+                <text-input class="name"
+                    v-model="item.name"
+                    @update:modelValue="$emit('item:update')">
+                </text-input>
             </div>
 
             <div class="description">
@@ -82,6 +85,7 @@ import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
+import TextInput from '../../../../shared/inputs/text-input.vue';
 import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
@@ -98,6 +102,7 @@ class WorkItemEditorProp {
         Close,
         NotebookEditOutline,
         ActionButton,
+        TextInput,
         IconValueSelector,
         EstimationSelector,
         DisplayPanel,
