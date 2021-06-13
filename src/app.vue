@@ -6,7 +6,10 @@
         <daily-focus-progression class="daily-progression"></daily-focus-progression>
     </div>
 
-    <work-items-management class="work-items-management" @item:update="onWorkItemUpdate()"></work-items-management>
+    <work-items-management class="work-items-management"
+        @item:update="onWorkItemUpdate()"
+        @item:delete="loadPerformanceBreakdowns()">
+    </work-items-management>
 </template>
 
 <script lang="ts">
@@ -30,13 +33,17 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue'
 export default class App extends Vue {
 
     public created(): void {
-        store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
-        store.dispatch(`${performanceKey}/loadActivityBreakdown`);
-        store.dispatch(`${performanceKey}/loadActivityHistories`);
-        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
+        this.loadPerformanceBreakdowns();
     }
 
     public onWorkItemUpdate(): void {
+        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
+    }
+
+    public loadPerformanceBreakdowns(): void {
+        store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
+        store.dispatch(`${performanceKey}/loadActivityBreakdown`);
+        store.dispatch(`${performanceKey}/loadActivityHistories`);
         store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
     }
 }

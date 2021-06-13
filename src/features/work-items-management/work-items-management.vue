@@ -73,7 +73,10 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         WorkItemStatsGroup,
         WorkItemsList
     },
-    emits: ['item:update']
+    emits: [
+        'item:update',
+        'item:delete'
+    ]
 })
 export default class WorkItemsManagement extends Vue {
     public readonly genericFilterOptions = [
@@ -123,6 +126,16 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
+    public async onItemDelete(id: string): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/deleteWorkItem`, id)) {
+            this.$emit('item:delete');
+        }
+    }
+
+    public onItemSelect(id: string): void {
+        store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+    }
+
     public onSearch(text: string): void {
         this.query.searchText = text;
         this.loadWorkItems();
@@ -161,14 +174,6 @@ export default class WorkItemsManagement extends Vue {
         const index = this.typeFilterOptions.findIndex(_ => name === _.name);
         this.query.type = types[index];
         this.loadWorkItems();
-    }
-
-    public onItemDelete(id: string): void {
-        store.dispatch(`${workItemKey}/deleteWorkItem`, id);
-    }
-
-    public onItemSelect(id: string): void {
-        store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
     private async loadWorkItems(): Promise<void> {
