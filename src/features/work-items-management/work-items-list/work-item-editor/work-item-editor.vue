@@ -4,6 +4,7 @@
         :lineLength="'1vh'"
         :corners="[false, false, true, true]">
 
+        <close class="close-button" @click="$emit('item:close')" />
         <div class="content"></div>
 
         <div class="footer">
@@ -30,6 +31,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { Close } from 'mdue';
 
 import { WorkItem } from '../../../../core/models/work-item/work-item';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
@@ -42,10 +44,14 @@ class WorkItemEditorProp {
 
 @Options({
     components: {
+        Close,
         ActionButton,
         DisplayPanel
     },
-    emits: ['item:delete']
+    emits: [
+        'item:close',
+        'item:delete',
+    ]
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
@@ -70,6 +76,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 .work-item-editor-container {
     $content-height: 85%;
 
+    position: relative;
     box-sizing: border-box;
     padding: 3% 7.5%;
     background: linear-gradient(
@@ -77,6 +84,19 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         var(--primary-colors-7-02) 0.02%,
         var(--primary-colors-7-01) 99.98%
     );
+
+    .close-button {
+        position: absolute;
+        top: 2.75vh;
+        right: 2.75vh;
+        color: var(--primary-colors-2-00);
+        transition: color 0.3s;
+
+        &:hover {
+            cursor: pointer;
+            color: var(--context-colors-warning-00);
+        }
+    }
 
     .content {
         height: $content-height;
