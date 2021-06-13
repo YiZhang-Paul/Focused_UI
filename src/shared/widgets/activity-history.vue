@@ -52,15 +52,16 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     public readonly thresholds = [0, 6, 12, 24];
 
     get startDate(): string {
-        const date = this.dateRange?.start?.toDateString();
+        const date = this.dateRange.start.toDateString();
 
         return date.split(' ').slice(1, 3).join(' ');
     }
 
     get endDate(): string {
-        const date = this.dateRange?.end?.toDateString();
+        const oneDay = 24 * 60 * 60 * 1000;
+        const date = new Date(this.dateRange.end.getTime() - oneDay);
 
-        return date.split(' ').slice(1, 3).join(' ');
+        return date.toDateString().split(' ').slice(1, 3).join(' ');
     }
 
     public getFillerStyle(index: number): StyleConfig {
