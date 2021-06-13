@@ -66,14 +66,21 @@ const actions = {
         return true;
     },
     async updateWorkItem(context: ActionContext<IWorkItemState, any>, payload: WorkItem): Promise<boolean> {
-        if (!await workItemHttpService.updateWorkItem(payload)) {
+        const updated = await workItemHttpService.updateWorkItem(payload);
+
+        if (!updated) {
             return false;
         }
 
-        const meta = await workItemHttpService.getWorkItemMeta(payload.id);
+        const { state, commit } = context;
+        const meta = await workItemHttpService.getWorkItemMeta(updated.id);
 
         if (meta) {
-            context.commit('setWorkItem', meta);
+            commit('setWorkItem', meta);
+        }
+
+        if (updated.id === state.editedWorkItem?.id) {
+            commit('setEditedWorkItem', updated);
         }
 
         return true;
