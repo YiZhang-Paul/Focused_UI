@@ -24,7 +24,6 @@
             <div class="card-wrapper"
                 v-for="(item, index) of workItems"
                 :key="index"
-                @click="$emit('item:select', item)"
                 @mouseenter="activeIndex = index"
                 @mouseleave="activeIndex = -1">
 
@@ -34,7 +33,10 @@
                     @select="onStatusSelected(item, $event)">
                 </work-item-status-menu>
 
-                <work-item-card class="item-card" :item="item"></work-item-card>
+                <work-item-card class="item-card"
+                    :item="item"
+                    @click="$emit('item:select', item)">
+                </work-item-card>
             </div>
         </template>
     </display-panel>
