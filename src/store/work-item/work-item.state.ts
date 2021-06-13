@@ -42,7 +42,8 @@ const mutations = {
         const index = state.workItems.findIndex(_ => _.id === item.id);
 
         if (index !== -1) {
-            state.workItems = GenericUtility.replaceAt(state.workItems, item, index);
+            const items = GenericUtility.replaceAt(state.workItems, item, index);
+            state.workItems = items.sort((a, b) => a.priority - b.priority);
         }
     },
     deleteWorkItem(state: IWorkItemState, id: string): void {
