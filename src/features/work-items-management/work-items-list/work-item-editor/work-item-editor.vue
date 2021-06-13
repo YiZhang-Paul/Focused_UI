@@ -166,7 +166,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             }
 
             .estimation {
-                width: 10%;
+                width: 9%;
                 height: calc(#{$name-font-size} * 1.75);
                 text-align: center;
                 font-size: var(--font-sizes-500);

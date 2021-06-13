@@ -2,7 +2,7 @@
     <div class="lightsource-panel-container">
         <div class="glare"></div>
 
-        <div class="grids">
+        <div class="grids" v-if="showGrids">
             <div class="grid-row" v-for="row in 12" :key="row">
                 <div class="grid" v-for="column in 22" :key="column">
                     <div></div>
@@ -14,9 +14,13 @@
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 
-export default class LightsourcePanel extends Vue {}
+class LightsourcePanelProp {
+    public showGrids = prop<boolean>({ default: false });
+}
+
+export default class LightsourcePanel extends Vue.with(LightsourcePanelProp) {}
 </script>
 
 <style lang="scss" scoped>

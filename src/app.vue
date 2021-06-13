@@ -1,5 +1,5 @@
 <template>
-    <lightsource-panel class="lightsource-panel"></lightsource-panel>
+    <lightsource-panel class="lightsource-panel" :showGrids="true"></lightsource-panel>
 
     <div class="header-displays">
         <current-date-time></current-date-time>
