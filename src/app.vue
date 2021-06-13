@@ -7,7 +7,7 @@
     </div>
 
     <work-items-management class="work-items-management"
-        @item:update="onWorkItemUpdate()"
+        @item:update="loadPerformanceBreakdowns()"
         @item:delete="loadPerformanceBreakdowns()">
     </work-items-management>
 </template>
@@ -34,10 +34,6 @@ export default class App extends Vue {
 
     public created(): void {
         this.loadPerformanceBreakdowns();
-    }
-
-    public onWorkItemUpdate(): void {
-        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
     }
 
     public loadPerformanceBreakdowns(): void {
