@@ -34,6 +34,15 @@ export class WorkItemHttpService {
         }
     }
 
+    public async deleteWorkItem(id: string): Promise<boolean> {
+        try {
+            return (await axios.delete(`${this._api}/${id}`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
     public async getWorkItems(query: WorkItemQuery): Promise<WorkItemDto[]> {
         try {
             return (await axios.post(`${this._api}/summaries`, query)).data;

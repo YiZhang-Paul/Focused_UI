@@ -10,14 +10,18 @@
 
         <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
             <work-item-card class="item-card" :item="editedWorkItemMeta"></work-item-card>
-            <work-item-editor class="item-editor" :item="editedItem"></work-item-editor>
+
+            <work-item-editor class="item-editor"
+                :item="editedItem"
+                @item:delete="$emit('item:delete', editedItem)">
+            </work-item-editor>
         </div>
 
         <template v-if="!editedItem">
             <div class="card-wrapper"
                 v-for="(item, index) of workItems"
                 :key="index"
-                @click="$emit('select', item)"
+                @click="$emit('item:select', item)"
                 @mouseenter="activeIndex = index"
                 @mouseleave="activeIndex = -1">
 
@@ -63,7 +67,8 @@ class WorkItemsListProp {
         'create:cancel',
         'create:confirm',
         'update:meta',
-        'select'
+        'item:delete',
+        'item:select'
     ]
 })
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {

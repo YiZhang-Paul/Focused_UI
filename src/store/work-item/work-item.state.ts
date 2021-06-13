@@ -47,6 +47,9 @@ const mutations = {
             state.workItems = GenericUtility.replaceAt(state.workItems, item, index);
         }
     },
+    deleteWorkItem(state: IWorkItemState, id: string): void {
+        state.workItems = state.workItems.filter(_ => _.id !== id);
+    },
     setWorkItems(state: IWorkItemState, items: WorkItemDto[]): void {
         state.workItems = items.slice();
     }
@@ -63,6 +66,19 @@ const actions = {
         commit('setPendingWorkItem', null);
 
         return true;
+    },
+    async deleteWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<void> {
+        if (!await workItemHttpService.deleteWorkItem(id)) {
+            return;
+        }
+
+        const { state, commit } = context;
+
+        if (state.editedWorkItem?.id === id) {
+            commit('setEditedWorkItem', null);
+        }
+
+        commit('deleteWorkItem', id);
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);

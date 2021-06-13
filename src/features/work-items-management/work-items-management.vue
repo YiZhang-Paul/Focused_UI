@@ -34,7 +34,8 @@
                 @create:cancel="cancelCreate()"
                 @create:confirm="confirmCreate()"
                 @update:meta="onItemMetaUpdate($event)"
-                @select="onItemSelect($event.id)">
+                @item:delete="onItemDelete($event.id)"
+                @item:select="onItemSelect($event.id)">
             </work-items-list>
 
             <div class="stats-group"></div>
@@ -160,6 +161,10 @@ export default class WorkItemsManagement extends Vue {
         const index = this.typeFilterOptions.findIndex(_ => name === _.name);
         this.query.type = types[index];
         this.loadWorkItems();
+    }
+
+    public onItemDelete(id: string): void {
+        store.dispatch(`${workItemKey}/deleteWorkItem`, id);
     }
 
     public onItemSelect(id: string): void {

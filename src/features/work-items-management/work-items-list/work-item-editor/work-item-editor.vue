@@ -7,6 +7,12 @@
         <div class="content"></div>
 
         <div class="footer">
+            <action-button class="delete-button"
+                :text="'delete'"
+                :type="buttonType.Warning"
+                @click="$emit('item:delete', item)">
+            </action-button>
+
             <div class="creation-time">
                 <span>
                     created on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -26,6 +32,8 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import { WorkItem } from '../../../../core/models/work-item/work-item';
+import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
+import ActionButton from '../../../../shared/buttons/action-button.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 
 class WorkItemEditorProp {
@@ -34,10 +42,13 @@ class WorkItemEditorProp {
 
 @Options({
     components: {
+        ActionButton,
         DisplayPanel
-    }
+    },
+    emits: ['item:delete']
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
+    public readonly buttonType = ActionButtonType;
 
     public getTime(time: string): string {
         if (!time) {
@@ -75,8 +86,13 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         position: relative;
         display: flex;
         align-items: center;
+        justify-content: center;
         width: 100%;
         height: calc(100% - #{$content-height});
+
+        .delete-button {
+            position: absolute;
+        }
 
         .creation-time {
             display: flex;
