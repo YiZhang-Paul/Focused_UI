@@ -27,10 +27,10 @@ export default class LightsourcePanel extends Vue {}
 
     .glare {
         position: absolute;
-        top: -70vh;
-        left: -5vw;
-        width: 110vw;
-        height: 150vh;
+        top: -70%;
+        left: -5%;
+        width: 110%;
+        height: 150%;
         background: radial-gradient(
             57.36% 57.36% at 50% 42.64%,
             rgba(255, 255, 255, 0.25) 0%,

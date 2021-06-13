@@ -13,7 +13,11 @@
                     <span>{{ item.type }}</span>
                 </div>
 
-                <span class="hours">{{ item.estimatedHours }}</span>
+                <estimation-selector class="estimation"
+                    :options="estimationOptions"
+                    :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`">
+                </estimation-selector>
+
                 <span class="name">{{ item.name }}</span>
             </div>
 
@@ -61,6 +65,7 @@ import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../../core/models/work-item/work-item';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
+import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
@@ -75,6 +80,7 @@ class WorkItemEditorProp {
         Close,
         NotebookEditOutline,
         ActionButton,
+        EstimationSelector,
         DisplayPanel,
         DetailDisplayPanel,
         ItemProgression
@@ -86,6 +92,7 @@ class WorkItemEditorProp {
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
+    public readonly estimationOptions = [0.2, 0.5, 1, 2, 3, 5, 8, 13, 21];
 
     get checklistIcon(): any {
         return markRaw(FormatListCheckbox);
@@ -153,7 +160,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 width: 5%;
             }
 
-            .hours {
+            .estimation {
                 width: 10%;
                 text-align: center;
                 font-size: var(--font-sizes-500);
