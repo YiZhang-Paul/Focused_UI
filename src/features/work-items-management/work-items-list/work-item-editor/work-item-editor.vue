@@ -1,11 +1,34 @@
 <template>
-    <display-panel v-if="item"
+    <display-panel v-if="meta && item"
         class="work-item-editor-container"
         :lineLength="'1vh'"
         :corners="[false, false, true, true]">
 
         <close class="close-button" @click="$emit('item:close')" />
-        <div class="content"></div>
+
+        <detail-display-panel class="content">
+            <div class="core-information">
+                <div class="icons">
+                    <span>{{ item.priority }}</span>
+                    <span>{{ item.type }}</span>
+                </div>
+
+                <span class="hours">{{ item.estimatedHours }}</span>
+                <span class="name">{{ item.name }}</span>
+            </div>
+
+            <div class="description">
+                <notebook-edit-outline class="icon" />
+                <span>{{ item.description ? item.description : 'no description available.' }}</span>
+            </div>
+
+            <div class="additional-information">
+                <div class="completion-information">
+                    <item-progression :progress="meta.subtaskProgress"></item-progression>
+                    <item-progression :icon="checklistIcon" :progress="meta.checklistProgress"></item-progression>
+                </div>
+            </div>
+        </detail-display-panel>
 
         <div class="footer">
             <action-button class="delete-button"
@@ -30,23 +53,31 @@
 </template>
 
 <script lang="ts">
+import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
-import { Close } from 'mdue';
+import { Close, FormatListCheckbox, NotebookEditOutline } from 'mdue';
 
+import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../../core/models/work-item/work-item';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
+import ItemProgression from '../../../../shared/displays/item-progression.vue';
 
 class WorkItemEditorProp {
+    public meta = prop<WorkItemDto>({ default: null });
     public item = prop<WorkItem>({ default: null });
 }
 
 @Options({
     components: {
         Close,
+        NotebookEditOutline,
         ActionButton,
-        DisplayPanel
+        DisplayPanel,
+        DetailDisplayPanel,
+        ItemProgression
     },
     emits: [
         'item:close',
@@ -55,6 +86,10 @@ class WorkItemEditorProp {
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
+
+    get checklistIcon(): any {
+        return markRaw(FormatListCheckbox);
+    }
 
     public getTime(time: string): string {
         if (!time) {
@@ -74,11 +109,11 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
 <style lang="scss" scoped>
 .work-item-editor-container {
-    $content-height: 85%;
+    $content-height: 75%;
 
     position: relative;
     box-sizing: border-box;
-    padding: 3% 7.5%;
+    padding: 3.5% 8.75% 0 8.75%;
     background: linear-gradient(
         269.98deg,
         var(--primary-colors-7-02) 0.02%,
@@ -99,7 +134,71 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     }
 
     .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         height: $content-height;
+
+        .core-information {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 20%;
+
+            .icons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-left: 2.5%;
+                width: 5%;
+            }
+
+            .hours {
+                width: 10%;
+                text-align: center;
+                font-size: var(--font-sizes-500);
+            }
+
+            .name {
+                font-size: var(--font-sizes-600);
+            }
+        }
+
+        .description {
+            box-sizing: border-box;
+            display: flex;
+            flex: 1;
+            padding: 1.5vh 0;
+            width: 80%;
+
+            .icon {
+                margin-right: 1vh;
+                color: var(--font-colors-1-00);
+                font-size: var(--font-sizes-700);
+            }
+
+            span {
+                flex: 1;
+                color: var(--font-colors-2-00);
+            }
+        }
+
+        .additional-information {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 12.5%;
+
+            .completion-information {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                right: 2.5vh;
+                width: 12.5%;
+            }
+        }
     }
 
     .footer {
@@ -118,7 +217,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             display: flex;
             flex-direction: column;
             position: absolute;
-            right: 2.5vh;
+            right: 0.5vh;
             font-size: var(--font-sizes-300);
 
             span {

@@ -12,6 +12,7 @@
             <work-item-card class="item-card" :item="editedWorkItemMeta"></work-item-card>
 
             <work-item-editor class="item-editor"
+                :meta="editedWorkItemMeta"
                 :item="editedItem"
                 @item:close="$emit('item:close')"
                 @item:delete="$emit('item:delete', editedItem)">
