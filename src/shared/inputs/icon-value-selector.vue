@@ -2,17 +2,23 @@
     <div class="icon-value-selector-container" ref="container">
         <component v-if="selectedOption"
             class="icon"
+            :class="{ active: showOptions }"
             :is="selectedOption.icon"
-            :style="{ color: `var(--${selectedOption.colorType}-00)` }"
+            :style="getOptionStyle(selectedOption)"
             @click="showOptions = !showOptions">
         </component>
 
         <display-panel class="options" v-if="showOptions">
             <lightsource-panel class="lightsource-panel"></lightsource-panel>
 
-            <span v-for="(option, index) of options" :key="index" @click="onSelect(option.value)">
-                {{ option.description }}
-            </span>
+            <div class="option-wrapper"
+                v-for="(option, index) of options"
+                :key="index"
+                @click="onSelect(option.value)">
+
+                <component class="icon" :is="option.icon" :style="getOptionStyle(option)"></component>
+                <span>{{ option.description }}</span>
+            </div>
         </display-panel>
     </div>
 </template>
@@ -20,6 +26,7 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { StyleConfig } from '../../core/models/generic/style-config';
 import { IconSelectionOption } from '../../core/models/generic/icon-selection-option';
 import DisplayPanel from '../panels/display-panel.vue';
 import LightsourcePanel from '../panels/lightsource-panel.vue';
@@ -51,6 +58,10 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
         document.removeEventListener('click', this.onClickOutside);
     }
 
+    public getOptionStyle(option: IconSelectionOption<any>): StyleConfig {
+        return { color: `var(--${option.colorType}-00)` };
+    }
+
     public onSelect(option: any): void {
         if (option !== this.modelValue) {
             this.$emit('update:modelValue', option);
@@ -73,16 +84,21 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
 
 <style lang="scss" scoped>
 .icon-value-selector-container {
-    display: flex;
     position: relative;
+    display: flex;
+    justify-content: center;
 
     .icon {
-        cursor: pointer;
+        font-size: var(--font-sizes-600);
+        transition: color 0.3s;
+
+        &:hover, &.active {
+            cursor: pointer;
+            color: var(--primary-colors-7-00) !important;
+        }
     }
 
     .options {
-        $width: 20vh;
-
         z-index: 999;
         box-sizing: border-box;
         position: absolute;
@@ -90,8 +106,6 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
         flex-direction: column;
         padding: 0.75vh;
         top: calc(100% + 6px);
-        left: calc(50% - #{$width} / 2);
-        width: $width;
         background-color: var(--primary-colors-8-00);
         opacity: 0;
         animation: fade-in 0.2s ease forwards;
@@ -102,13 +116,20 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
             transform: rotateX(180deg);
         }
 
-        span {
+        .option-wrapper {
             z-index: 999;
+            display: flex;
+            align-items: center;
             padding: 0.3vh 1vh;
             border-radius: 4px;
             font-size: var(--font-sizes-300);
-            text-align: center;
+            white-space: nowrap;
             transition: background-color 0.1s;
+
+            .icon {
+                margin-right: 6px;
+                font-size: var(--font-sizes-400);
+            }
 
             &:hover {
                 cursor: pointer;

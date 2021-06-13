@@ -8,17 +8,28 @@
 
         <detail-display-panel class="content">
             <div class="core-information">
-                <div class="icons">
-                    <span>{{ item.priority }}</span>
-                    <span>{{ item.type }}</span>
-                </div>
+                <display-panel class="selectors">
+                    <icon-value-selector v-model="item.priority"
+                        :options="priorityOptions"
+                        @update:modelValue="$emit('item:update')">
+                    </icon-value-selector>
 
-                <estimation-selector class="estimation"
-                    v-model="item.estimatedHours"
-                    :options="estimationOptions"
-                    :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`"
-                    @update:modelValue="$emit('item:update')">
-                </estimation-selector>
+                    <div class="separator"></div>
+
+                    <icon-value-selector v-model="item.type"
+                        :options="typeOptions"
+                        @update:modelValue="$emit('item:update')">
+                    </icon-value-selector>
+
+                    <div class="separator"></div>
+
+                    <estimation-selector class="estimation"
+                        v-model="item.estimatedHours"
+                        :options="estimationOptions"
+                        :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`"
+                        @update:modelValue="$emit('item:update')">
+                    </estimation-selector>
+                </display-panel>
 
                 <span class="name">{{ item.name }}</span>
             </div>
@@ -61,12 +72,17 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
-import { Close, FormatListCheckbox, NotebookEditOutline } from 'mdue';
+import { AlertCircle, Close, FormatListCheckbox, NotebookEditOutline } from 'mdue';
 
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../../core/models/work-item/work-item';
+import { IconSelectionOption } from '../../../../core/models/generic/icon-selection-option';
+import { WorkItemPriority } from '../../../../core/enums/work-item-priority.enum';
+import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
+import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
+import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
@@ -82,6 +98,7 @@ class WorkItemEditorProp {
         Close,
         NotebookEditOutline,
         ActionButton,
+        IconValueSelector,
         EstimationSelector,
         DisplayPanel,
         DetailDisplayPanel,
@@ -96,9 +113,50 @@ class WorkItemEditorProp {
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
     public readonly estimationOptions = [0.2, 0.5, 1, 2, 3, 5, 8, 13, 21];
+    public readonly types = [WorkItemType.Regular, WorkItemType.Recurring, WorkItemType.Interruption];
+
+    public readonly priorityOptions: IconSelectionOption<WorkItemPriority>[] = [
+        {
+            icon: markRaw(AlertCircle),
+            colorType: 'priority-colors-0',
+            description: 'urgent important',
+            value: WorkItemPriority.UrgentImportant
+        },
+        {
+            icon: markRaw(AlertCircle),
+            colorType: 'priority-colors-1',
+            description: 'important not urgent',
+            value: WorkItemPriority.ImportantNotUrgent
+        },
+        {
+            icon: markRaw(AlertCircle),
+            colorType: 'priority-colors-2',
+            description: 'urgent not important',
+            value: WorkItemPriority.UrgentNotImportant
+        },
+        {
+            icon: markRaw(AlertCircle),
+            colorType: 'priority-colors-3',
+            description: 'not urgent not important',
+            value: WorkItemPriority.NotUrgentNotImportant
+        }
+    ];
 
     get checklistIcon(): any {
         return markRaw(FormatListCheckbox);
+    }
+
+    get typeOptions(): IconSelectionOption<WorkItemType>[] {
+        return this.types.map(_ => {
+            const setting = IconUtility.getWorkItemIcon(_);
+
+            return {
+                icon: setting.content,
+                colorType: `activity-colors-${setting.name}`,
+                description: setting.name,
+                value: _
+            };
+        });
     }
 
     public getTime(time: string): string {
@@ -135,6 +193,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         top: 2.75vh;
         right: 2.75vh;
         color: var(--primary-colors-2-00);
+        font-size: var(--font-sizes-600);
         transition: color 0.3s;
 
         &:hover {
@@ -150,31 +209,35 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         height: $content-height;
 
         .core-information {
-            $name-font-size: var(--font-sizes-500);
+            $font-size: var(--font-sizes-500);
 
             display: flex;
             align-items: center;
             width: 100%;
             height: 20%;
 
-            .icons {
+            .selectors {
                 display: flex;
-                flex-direction: column;
                 align-items: center;
-                margin-left: 2.5%;
-                width: 5%;
-            }
+                justify-content: space-evenly;
+                width: 17.5%;
+                height: 50%;
 
-            .estimation {
-                width: 9%;
-                height: calc(#{$name-font-size} * 1.75);
-                text-align: center;
-                font-size: var(--font-sizes-500);
+                .separator {
+                    width: 1px;
+                    height: 55%;
+                    background-color: var(--font-colors-6-00);
+                }
+
+                .estimation {
+                    font-size: $font-size;
+                }
             }
 
             .name {
                 margin-left: 1.5%;
-                font-size: $name-font-size;
+                flex: 1;
+                font-size: $font-size;
             }
         }
 

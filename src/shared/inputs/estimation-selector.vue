@@ -1,6 +1,6 @@
 <template>
     <div class="estimation-selector-container" ref="container">
-        <div class="value-wrapper" @click="showOptions = !showOptions">
+        <div class="value-wrapper" :class="{ active: showOptions }" @click="showOptions = !showOptions">
             <span>{{ transform ? transform(modelValue) : modelValue }}</span>
         </div>
 
@@ -66,27 +66,25 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
 
 <style lang="scss" scoped>
 .estimation-selector-container {
-    display: flex;
     position: relative;
-    border: 2px solid var(--primary-colors-0-00);
+    display: flex;
+    justify-content: center;
 
     .value-wrapper {
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         flex: 1;
-        transition: color 0.3s, background-color 0.3s;
+        transition: color 0.3s;
 
-        &:hover {
+        &:hover, &.active {
             cursor: pointer;
-            color: var(--primary-colors-8-00);
-            background-color: var(--primary-colors-0-00);
+            color: var(--primary-colors-7-00) !important;
         }
     }
 
     .options {
-        $width: 135%;
-
         z-index: 999;
         box-sizing: border-box;
         position: absolute;
@@ -94,8 +92,6 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
         flex-direction: column;
         padding: 0.75vh;
         top: calc(100% + 6px);
-        left: calc(50% - #{$width} / 2);
-        width: $width;
         background-color: var(--primary-colors-8-00);
         opacity: 0;
         animation: fade-in 0.2s ease forwards;
@@ -111,7 +107,7 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
             padding: 0.3vh 1vh;
             border-radius: 4px;
             font-size: var(--font-sizes-300);
-            text-align: center;
+            white-space: nowrap;
             transition: background-color 0.1s;
 
             &:hover {
