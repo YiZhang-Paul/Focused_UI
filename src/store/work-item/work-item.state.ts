@@ -29,7 +29,13 @@ const getters = {
         return id ? state.workItems.find(_ => _.id === id) ?? null : null;
     },
     workItems: (state: IWorkItemState): WorkItemDto[] => {
-        return state.workItems.slice().sort((a, b) => a.priority - b.priority);
+        return state.workItems.slice().sort((a, b) => {
+            if (a.priority === b.priority) {
+                return b.type - a.type;
+            }
+
+            return a.priority - b.priority;
+        });
     }
 };
 
