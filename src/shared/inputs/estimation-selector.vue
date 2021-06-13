@@ -67,8 +67,6 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
 <style lang="scss" scoped>
 .estimation-selector-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     position: relative;
     border: 2px solid var(--primary-colors-0-00);
 
@@ -89,6 +87,7 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
     .options {
         $width: 135%;
 
+        z-index: 999;
         box-sizing: border-box;
         position: absolute;
         display: flex;
@@ -102,14 +101,13 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
         animation: fade-in 0.2s ease forwards;
 
         .lightsource-panel {
-            z-index: 0;
             position: absolute;
             opacity: 0.75;
             transform: rotateX(180deg);
         }
 
         span {
-            z-index: 1;
+            z-index: 999;
             padding: 0.3vh 1vh;
             border-radius: 4px;
             font-size: var(--font-sizes-300);
