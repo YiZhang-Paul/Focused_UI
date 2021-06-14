@@ -51,6 +51,7 @@ export default class TextInput extends Vue.with(TextInputProp) {
     & > span, & > input {
         flex: 1;
         padding: 0.5vh 0.75vh;
+        border-radius: 4px;
         font-size: inherit;
     }
 

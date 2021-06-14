@@ -39,7 +39,11 @@
 
             <div class="description">
                 <notebook-edit-outline class="icon" />
-                <span>{{ item.description ? item.description : 'no description available.' }}</span>
+
+                <textarea-input class="description-input"
+                    v-model="item.description"
+                    @update:modelValue="$emit('item:update')">
+                </textarea-input>
             </div>
 
             <div class="additional-information">
@@ -86,6 +90,7 @@ import { ActionButtonType } from '../../../../core/enums/action-button-type.enum
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
 import TextInput from '../../../../shared/inputs/text-input.vue';
+import TextareaInput from '../../../../shared/inputs/textarea-input.vue';
 import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
@@ -103,6 +108,7 @@ class WorkItemEditorProp {
         NotebookEditOutline,
         ActionButton,
         TextInput,
+        TextareaInput,
         IconValueSelector,
         EstimationSelector,
         DisplayPanel,
@@ -240,7 +246,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             }
 
             .name {
-                margin-left: 1.5%;
+                margin-left: 1%;
                 flex: 1;
                 font-size: $font-size;
             }
@@ -249,9 +255,9 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         .description {
             box-sizing: border-box;
             display: flex;
-            flex: 1;
             padding: 1.5vh 0;
             width: 80%;
+            height: 67.5%;
 
             .icon {
                 margin-right: 1vh;
@@ -259,7 +265,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 font-size: var(--font-sizes-700);
             }
 
-            span {
+            .description-input {
                 flex: 1;
                 color: var(--font-colors-2-00);
             }
