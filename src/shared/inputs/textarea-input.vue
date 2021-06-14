@@ -4,19 +4,29 @@
             {{ modelValue?.trim() ? modelValue : 'no description available.' }}
         </span>
 
-        <textarea v-if="isEditMode"
-            ref="textareaBox"
-            v-model="current"
-            :maxlength="maxLength"
-            @keyup.esc="isEditMode = false"
-            @keyup.enter="onEditEnd()"
-            @blur="isEditMode = false">
-        </textarea>
+        <template v-if="isEditMode">
+            <textarea ref="textareaBox"
+                v-model="current"
+                :maxlength="maxLength"
+                @keyup.esc="isEditMode = false"
+                @blur="isEditMode = isBlurIgnored">
+            </textarea>
+
+            <div class="action-buttons">
+                <check class="save-button"
+                    @mouseover="isBlurIgnored = true"
+                    @mouseout="isBlurIgnored = false"
+                    @click="onEditEnd()" />
+
+                <close class="cancel-button" />
+            </div>
+        </template>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { Check, Close } from 'mdue';
 
 class TextareaInputProp {
     public modelValue = prop<string>({ default: '' });
@@ -24,11 +34,16 @@ class TextareaInputProp {
 }
 
 @Options({
+    components: {
+        Check,
+        Close
+    },
     emits: ['update:modelValue']
 })
 export default class TextareaInput extends Vue.with(TextareaInputProp) {
     public current = this.modelValue;
     public isEditMode = false;
+    public isBlurIgnored = false;
 
     public onEditStart(): void {
         this.isEditMode = true;
@@ -45,6 +60,7 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
         if (this.current) {
             this.$emit('update:modelValue', this.current);
             this.isEditMode = false;
+            this.isBlurIgnored = false;
         }
     }
 }
@@ -52,6 +68,7 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
 
 <style lang="scss" scoped>
 .textarea-input-container {
+    position: relative;
     display: flex;
 
     & > span, & > textarea {
@@ -83,6 +100,37 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
         color: var(--font-colors-0-00);
         background-color: var(--primary-colors-7-00);
         font-family: inherit;
+    }
+
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 0.5vh;
+        right: 1.75vh;
+
+        .save-button, .cancel-button {
+            cursor: pointer;
+            font-size: var(--font-sizes-600);
+            transition: color 0.3s;
+        }
+
+        .save-button {
+            color: var(--context-colors-confirm-05);
+
+            &:hover {
+                color: var(--context-colors-confirm-00);
+            }
+        }
+
+        .cancel-button {
+            margin-left: 0.25vh;
+            color: var(--context-colors-warning-05);
+
+            &:hover {
+                color: var(--context-colors-warning-00);
+            }
+        }
     }
 }
 </style>
