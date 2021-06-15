@@ -10,6 +10,7 @@
 
         <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
             <work-item-editor-header class="item-card"
+                :meta="editedWorkItemMeta"
                 :item="editedItem"
                 @item:update="$emit('item:update', editedItem)">
             </work-item-editor-header>

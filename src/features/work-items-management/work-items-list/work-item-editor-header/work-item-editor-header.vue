@@ -1,14 +1,16 @@
 <template>
-    <display-panel class="work-item-editor-header-container">
+    <display-panel v-if="meta && item" class="work-item-editor-header-container">
         <div class="selectors">
-            <icon-value-selector v-model="item.priority"
+            <icon-value-selector class="priority"
+                v-model="item.priority"
                 :options="priorityOptions"
                 @update:modelValue="$emit('item:update')">
             </icon-value-selector>
 
             <div class="separator"></div>
 
-            <icon-value-selector v-model="item.type"
+            <icon-value-selector class="type"
+                v-model="item.type"
                 :options="typeOptions"
                 @update:modelValue="$emit('item:update')">
             </icon-value-selector>
@@ -23,7 +25,8 @@
             </estimation-selector>
         </div>
 
-        <due-time-display :date="item.dueDate"></due-time-display>
+        <due-time-display class="due-time" :date="item.dueDate"></due-time-display>
+        <item-completion-progress class="item-progress" :progress="meta.itemProgress"></item-completion-progress>
     </display-panel>
 </template>
 
@@ -32,6 +35,7 @@ import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
 import { AlertCircle } from 'mdue';
 
+import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../../core/models/work-item/work-item';
 import { IconSelectionOption } from '../../../../core/models/generic/icon-selection-option';
 import { WorkItemPriority } from '../../../../core/enums/work-item-priority.enum';
@@ -41,8 +45,10 @@ import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
 
 class WorkItemEditorHeaderProp {
+    public meta = prop<WorkItemDto>({ default: null });
     public item = prop<WorkItem>({ default: null });
 }
 
@@ -51,7 +57,8 @@ class WorkItemEditorHeaderProp {
         IconValueSelector,
         EstimationSelector,
         DueTimeDisplay,
-        DisplayPanel
+        DisplayPanel,
+        ItemCompletionProgress
     },
     emits: ['item:update']
 })
@@ -111,23 +118,51 @@ export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderP
     background-color: var(--primary-colors-8-03);
 
     .selectors {
+        z-index: 1;
         position: absolute;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        left: 1.25%;
+        left: 0;
         width: 17.5%;
         height: 60%;
+
+        .priority, .type, .estimation, .separator {
+            opacity: 0;
+            animation: fade-in 0.3s ease forwards;
+        }
+
+        .priority {
+            animation-delay: 0.3s;
+        }
+
+        .type {
+            animation-delay: 0.4s;
+        }
 
         .separator {
             width: 1px;
             height: 55%;
             background-color: var(--font-colors-6-00);
+            animation-delay: 0.8s;
         }
 
         .estimation {
             font-size: var(--font-sizes-500);
+            animation-delay: 0.5s;
         }
+    }
+
+    .due-time, .item-progress {
+        opacity: 0;
+        animation: fade-in 0.2s ease 0.4s forwards;
+    }
+
+    .item-progress {
+        position: absolute;
+        right: 1.5%;
+        width: 22.5%;
+        height: 42.5%;
     }
 }
 </style>

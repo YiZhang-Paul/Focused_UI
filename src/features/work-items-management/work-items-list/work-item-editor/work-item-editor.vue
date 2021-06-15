@@ -158,7 +158,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
         .name {
             margin-top: 2.5vh;
-            margin-bottom: 1.5vh;
+            margin-bottom: 0.75vh;
             width: 100%;
             font-size: var(--font-sizes-500);
         }
@@ -167,6 +167,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             box-sizing: border-box;
             display: flex;
             padding: 1.5vh 0;
+            margin-bottom: 1.25vh;
             width: 80%;
             height: 67.5%;
 
@@ -216,6 +217,8 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         justify-content: center;
         width: 100%;
         height: calc(100% - #{$content-height});
+        opacity: 0;
+        animation: fade-in 0.2s ease 0.3s forwards;
 
         .delete-button {
             position: absolute;
