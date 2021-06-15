@@ -20,6 +20,8 @@
             @blur="$emit('edit:cancel')"
             maxlength="80" />
 
+        <span class="due-time" :class="{ 'due-time-alert': dueTime <= 1 }">{{ dueTimeText }}</span>
+
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
             <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
@@ -81,6 +83,31 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         return markRaw(FormatListCheckbox);
     }
 
+    get dueTimeText(): string {
+        if (this.dueTime > 24) {
+            return '';
+        }
+
+        if (this.dueTime <= 0) {
+            return 'past due';
+        }
+
+        if (this.dueTime <= 1) {
+            const minutes = this.dueTime * 60;
+
+            return `due in ${minutes.toFixed(0)} minute${minutes > 1 ? 's' : ''}`;
+        }
+
+        return `due in ${this.dueTime.toFixed(0)} hour${this.dueTime > 1 ? 's' : ''}`;
+    }
+
+    get dueTime(): number {
+        const oneHour = 60 * 60 * 1000;
+        const date = this.item.dueDate ? new Date(this.item.dueDate) : null;
+
+        return date ? (date.getTime() - Date.now()) / oneHour : 0;
+    }
+
     public mounted(): void {
         if (!this.isEditMode) {
             return;
@@ -135,7 +162,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     .name, .name-input {
-        width: 52.5%;
+        width: 40%;
     }
 
     .name-input {
@@ -146,6 +173,14 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         background-color: var(--primary-colors-8-00);
         color: var(--font-colors-0-00);
         font-size: var(--font-sizes-400);
+    }
+
+    .due-time {
+        width: 12.5%;
+
+        &.due-time-alert {
+            color: var(--context-colors-warning-00);
+        }
     }
 
     .other-information {
