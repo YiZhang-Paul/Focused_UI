@@ -36,10 +36,11 @@ export default class TextInput extends Vue.with(TextInputProp) {
     public onEditEnd(): void {
         const value = this.current?.trim() ?? '';
 
-        if (value) {
+        if (value && value !== this.modelValue) {
             this.$emit('update:modelValue', value);
-            this.isEditMode = false;
         }
+
+        this.isEditMode = !value;
     }
 }
 </script>

@@ -57,11 +57,12 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
     }
 
     public onEditEnd(): void {
-        if (this.current) {
+        if (this.current !== this.modelValue) {
             this.$emit('update:modelValue', this.current);
-            this.isEditMode = false;
-            this.isBlurIgnored = false;
         }
+
+        this.isEditMode = false;
+        this.isBlurIgnored = false;
     }
 }
 </script>
