@@ -162,7 +162,13 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     .name, .name-input {
-        width: 40%;
+        width: 37.5%;
+    }
+
+    .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .name-input {
@@ -176,6 +182,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     .due-time {
+        margin-left: 2.5%;
         width: 12.5%;
 
         &.due-time-alert {
