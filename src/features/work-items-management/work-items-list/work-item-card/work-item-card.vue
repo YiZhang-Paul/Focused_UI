@@ -1,5 +1,10 @@
 <template>
-    <div v-if="item" class="work-item-card-container">
+    <div v-if="item"
+        class="work-item-card-container"
+        @mouseenter="isHovering = true"
+        @mouseleave="isHovering = false">
+
+        <div v-if="isHovering" class="hover-layer"></div>
         <div class="priority" :style="priorityStyle"></div>
 
         <display-panel class="core-information">
@@ -63,6 +68,7 @@ class WorkItemCardProp {
     ]
 })
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
+    public isHovering = false;
     public workItemStatus = WorkItemStatus;
 
     get priorityStyle(): StyleConfig {
@@ -110,11 +116,27 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
 <style lang="scss" scoped>
 .work-item-card-container {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     background-color: var(--primary-colors-8-03);
     font-size: var(--font-sizes-400);
+
+    .hover-layer {
+        $gap: 0.5vh;
+
+        pointer-events: none;
+        position: absolute;
+        left: -$gap;
+        width: calc(100% + #{$gap} * 2);
+        height: calc(100% + #{$gap} * 2);
+        border-left: 1px solid var(--primary-colors-0-00);
+        border-right: 1px solid var(--primary-colors-0-00);
+        background-color: var(--primary-colors-7-04);
+        opacity: 0;
+        animation: fade-in 0.2s ease 0.1s forwards;
+    }
 
     .priority {
         max-width: 5px;

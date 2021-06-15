@@ -20,7 +20,7 @@
             <estimation-selector class="estimation"
                 v-model="item.estimatedHours"
                 :options="estimationOptions"
-                :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`"
+                :transform="_ => `${_} hour${_ > 1 ? 's' : ''}`"
                 @update:modelValue="$emit('item:update')">
             </estimation-selector>
         </div>

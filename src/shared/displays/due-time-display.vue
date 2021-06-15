@@ -42,6 +42,7 @@ export default class DueTimeDisplay extends Vue.with(DueTimeDisplayProp) {
 
 <style lang="scss" scoped>
 .due-time-display-container {
+    color: var(--font-colors-3-00);
 
     &.alert {
         color: var(--context-colors-warning-00);
