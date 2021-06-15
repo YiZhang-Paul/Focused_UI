@@ -9,7 +9,10 @@
         </work-item-card>
 
         <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
-            <work-item-card class="item-card" :item="editedWorkItemMeta"></work-item-card>
+            <work-item-editor-header class="item-card"
+                :item="editedItem"
+                @item:update="$emit('item:update', editedItem)">
+            </work-item-editor-header>
 
             <work-item-editor class="item-editor"
                 :meta="editedWorkItemMeta"
@@ -54,6 +57,7 @@ import DisplayPanel from '../../../shared/panels/display-panel.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';
+import WorkItemEditorHeader from './work-item-editor-header/work-item-editor-header.vue';
 import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 
 class WorkItemsListProp {
@@ -66,6 +70,7 @@ class WorkItemsListProp {
         DisplayPanel,
         WorkItemStatusMenu,
         WorkItemCard,
+        WorkItemEditorHeader,
         WorkItemEditor
     },
     emits: [
