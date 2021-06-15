@@ -242,13 +242,17 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         .date-suffix {
             align-self: flex-start;
             margin-left: 0.1vh;
+            font-size: var(--font-sizes-200);
         }
 
         .clear-button {
-            margin-left: 0.25vh;
+            margin-left: 0.5vh;
+            font-size: var(--font-sizes-300);
+            transition: color 0.2s;
 
             &:hover {
                 cursor: pointer;
+                color: var(--context-colors-warning-00);
             }
         }
     }
@@ -256,7 +260,6 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     .selection-panel {
         $grid-dimension: var(--font-sizes-500);
         $selection-color: rgb(240, 123, 14);
-        $accent-color: rgb(74, 236, 223);
 
         display: flex;
         flex-direction: column;
@@ -314,7 +317,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0.25vh;
+                padding: 0.35vh;
                 width: $grid-dimension;
                 height: $grid-dimension;
                 color: var(--font-colors-0-00);
@@ -326,7 +329,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 }
 
                 &:nth-child(1), &:nth-last-child(1) {
-                    color: $accent-color;
+                    color: rgb(74, 236, 223);
                 }
             }
         }
@@ -340,7 +343,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0.25vh;
+                padding: 0.35vh;
                 width: $grid-dimension;
                 min-width: $grid-dimension;
                 height: $grid-dimension;
@@ -362,8 +365,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 }
 
                 &.today {
-                    background-color: $accent-color;
-                    color: var(--font-colors-9-00);
+                    background-color: var(--primary-colors-8-00);
                 }
 
                 &.selected-day {

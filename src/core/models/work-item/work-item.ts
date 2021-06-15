@@ -17,6 +17,7 @@ export class WorkItem {
     public status = WorkItemStatus.Idle;
     public estimatedHours = 0;
     public timeSeries = new TimeSeries();
+    public dueDate?: string;
     public recur: boolean[] = [];
     public checklist: ChecklistEntry[] = [];
     public timeInfo = new TimeInfo();

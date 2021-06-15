@@ -49,7 +49,7 @@
             <div class="additional-information">
                 <div class="due-date" v-if="!isRecur">
                     <span>Due</span>
-                    <date-selector></date-selector>
+                    <date-selector v-model="item.dueDate" @update:modelValue="$emit('item:update')"></date-selector>
                 </div>
 
                 <div class="completion-information">
