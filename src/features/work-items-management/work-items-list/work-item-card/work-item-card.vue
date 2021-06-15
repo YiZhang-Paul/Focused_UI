@@ -20,7 +20,7 @@
             @blur="$emit('edit:cancel')"
             maxlength="80" />
 
-        <span class="due-time" :class="{ 'due-time-alert': dueTime <= 1 }">{{ dueTimeText }}</span>
+        <due-time-display class="due-time" :date="item.dueDate"></due-time-display>
 
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
@@ -41,6 +41,7 @@ import { StyleConfig } from '../../../../core/models/generic/style-config';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
 import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
 
@@ -52,6 +53,7 @@ class WorkItemCardProp {
 @Options({
     components: {
         DisplayPanel,
+        DueTimeDisplay,
         ItemProgression,
         ItemCompletionProgress
     },
@@ -81,31 +83,6 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
     get checklistIcon(): any {
         return markRaw(FormatListCheckbox);
-    }
-
-    get dueTimeText(): string {
-        if (!this.item.dueDate || this.dueTime > 24) {
-            return '';
-        }
-
-        if (this.dueTime <= 0) {
-            return 'past due';
-        }
-
-        if (this.dueTime <= 1) {
-            const minutes = this.dueTime * 60;
-
-            return `due in ${minutes.toFixed(0)} minute${minutes > 1 ? 's' : ''}`;
-        }
-
-        return `due in ${this.dueTime.toFixed(0)} hour${this.dueTime > 1 ? 's' : ''}`;
-    }
-
-    get dueTime(): number {
-        const oneHour = 60 * 60 * 1000;
-        const date = this.item.dueDate ? new Date(this.item.dueDate) : null;
-
-        return date ? (date.getTime() - Date.now()) / oneHour : 0;
     }
 
     public mounted(): void {
@@ -184,10 +161,6 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     .due-time {
         margin-left: 2.5%;
         width: 12.5%;
-
-        &.due-time-alert {
-            color: var(--context-colors-warning-00);
-        }
     }
 
     .other-information {

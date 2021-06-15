@@ -158,7 +158,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
         .name {
             margin-top: 2.5vh;
-            margin-bottom: 2.5vh;
+            margin-bottom: 1.5vh;
             width: 100%;
             font-size: var(--font-sizes-500);
         }

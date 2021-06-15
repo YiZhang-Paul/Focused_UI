@@ -1,6 +1,6 @@
 <template>
-    <div class="work-item-editor-header-container">
-        <display-panel class="selectors">
+    <display-panel class="work-item-editor-header-container">
+        <div class="selectors">
             <icon-value-selector v-model="item.priority"
                 :options="priorityOptions"
                 @update:modelValue="$emit('item:update')">
@@ -21,8 +21,10 @@
                 :transform="_ => `${_} hr${_ > 1 ? 's' : ''}`"
                 @update:modelValue="$emit('item:update')">
             </estimation-selector>
-        </display-panel>
-    </div>
+        </div>
+
+        <due-time-display :date="item.dueDate"></due-time-display>
+    </display-panel>
 </template>
 
 <script lang="ts">
@@ -37,6 +39,7 @@ import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
+import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 
 class WorkItemEditorHeaderProp {
@@ -47,6 +50,7 @@ class WorkItemEditorHeaderProp {
     components: {
         IconValueSelector,
         EstimationSelector,
+        DueTimeDisplay,
         DisplayPanel
     },
     emits: ['item:update']
@@ -99,16 +103,19 @@ export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderP
 
 <style lang="scss" scoped>
 .work-item-editor-header-container {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: var(--primary-colors-8-03);
 
     .selectors {
+        position: absolute;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        margin-left: 1.25%;
+        left: 1.25%;
         width: 17.5%;
         height: 60%;
 
