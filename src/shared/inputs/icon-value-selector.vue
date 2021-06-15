@@ -94,7 +94,7 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
 
         &:hover, &.active {
             cursor: pointer;
-            color: var(--primary-colors-7-00) !important;
+            color: var(--primary-colors-3-00) !important;
         }
     }
 
