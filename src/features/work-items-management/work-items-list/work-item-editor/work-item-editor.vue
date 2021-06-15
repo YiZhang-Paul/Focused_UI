@@ -47,6 +47,8 @@
             </div>
 
             <div class="additional-information">
+                <date-selector></date-selector>
+
                 <div class="completion-information">
                     <item-progression :progress="meta.subtaskProgress"></item-progression>
                     <item-progression :icon="checklistIcon" :progress="meta.checklistProgress"></item-progression>
@@ -93,6 +95,7 @@ import TextInput from '../../../../shared/inputs/text-input.vue';
 import TextareaInput from '../../../../shared/inputs/textarea-input.vue';
 import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
+import DateSelector from '../../../../shared/inputs/date-selector.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
@@ -111,6 +114,7 @@ class WorkItemEditorProp {
         TextareaInput,
         IconValueSelector,
         EstimationSelector,
+        DateSelector,
         DisplayPanel,
         DetailDisplayPanel,
         ItemProgression
