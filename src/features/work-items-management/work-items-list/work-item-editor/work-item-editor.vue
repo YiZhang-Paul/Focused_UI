@@ -47,7 +47,10 @@
             </div>
 
             <div class="additional-information">
-                <date-selector></date-selector>
+                <div class="due-date" v-if="!isRecur">
+                    <span>Due</span>
+                    <date-selector></date-selector>
+                </div>
 
                 <div class="completion-information">
                     <item-progression :progress="meta.subtaskProgress"></item-progression>
@@ -156,6 +159,10 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             value: WorkItemPriority.NotUrgentNotImportant
         }
     ];
+
+    get isRecur(): boolean {
+        return this.item.type === WorkItemType.Recurring;
+    }
 
     get checklistIcon(): any {
         return markRaw(FormatListCheckbox);
@@ -281,6 +288,15 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             align-items: center;
             width: 100%;
             height: 12.5%;
+
+            .due-date {
+                display: flex;
+                align-items: center;
+
+                & > span {
+                    margin-right: 0.75vh;
+                }
+            }
 
             .completion-information {
                 position: absolute;

@@ -1,6 +1,9 @@
 <template>
     <div class="date-selector-container" ref="container">
-        <div class="current-date-wrapper" @click="showOptions = !showOptions">
+        <div class="current-date-wrapper"
+            :class="{ active: showOptions }"
+            @click="showOptions = !showOptions">
+
             <template v-if="selected">
                 <span>{{ selectedMonthAndDate }}</span>
                 <span class="date-suffix">{{ selectedDateSuffix }}</span>
@@ -12,6 +15,8 @@
         </div>
 
         <display-panel v-if="showOptions" class="selection-panel">
+            <lightsource-panel class="lightsource-panel"></lightsource-panel>
+
             <div class="month-selection">
                 <chevron-left class="page-arrow"
                     :class="{ 'disabled-arrow': !allowPreviousMonth }"
@@ -52,6 +57,7 @@ import { ChevronLeft, ChevronRight, CloseCircleOutline } from 'mdue';
 import { ClassConfig } from '../../core/models/generic/class-config';
 import { TimeUtility } from '../../core/utilities/time-utility/time-utility';
 import DisplayPanel from '../../shared/panels/display-panel.vue';
+import LightsourcePanel from '../../shared/panels/lightsource-panel.vue';
 
 class DateSelectorProp {
     public modelValue = prop<Date>({ default: null });
@@ -62,7 +68,8 @@ class DateSelectorProp {
         ChevronLeft,
         ChevronRight,
         CloseCircleOutline,
-        DisplayPanel
+        DisplayPanel,
+        LightsourcePanel
     },
     emits: ['update:modelValue']
 })
@@ -220,15 +227,16 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     .current-date-wrapper {
         display: flex;
         align-items: center;
-        padding: 0.35vh 2.5vh;
+        padding: 0.35vh 1vh;
         width: 100%;
         height: 100%;
         border-radius: 3px;
+        background-color: var(--primary-colors-7-04);
         transition: background-color 0.3s;
 
-        &:hover {
+        &:hover, &.active {
             cursor: pointer;
-            background-color: var(--primary-colors-7-02);
+            background-color: var(--primary-colors-7-07);
         }
 
         .date-suffix {
@@ -247,6 +255,8 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
     .selection-panel {
         $grid-dimension: var(--font-sizes-500);
+        $selection-color: rgb(240, 123, 14);
+        $accent-color: rgb(74, 236, 223);
 
         display: flex;
         flex-direction: column;
@@ -254,10 +264,17 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         position: absolute;
         z-index: 999;
         bottom: 120%;
-        padding: 1vh 1.75vh;
+        padding: 1.5vh 1.75vh 1vh 1.75vh;
         background-color: var(--primary-colors-8-00);
         opacity: 0;
         animation: fade-in 0.2s ease forwards;
+
+        .lightsource-panel {
+            z-index: -1;
+            position: absolute;
+            opacity: 0.75;
+            transform: rotateX(180deg);
+        }
 
         .month-selection {
             display: flex;
@@ -273,6 +290,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
                 &:hover {
                     cursor: pointer;
+                    color: $selection-color;
                 }
 
                 &.disabled-arrow, &.disabled-arrow:hover {
@@ -289,13 +307,14 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         }
 
         .day-headers {
-            margin-bottom: 0.5vh;
+            margin-bottom: 0.75vh;
             height: $grid-dimension;
 
             .header {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                padding: 0.25vh;
                 width: $grid-dimension;
                 height: $grid-dimension;
                 color: var(--font-colors-0-00);
@@ -307,23 +326,26 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 }
 
                 &:nth-child(1), &:nth-last-child(1) {
-                    color: rgb(74, 236, 223);
+                    color: $accent-color;
                 }
             }
         }
 
         .row {
             margin-bottom: 0.5vh;
+            opacity: 0;
+            animation: fade-in 0.3s ease 0.1s forwards;
 
             .day {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                padding: 0.25vh;
                 width: $grid-dimension;
                 min-width: $grid-dimension;
                 height: $grid-dimension;
                 min-height: $grid-dimension;
-                transition: background-color 0.1s, color 0.1s;
+                transition: background-color 0.2s, color 0.1s;
 
                 &:not(:first-of-type) {
                     margin-left: 0.75vh;
@@ -331,7 +353,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
                 &:not(.unselectable-day):hover {
                     cursor: pointer;
-                    background-color: rgb(240, 123, 14);
+                    background-color: $selection-color;
                 }
 
                 &.unselectable-day {
@@ -340,12 +362,13 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 }
 
                 &.today {
-                    background-color: var(--primary-colors-6-03);
+                    background-color: $accent-color;
+                    color: var(--font-colors-9-00);
                 }
 
                 &.selected-day {
-                    background-color: rgb(240, 123, 14);
-                    color: rgb(0, 0, 0);
+                    background-color: $selection-color;
+                    color: var(--font-colors-9-00);
                 }
             }
         }
