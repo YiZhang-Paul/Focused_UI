@@ -18,7 +18,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 class TextInputProp {
     public modelValue = prop<string>({ default: '' });
-    public maxLength = prop<number>({ default: 65 });
+    public maxLength = prop<number>({ default: 85 });
 }
 
 @Options({
@@ -53,6 +53,7 @@ export default class TextInput extends Vue.with(TextInputProp) {
         flex: 1;
         padding: 0.5vh 0.75vh;
         border-radius: 4px;
+        text-align: center;
         font-size: inherit;
     }
 
