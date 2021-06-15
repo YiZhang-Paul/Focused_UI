@@ -17,6 +17,7 @@
 import { Vue } from 'vue-class-component';
 
 import { IconMeta } from '../../core/models/generic/icon-meta';
+import { TimeUtility } from '../../core/utilities/time-utility/time-utility';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 
 export default class CurrentDateTime extends Vue {
@@ -42,21 +43,7 @@ export default class CurrentDateTime extends Vue {
     }
 
     get dateSuffix(): string {
-        const date = this.current.getDate().toString();
-
-        if (date !== '11' && date.endsWith('1')) {
-            return 'st';
-        }
-
-        if (date !== '12' && date.endsWith('2')) {
-            return 'nd';
-        }
-
-        if (date !== '13' && date.endsWith('3')) {
-            return 'rd';
-        }
-
-        return 'th';
+        return TimeUtility.getDateSuffix(this.current.getDate());
     }
 
     get year(): number {
