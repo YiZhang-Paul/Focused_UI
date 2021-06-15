@@ -84,7 +84,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     get dueTimeText(): string {
-        if (this.dueTime > 24) {
+        if (!this.item.dueDate || this.dueTime > 24) {
             return '';
         }
 
