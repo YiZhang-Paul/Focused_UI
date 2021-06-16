@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!editedItem" class="item-cards">
-            <div class="cards-wrapper">
+            <div class="cards-wrapper" ref="cardWrappers">
                 <div class="card-wrapper"
                     v-for="(item, index) of workItems"
                     :key="index"
@@ -45,7 +45,11 @@
                 </div>
             </div>
 
-            <item-thumbnail-scrollbar class="items-thumbnail" :items="workItems"></item-thumbnail-scrollbar>
+            <item-thumbnail-scrollbar v-if="$refs.cardWrappers"
+                class="items-thumbnail"
+                :items="workItems"
+                :scrollContainer="$refs.cardWrappers">
+            </item-thumbnail-scrollbar>
         </div>
     </display-panel>
 </template>
@@ -155,7 +159,6 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             width: 100%;
             height: 100%;
             overflow-y: auto;
