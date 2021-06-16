@@ -1,10 +1,14 @@
 <template>
-    <div class="item-thumbnail-scrollbar-container" ref="container">
+    <div class="item-thumbnail-scrollbar-container"
+        ref="container"
+        @wheel="onWheelScroll($event)"
+        @mousedown="moveThumb($event)">
+
         <div class="block" v-for="item of items" :key="item.id" :style="getBlockStyle(item)">
             <div v-if="item.status === highlightedStatus"></div>
         </div>
 
-        <div class="scroll-thumb" :style="thumbStyle"></div>
+        <div class="scroll-thumb" :style="thumbStyle" @mousedown="isMouseHold = true"></div>
     </div>
 </template>
 
@@ -23,7 +27,7 @@ class ItemThumbnailScrollbarProp {
 @Options({
     watch: {
         scrollContainer(): void {
-            this.setScroll();
+            this.setScrollPosition();
         }
     }
 })
@@ -32,25 +36,27 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
     public scrollTop = 0;
     public scrollHeight = 0;
     public clientHeight = 0;
+    public isMouseHold = false;
 
     get thumbStyle(): StyleConfig {
-        return {
-            top: `${this.scrollTop}px`,
-            height: `${this.clientHeight * 2 - this.scrollHeight}px`
-        };
+        return { top: `${this.scrollTop}px`, height: `${this.thumbHeight}px` };
+    }
+
+    get thumbHeight(): number {
+        return this.clientHeight * 2 - this.scrollHeight;
     }
 
     public created(): void {
-        this.setScroll();
-        this.scrollContainer.addEventListener('scroll', this.setScroll);
-    }
-
-    public mounted(): void {
-        (this.$refs.container as HTMLElement).addEventListener('wheel', this.onWheelScroll);
+        this.setScrollPosition();
+        this.scrollContainer.addEventListener('scroll', this.setScrollPosition);
+        document.addEventListener('mouseup', this.onMouseup);
+        document.addEventListener('mousemove', this.onMousemove);
     }
 
     public beforeUnmount(): void {
-        this.scrollContainer.removeEventListener('scroll', this.setScroll);
+        this.scrollContainer.removeEventListener('scroll', this.setScrollPosition);
+        document.removeEventListener('mouseup', this.onMouseup);
+        document.removeEventListener('mousemove', this.onMousemove);
     }
 
     public getBlockStyle(item: WorkItemDto): StyleConfig {
@@ -63,16 +69,38 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         };
     }
 
-    private setScroll(): void {
+    public onWheelScroll(event: WheelEvent): void {
+        requestAnimationFrame(() => {
+            const delta = event.deltaY > 0 ? 20 : -20;
+            this.scrollContainer.scrollTop += delta;
+        });
+    }
+
+    public moveThumb(event: MouseEvent): void {
+        requestAnimationFrame(() => {
+            const container = this.$refs.container as HTMLElement;
+            const { top, bottom } = container.getBoundingClientRect();
+            const thumbBottom = Math.min(event.clientY + this.thumbHeight / 2, bottom);
+            const thumbTop = Math.max(top, thumbBottom - this.thumbHeight);
+            this.scrollContainer.scrollTop = thumbTop - top;
+        });
+    }
+
+    private setScrollPosition(): void {
         const { scrollTop, scrollHeight, clientHeight } = this.scrollContainer;
         this.scrollTop = scrollTop;
         this.scrollHeight = scrollHeight;
         this.clientHeight = clientHeight;
     }
 
-    private onWheelScroll(event: WheelEvent): void {
-        const delta = event.deltaY > 0 ? 20 : -20;
-        requestAnimationFrame(() => this.scrollContainer.scrollTop += delta);
+    private onMouseup(): void {
+        this.isMouseHold = false;
+    }
+
+    private onMousemove(event: MouseEvent): void {
+        if (this.isMouseHold) {
+            this.moveThumb(event);
+        }
     }
 }
 </script>
@@ -112,7 +140,6 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         transition: background-color 0.2s;
 
         &:hover {
-            cursor: pointer;
             background-color: var(--primary-colors-7-07);
         }
     }
