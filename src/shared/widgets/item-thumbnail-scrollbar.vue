@@ -1,10 +1,10 @@
 <template>
-    <div class="item-thumbnail-scrollbar-container">
+    <div class="item-thumbnail-scrollbar-container" ref="container">
         <div class="block" v-for="item of items" :key="item.id" :style="getBlockStyle(item)">
             <div v-if="item.status === highlightedStatus"></div>
         </div>
 
-        <div v-if="scrollContainer" class="scroll-thumb" :style="thumbStyle"></div>
+        <div class="scroll-thumb" :style="thumbStyle"></div>
     </div>
 </template>
 
@@ -45,6 +45,10 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         this.scrollContainer.addEventListener('scroll', this.setScroll);
     }
 
+    public mounted(): void {
+        (this.$refs.container as HTMLElement).addEventListener('wheel', this.onWheelScroll);
+    }
+
     public beforeUnmount(): void {
         this.scrollContainer.removeEventListener('scroll', this.setScroll);
     }
@@ -64,6 +68,11 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         this.scrollTop = scrollTop;
         this.scrollHeight = scrollHeight;
         this.clientHeight = clientHeight;
+    }
+
+    private onWheelScroll(event: WheelEvent): void {
+        const delta = event.deltaY > 0 ? 20 : -20;
+        requestAnimationFrame(() => this.scrollContainer.scrollTop += delta);
     }
 }
 </script>
@@ -100,6 +109,12 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         border-top: 1px solid var(--primary-colors-0-00);
         border-bottom: 1px solid var(--primary-colors-0-00);
         background-color: var(--primary-colors-7-04);
+        transition: background-color 0.2s;
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--primary-colors-7-07);
+        }
     }
 }
 </style>

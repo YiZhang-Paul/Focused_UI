@@ -156,8 +156,6 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         height: 100%;
 
         .cards-wrapper {
-            z-index: 1;
-            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -194,7 +192,6 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         }
 
         .items-thumbnail {
-            z-index: 0;
             position: absolute;
             top: 0;
             right: 0;
