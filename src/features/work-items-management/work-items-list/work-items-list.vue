@@ -9,7 +9,7 @@
         </work-item-card>
 
         <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
-            <work-item-editor-header class="item-card"
+            <work-item-editor-header class="editor-header"
                 :meta="editedWorkItemMeta"
                 :item="editedItem"
                 @item:update="$emit('item:update', editedItem)">
@@ -24,25 +24,29 @@
             </work-item-editor>
         </div>
 
-        <template v-if="!editedItem">
-            <div class="card-wrapper"
-                v-for="(item, index) of workItems"
-                :key="index"
-                @mouseenter="activeIndex = index"
-                @mouseleave="activeIndex = -1">
+        <div v-if="!editedItem" class="item-cards">
+            <div class="cards-wrapper">
+                <div class="card-wrapper"
+                    v-for="(item, index) of workItems"
+                    :key="index"
+                    @mouseenter="activeIndex = index"
+                    @mouseleave="activeIndex = -1">
 
-                <work-item-status-menu class="status-menu"
-                    :activeOption="item.status"
-                    :showOptions="activeIndex === index"
-                    @select="onStatusSelected(item, $event)">
-                </work-item-status-menu>
+                    <work-item-status-menu class="status-menu"
+                        :activeOption="item.status"
+                        :showOptions="activeIndex === index"
+                        @select="onStatusSelected(item, $event)">
+                    </work-item-status-menu>
 
-                <work-item-card class="item-card"
-                    :item="item"
-                    @click="$emit('item:select', item)">
-                </work-item-card>
+                    <work-item-card class="item-card"
+                        :item="item"
+                        @click="$emit('item:select', item)">
+                    </work-item-card>
+                </div>
             </div>
-        </template>
+
+            <item-thumbnail-scrollbar class="items-thumbnail" :items="workItems"></item-thumbnail-scrollbar>
+        </div>
     </display-panel>
 </template>
 
@@ -55,6 +59,7 @@ import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 import DisplayPanel from '../../../shared/panels/display-panel.vue';
+import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';
@@ -69,6 +74,7 @@ class WorkItemsListProp {
 @Options({
     components: {
         DisplayPanel,
+        ItemThumbnailScrollbar,
         WorkItemStatusMenu,
         WorkItemCard,
         WorkItemEditorHeader,
@@ -103,29 +109,23 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
 <style lang="scss" scoped>
 .work-items-list-container {
-    $content-width: 97.5%;
+    $content-width: 92.5%;
     $card-height: 5vh;
+    $card-gap: 1.25vh;
 
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5vh 5vh;
+    padding: 2.5vh 3.5vh;
     background-color: var(--primary-colors-8-01);
 
-    .pending-item-card, .card-wrapper {
+    .pending-item-card, .card-wrapper, .editor-wrapper {
         width: $content-width;
+    }
+
+    .pending-item-card, .card-wrapper {
         height: $card-height;
-
-        &:not(:last-child) {
-            margin-bottom: 1.25vh;
-        }
-
-        .item-card {
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
     }
 
     .editor-wrapper {
@@ -133,10 +133,9 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        width: $content-width;
         height: 100%;
 
-        .item-card {
+        .editor-header {
             width: 100%;
             height: $card-height;
         }
@@ -147,18 +146,52 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         }
     }
 
-    .card-wrapper {
+    .item-cards {
         position: relative;
+        width: 100%;
+        height: 100%;
 
-        .status-menu {
-            $width: 4vh;
-            $height: 130%;
+        .cards-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
 
+            &::-webkit-scrollbar {
+                width: 0;
+                background: transparent;
+            }
+
+            .card-wrapper {
+                position: relative;
+                margin-top: $card-gap;
+
+                .item-card {
+                    cursor: pointer;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .status-menu {
+                    $width: 4vh;
+                    $height: 130%;
+
+                    position: absolute;
+                    top: calc(50% - #{$height} / 2);
+                    left: -$width;
+                    width: $width;
+                    height: $height;
+                }
+            }
+        }
+
+        .items-thumbnail {
             position: absolute;
-            top: calc(50% - #{$height} / 2);
-            left: -$width;
-            width: $width;
-            height: $height;
+            top: 0;
+            right: 0;
         }
     }
 }
