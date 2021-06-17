@@ -10,6 +10,13 @@ import { PerformanceHttpService } from '../../core/services/http/performance-htt
 const oneDay = 24 * 60 * 60 * 1000;
 const performanceHttpService = new PerformanceHttpService();
 
+function getDateRange(): DateRange {
+    const end = new Date(Date.now() + oneDay);
+    end.setHours(0, 0, 0, 0);
+
+    return { start: new Date(end.getTime() - 14 * oneDay), end };
+}
+
 export interface IPerformanceState {
     dateRange: DateRange;
     currentDayProgression: ProgressionCounter<number> | null;
@@ -20,7 +27,7 @@ export interface IPerformanceState {
 }
 
 const state = (): IPerformanceState => ({
-    dateRange: { start: new Date(Date.now() - 14 * oneDay), end: new Date() },
+    dateRange: getDateRange(),
     currentDayProgression: null,
     activityBreakdown: null,
     activityHistories: [],
