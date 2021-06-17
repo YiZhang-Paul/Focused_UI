@@ -40,8 +40,8 @@ export default class WorkItemProgressStatsGroup extends Vue {
         const total = pastDue + looming;
 
         return [
-            { percent: looming / total * 100, colorType: 'context-colors-alert' },
-            { percent: pastDue / total * 100, colorType: 'context-colors-warning' }
+            { percent: pastDue / total * 100, colorType: 'context-colors-warning' },
+            { percent: looming / total * 100, colorType: 'context-colors-alert' }
         ];
     }
 }
