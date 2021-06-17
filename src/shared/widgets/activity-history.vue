@@ -49,7 +49,7 @@ class ActivityHistoryProp {
     components: { DisplayPanel }
 })
 export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
-    public readonly thresholds = [0, 6, 12, 24];
+    public readonly thresholds = [0, 8, 12, 24];
 
     get startDate(): string {
         const date = this.dateRange.start.toDateString();

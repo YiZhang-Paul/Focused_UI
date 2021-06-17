@@ -35,6 +35,7 @@ import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-
 import { DateRange } from '../../../core/models/generic/date-range';
 import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
+import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
 import TaskRadar from '../../../shared/widgets/task-radar.vue';
 import ActivityHistory from '../../../shared/widgets/activity-history.vue';
@@ -63,9 +64,8 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     get timeTracked(): string {
         const { regular, recurring, interruption, overlearning } = this.activityBreakdown!;
         const days = (regular + recurring + interruption + overlearning) / 24;
-        const total = days.toFixed(days === Math.trunc(days) ? 0 : 1);
 
-        return `${total} / 14 days`;
+        return `${GenericUtility.roundTo(days, 1)} / 14 days`;
     }
 
     get timeTrackedSeries(): PercentageSeries[] {
@@ -86,10 +86,9 @@ export default class WorkItemTrackingStatsGroup extends Vue {
 
     get inaccurateEstimate(): string {
         const { overestimate, underestimate } = this.estimationBreakdown!;
-        const hours = overestimate + underestimate;
-        const total = hours.toFixed(hours === Math.trunc(hours) ? 0 : 1);
+        const hours = GenericUtility.roundTo(overestimate + underestimate, 1);
 
-        return `${total} hour${hours > 1 ? 's' : ''}`;
+        return `${hours} hour${hours > 1 ? 's' : ''}`;
     }
 
     get inaccurateEstimateSeries(): PercentageSeries[] {

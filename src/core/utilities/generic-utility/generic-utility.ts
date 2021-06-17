@@ -7,4 +7,10 @@ export class GenericUtility {
 
         return [...elements.slice(0, index), element, ...elements.slice(index + 1)];
     }
+
+    public static roundTo(value: number, decimal = 0): number {
+        const modifier = Math.pow(10, decimal);
+
+        return Math.round(value * modifier) / modifier;
+    }
 }
