@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
+import { DueDateBreakdownDto } from '../../../dtos/due-date-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
 export class PerformanceHttpService {
@@ -25,12 +26,9 @@ export class PerformanceHttpService {
     public async getActivityBreakdownByDateRange(start?: Date, end?: Date): Promise<ActivityBreakdownDto> {
         try {
             const endpoint = `${this._api}/activity-breakdown`;
-            const startQuery = start ? `start=${start.toISOString()}` : '';
-            const endQuery = end ? `end=${end.toISOString()}` : '';
-            const queries = [startQuery, endQuery].filter(Boolean);
-            const queryString = queries.length ? `?${queries.join('&')}` : '';
+            const query = this.getDateQueryString(start, end);
 
-            return (await axios.get(endpoint + queryString)).data;
+            return (await axios.get([endpoint, query].join('?'))).data;
         }
         catch {
             return new ActivityBreakdownDto();
@@ -52,15 +50,31 @@ export class PerformanceHttpService {
     public async getEstimationBreakdown(start?: Date, end?: Date): Promise<EstimationBreakdownDto> {
         try {
             const endpoint = `${this._api}/estimation-breakdown`;
-            const startQuery = start ? `start=${start.toISOString()}` : '';
-            const endQuery = end ? `end=${end.toISOString()}` : '';
-            const queries = [startQuery, endQuery].filter(Boolean);
-            const queryString = queries.length ? `?${queries.join('&')}` : '';
+            const query = this.getDateQueryString(start, end);
 
-            return (await axios.get(endpoint + queryString)).data;
+            return (await axios.get([endpoint, query].join('?'))).data;
         }
         catch {
             return new EstimationBreakdownDto();
         }
+    }
+
+    public async getDueDateBreakdown(start?: Date, end?: Date): Promise<DueDateBreakdownDto> {
+        try {
+            const endpoint = `${this._api}/due-date-breakdown`;
+            const query = this.getDateQueryString(start, end);
+
+            return (await axios.get([endpoint, query].join('?'))).data;
+        }
+        catch {
+            return new DueDateBreakdownDto();
+        }
+    }
+
+    private getDateQueryString(start?: Date, end?: Date): string {
+        const startQuery = start ? `start=${start.toISOString()}` : '';
+        const endQuery = end ? `end=${end.toISOString()}` : '';
+
+        return [startQuery, endQuery].filter(Boolean).join('&');
     }
 }
