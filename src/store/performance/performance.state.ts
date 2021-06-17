@@ -2,6 +2,7 @@ import { ActionContext } from 'vuex';
 
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
+import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
 import { DateRange } from '../../core/models/generic/date-range';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
@@ -15,6 +16,7 @@ export interface IPerformanceState {
     activityBreakdown: ActivityBreakdownDto | null;
     activityHistories: ActivityBreakdownDto[];
     estimationBreakdown: EstimationBreakdownDto | null;
+    dueDateBreakdown: DueDateBreakdownDto | null;
 }
 
 const state = (): IPerformanceState => ({
@@ -22,7 +24,8 @@ const state = (): IPerformanceState => ({
     currentDayProgression: null,
     activityBreakdown: null,
     activityHistories: [],
-    estimationBreakdown: null
+    estimationBreakdown: null,
+    dueDateBreakdown: null
 });
 
 const getters = {
@@ -30,7 +33,8 @@ const getters = {
     currentDayProgression: (state: IPerformanceState): ProgressionCounter<number> | null => state.currentDayProgression,
     activityBreakdown: (state: IPerformanceState): ActivityBreakdownDto | null => state.activityBreakdown,
     activityHistories: (state: IPerformanceState): ActivityBreakdownDto[] => state.activityHistories,
-    estimationBreakdown: (state: IPerformanceState): EstimationBreakdownDto | null => state.estimationBreakdown
+    estimationBreakdown: (state: IPerformanceState): EstimationBreakdownDto | null => state.estimationBreakdown,
+    dueDateBreakdown: (state: IPerformanceState): DueDateBreakdownDto | null => state.dueDateBreakdown
 };
 
 const mutations = {
@@ -45,6 +49,9 @@ const mutations = {
     },
     setEstimationBreakdown(state: IPerformanceState, breakdown: EstimationBreakdownDto | null): void {
         state.estimationBreakdown = breakdown;
+    },
+    setDueDateBreakdown(state: IPerformanceState, breakdown: DueDateBreakdownDto | null): void {
+        state.dueDateBreakdown = breakdown;
     }
 };
 
@@ -69,6 +76,11 @@ const actions = {
         const { start, end } = context.state.dateRange;
         const breakdown = await performanceHttpService.getEstimationBreakdown(start, end);
         context.commit('setEstimationBreakdown', breakdown);
+    },
+    async loadDueDateBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
+        const { start, end } = context.state.dateRange;
+        const breakdown = await performanceHttpService.getDueDateBreakdown(start, end);
+        context.commit('setDueDateBreakdown', breakdown);
     }
 };
 
