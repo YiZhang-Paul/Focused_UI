@@ -26,7 +26,7 @@
         </template>
 
         <div class="content">
-            <work-item-stats-group class="stats-group"></work-item-stats-group>
+            <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
             <work-items-list class="work-items-list"
                 :pendingItem="pendingItem"
@@ -62,7 +62,7 @@ import CreationButton from '../../shared/buttons/creation-button.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
 
-import WorkItemStatsGroup from './work-item-stats-group/work-item-stats-group.vue';
+import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
@@ -72,7 +72,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         CreationButton,
         ContentViewPanel,
         StatsBreakdown,
-        WorkItemStatsGroup,
+        WorkItemTrackingStatsGroup,
         WorkItemsList
     },
     emits: [

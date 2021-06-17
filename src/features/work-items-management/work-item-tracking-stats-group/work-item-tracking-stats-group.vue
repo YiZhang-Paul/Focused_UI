@@ -1,5 +1,5 @@
 <template>
-    <div class="work-item-stats-group-container">
+    <div class="work-item-tracking-stats-group-container">
         <stats-breakdown v-if="activityBreakdown"
             class="breakdown"
             :title="'time tracked'"
@@ -46,7 +46,7 @@ import ActivityHistory from '../../../shared/widgets/activity-history.vue';
         ActivityHistory
     }
 })
-export default class WorkItemStatsGroup extends Vue {
+export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
         return store.getters[`${performanceKey}/dateRange`];
@@ -116,7 +116,7 @@ export default class WorkItemStatsGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.work-item-stats-group-container {
+.work-item-tracking-stats-group-container {
 
     .breakdown, .stats-graph {
         width: 100%;
