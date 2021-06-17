@@ -40,7 +40,7 @@
                 @item:select="onItemSelect($event.id)">
             </work-items-list>
 
-            <div class="stats-group"></div>
+            <work-item-progress-stats-group class="stats-group"></work-item-progress-stats-group>
         </div>
     </content-view-panel>
 </template>
@@ -63,6 +63,7 @@ import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
+import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
@@ -73,6 +74,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         ContentViewPanel,
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
+        WorkItemProgressStatsGroup,
         WorkItemsList
     },
     emits: [
