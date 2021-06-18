@@ -37,24 +37,25 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
 
     get activityStyle(): StyleConfig {
         return {
-            ...this.getSharedStyle(this.active === 0, this.tracking.activityTime),
-            stroke: 'rgb(255, 255, 255)'
+            stroke: 'rgb(255, 255, 255)',
+            transform: `rotate(${-90 - 360 / 24 * this.tracking.activityTime}deg)`,
+            ...this.getSharedStyle(this.active === 0, this.tracking.activityTime)
         };
     }
 
     get breakStyle(): StyleConfig {
         return {
-            ...this.getSharedStyle(this.active === 1, this.tracking.breakTime),
             stroke: 'rgb(142, 222, 174)',
-            transform: `rotate(${360 / 24 * this.tracking.activityTime}deg)`
+            transform: 'rotate(-90deg)',
+            ...this.getSharedStyle(this.active === 1, this.tracking.breakTime)
         };
     }
 
     get untrackedStyle(): StyleConfig {
         return {
-            ...this.getSharedStyle(this.active === 2, this.tracking.untrackedTime),
             stroke: 'rgba(150, 150, 150, 0.5)',
-            transform: `rotate(${360 / 24 * (24 - this.tracking.untrackedTime)}deg)`
+            transform: `rotate(${-90 + 360 / 24 * this.tracking.breakTime}deg)`,
+            ...this.getSharedStyle(this.active === 2, this.tracking.untrackedTime)
         };
     }
 
