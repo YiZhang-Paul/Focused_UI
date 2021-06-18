@@ -68,7 +68,8 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
             r: radius,
             'stroke-width': outer - inner,
             'stroke-dasharray': dasharray,
-            'stroke-dashoffset': dasharray / 24 * (24 - time)
+            'stroke-dashoffset': dasharray / 24 * (24 - time),
+            transition: `all ${isHovered ? 0.3 : 0.02}s`
         };
     }
 }
@@ -96,7 +97,6 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
                 cx: 50;
                 cy: 50;
                 transform-origin: 50% 50%;
-                transition: all 0.3s;
 
                 &:hover {
                     cursor: pointer;
