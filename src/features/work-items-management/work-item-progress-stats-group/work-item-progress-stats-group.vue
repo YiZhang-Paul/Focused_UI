@@ -13,6 +13,8 @@
             :content="averageFocus"
             :series="dailyFocusSeries">
         </stats-breakdown>
+
+        <time-tracking-breakdown class="stats-graph" :tracking="timeTracking"></time-tracking-breakdown>
     </div>
 </template>
 
@@ -23,13 +25,16 @@ import store from '../../../store';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
+import { TimeTrackingBreakdownDto } from '../../../core/dtos/time-tracking-breakdown-dto';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
+import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown.vue';
 
 @Options({
     components: {
-        StatsBreakdown
+        StatsBreakdown,
+        TimeTrackingBreakdown
     }
 })
 export default class WorkItemProgressStatsGroup extends Vue {
@@ -89,15 +94,26 @@ export default class WorkItemProgressStatsGroup extends Vue {
             { percent: sufficient / total * 100, colorType: 'focus-progress-colors-sufficient' }
         ];
     }
+
+    get timeTracking(): TimeTrackingBreakdownDto | null {
+        return store.getters[`${performanceKey}/currentDayTimeTracking`];
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 .work-item-progress-stats-group-container {
 
-    .breakdown {
+    .breakdown, .stats-graph {
         width: 100%;
+    }
+
+    .breakdown {
         height: 10.5%;
+    }
+
+    .stats-graph {
+        height: 37%;
     }
 }
 </style>
