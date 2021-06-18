@@ -8,6 +8,13 @@
                 <circle class="slice" :style="untrackedStyle" @mouseenter="index = 2" @mouseleave="index = -1" />
                 <circle class="shadow" r="50" fill="url('#shadow-gradient')" />
 
+                <template v-if="index === -1">
+                    <path :class="`separator separator-${i}`"
+                        v-for="i in 3"
+                        :key="i"
+                        d="M50 48 L50 32" />
+                </template>
+
                 <defs>
                     <radialGradient id="shadow-gradient">
                         <stop offset="1%" stop-color="rgba(40, 40, 40, 0.45)"></stop>
@@ -16,19 +23,25 @@
                 </defs>
             </svg>
 
-            <div class="summary" v-if="index !== -1" :style="{ color: colorValue }">
+            <div class="summary" v-if="index !== -1" :style="{ color: getColor(index) }">
                 <span v-if="index === 0">active</span>
                 <span v-if="index === 1">rested</span>
                 <span v-if="index === 2">untrack</span>
                 <span>{{ hoursValue }}</span>
             </div>
+
+            <template v-if="index === -1">
+                <lightbulb-on class="icon active" :style="{ color: getColor(0) }" />
+                <coffee class="icon rested" :style="{ color: getColor(1) }" />
+                <help class="icon untrack" :style="{ color: getColor(2) }" />
+            </template>
         </div>
     </display-panel>
 </template>
 
 <script lang="ts">
 import { Vue, prop, Options } from 'vue-class-component';
-import { Help, LightbulbOn, Sleep } from 'mdue';
+import { Coffee, Help, LightbulbOn } from 'mdue';
 
 import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { StyleConfig } from '../../core/models/generic/style-config';
@@ -41,9 +54,9 @@ class TimeTrackingBreakdownProp {
 
 @Options({
     components: {
+        Coffee,
         Help,
         LightbulbOn,
-        Sleep,
         DisplayPanel
     }
 })
@@ -59,16 +72,6 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
         const value = [activityTime, breakTime, untrackedTime][this.index];
 
         return `${GenericUtility.roundTo(value, 1)}h`;
-    }
-
-    get colorValue(): string {
-        if (this.index === -1) {
-            return '';
-        }
-
-        const colors = [this.activityStyle.stroke, this.breakStyle.stroke, 'rgb(100, 100, 100)'];
-
-        return String(colors[this.index]);
     }
 
     get activityStyle(): StyleConfig {
@@ -95,8 +98,26 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
         };
     }
 
+    public getColor(index: number): string {
+        if (index === -1) {
+            return '';
+        }
+
+        const inactive = 'rgb(100, 100, 100)';
+
+        if (index === 2) {
+            return inactive;
+        }
+
+        if (index === 1) {
+            return this.tracking.breakTime ? String(this.breakStyle.stroke) : inactive;
+        }
+
+        return this.tracking.activityTime ? String(this.activityStyle.stroke) : inactive;
+    }
+
     private getSharedStyle(isHovered: boolean, time: number): StyleConfig {
-        const [inner, outer] = isHovered ? [23.75, 50] : [33, 46];
+        const [inner, outer] = isHovered ? [23.75, 50] : [33.5, 47];
         const radius = (outer + inner) / 2;
         const dasharray = 2 * Math.PI * radius;
 
@@ -155,6 +176,20 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
             .shadow {
                 pointer-events: none;
             }
+
+            .separator {
+                stroke: rgba(255, 255, 255, 0.3);
+                stroke-width: 0.5;
+                transform-origin: 50% 50%;
+
+                &.separator-1 {
+                    transform: rotate(120deg);
+                }
+
+                &.separator-2 {
+                    transform: rotate(-120deg);
+                }
+            }
         }
 
         .summary {
@@ -173,6 +208,30 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
 
             span:last-of-type {
                 font-size: var(--font-sizes-600);
+            }
+        }
+
+        .icon {
+            $dimension: 2vh;
+
+            width: $dimension;
+            height: $dimension;
+            opacity: 0;
+            animation: fade-in 0.3s ease forwards;
+
+            &.active {
+                top: 38.5%;
+                left: 35.5%;
+            }
+
+            &.rested {
+                top: 39.25%;
+                right: 35.5%;
+            }
+
+            &.untrack {
+                bottom: 33.5%;
+                left: calc(50% - #{$dimension} / 2);
             }
         }
     }
