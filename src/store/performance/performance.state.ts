@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
+import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { DateRange } from '../../core/models/generic/date-range';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
@@ -20,6 +21,7 @@ function getDateRange(): DateRange {
 export interface IPerformanceState {
     dateRange: DateRange;
     currentDayProgression: ProgressionCounter<number> | null;
+    currentDayTimeTracking: TimeTrackingBreakdownDto | null;
     activityBreakdown: ActivityBreakdownDto | null;
     activityHistories: ActivityBreakdownDto[];
     estimationBreakdown: EstimationBreakdownDto | null;
@@ -29,6 +31,7 @@ export interface IPerformanceState {
 const state = (): IPerformanceState => ({
     dateRange: getDateRange(),
     currentDayProgression: null,
+    currentDayTimeTracking: null,
     activityBreakdown: null,
     activityHistories: [],
     estimationBreakdown: null,
@@ -38,6 +41,7 @@ const state = (): IPerformanceState => ({
 const getters = {
     dateRange: (state: IPerformanceState): DateRange => state.dateRange,
     currentDayProgression: (state: IPerformanceState): ProgressionCounter<number> | null => state.currentDayProgression,
+    currentDayTimeTracking: (state: IPerformanceState): TimeTrackingBreakdownDto | null => state.currentDayTimeTracking,
     activityBreakdown: (state: IPerformanceState): ActivityBreakdownDto | null => state.activityBreakdown,
     activityHistories: (state: IPerformanceState): ActivityBreakdownDto[] => state.activityHistories,
     estimationBreakdown: (state: IPerformanceState): EstimationBreakdownDto | null => state.estimationBreakdown,
@@ -47,6 +51,9 @@ const getters = {
 const mutations = {
     setCurrentDayProgression(state: IPerformanceState, progression: ProgressionCounter<number> | null): void {
         state.currentDayProgression = progression;
+    },
+    setCurrentDayTimeTracking(state: IPerformanceState, tracking: TimeTrackingBreakdownDto | null): void {
+        state.currentDayTimeTracking = tracking;
     },
     setActivityBreakdown(state: IPerformanceState, breakdown: ActivityBreakdownDto | null): void {
         state.activityBreakdown = breakdown;
@@ -68,6 +75,12 @@ const actions = {
         const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];
         const progression = await performanceHttpService.getDailyProgression(year, month, day);
         context.commit('setCurrentDayProgression', progression);
+    },
+    async loadCurrentDayTimeTracking(context: ActionContext<IPerformanceState, any>): Promise<void> {
+        const now = new Date();
+        const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];
+        const tracking = await performanceHttpService.getDailyTimeTracking(year, month, day);
+        context.commit('setCurrentDayTimeTracking', tracking);
     },
     async loadActivityBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
         const { start, end } = context.state.dateRange;

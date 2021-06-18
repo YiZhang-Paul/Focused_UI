@@ -38,6 +38,7 @@ export default class App extends Vue {
 
     public loadPerformanceBreakdowns(): void {
         store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
+        store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
         store.dispatch(`${performanceKey}/loadActivityBreakdown`);
         store.dispatch(`${performanceKey}/loadActivityHistories`);
         store.dispatch(`${performanceKey}/loadEstimationBreakdown`);

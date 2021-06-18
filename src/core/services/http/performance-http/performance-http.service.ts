@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../../dtos/due-date-breakdown-dto';
+import { TimeTrackingBreakdownDto } from '../../../dtos/time-tracking-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
 export class PerformanceHttpService {
@@ -20,6 +21,17 @@ export class PerformanceHttpService {
                 target: 8,
                 isCompleted: false
             } as ProgressionCounter<number>;
+        }
+    }
+
+    public async getDailyTimeTracking(year: number, month: number, day: number): Promise<TimeTrackingBreakdownDto> {
+        try {
+            const endpoint = `${this._api}/daily-time-tracking/${year}/${month}/${day}`;
+
+            return (await axios.get(endpoint)).data;
+        }
+        catch {
+            return new TimeTrackingBreakdownDto();
         }
     }
 
