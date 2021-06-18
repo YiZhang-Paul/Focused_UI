@@ -2,14 +2,10 @@
     <display-panel class="time-tracking-breakdown-container" :lineLength="'1vh'">
         <div class="tracking-breakdowns" v-if="tracking">
             <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
-                <g>
-                    <circle class="inner-ring" r="22" />
-                    <circle class="inner-ring" r="12" />
-                </g>
-
-                <circle class="slice" :style="activityStyle" @mouseenter="active = 0" @mouseleave="active = -1" />
-                <circle class="slice" :style="breakStyle" @mouseenter="active = 1" @mouseleave="active = -1" />
-                <circle class="slice" :style="untrackedStyle" @mouseenter="active = 2" @mouseleave="active = -1" />
+                <circle class="inner-ring" r="22" />
+                <circle class="slice" :style="activityStyle" @mouseenter="index = 0" @mouseleave="index = -1" />
+                <circle class="slice" :style="breakStyle" @mouseenter="index = 1" @mouseleave="index = -1" />
+                <circle class="slice" :style="untrackedStyle" @mouseenter="index = 2" @mouseleave="index = -1" />
                 <circle class="shadow" r="50" fill="url('#shadow-gradient')" />
 
                 <defs>
@@ -20,13 +16,19 @@
                 </defs>
             </svg>
 
-            <span v-if="hoursValue" :style="{ color: colorValue }">{{ hoursValue }}</span>
+            <div class="summary" v-if="index !== -1" :style="{ color: colorValue }">
+                <span v-if="index === 0">active</span>
+                <span v-if="index === 1">rested</span>
+                <span v-if="index === 2">untrack</span>
+                <span>{{ hoursValue }}</span>
+            </div>
         </div>
     </display-panel>
 </template>
 
 <script lang="ts">
 import { Vue, prop, Options } from 'vue-class-component';
+import { Help, LightbulbOn, Sleep } from 'mdue';
 
 import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { StyleConfig } from '../../core/models/generic/style-config';
@@ -38,37 +40,42 @@ class TimeTrackingBreakdownProp {
 }
 
 @Options({
-    components: { DisplayPanel }
+    components: {
+        Help,
+        LightbulbOn,
+        Sleep,
+        DisplayPanel
+    }
 })
 export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdownProp) {
-    public active = -1;
+    public index = -1;
 
     get hoursValue(): string {
-        if (this.active === -1) {
+        if (this.index === -1) {
             return '';
         }
 
         const { activityTime, breakTime, untrackedTime } = this.tracking;
-        const value = [activityTime, breakTime, untrackedTime][this.active];
+        const value = [activityTime, breakTime, untrackedTime][this.index];
 
         return `${GenericUtility.roundTo(value, 1)}h`;
     }
 
     get colorValue(): string {
-        if (this.active === -1) {
+        if (this.index === -1) {
             return '';
         }
 
-        const colors = ['255, 255, 255', '142, 222, 174', '180, 180, 180'];
+        const colors = [this.activityStyle.stroke, this.breakStyle.stroke, 'rgb(100, 100, 100)'];
 
-        return `rgb(${colors[this.active]})`;
+        return String(colors[this.index]);
     }
 
     get activityStyle(): StyleConfig {
         return {
             stroke: 'rgb(255, 255, 255)',
             transform: `rotate(${-90 - 360 / 24 * this.tracking.activityTime}deg)`,
-            ...this.getSharedStyle(this.active === 0, this.tracking.activityTime)
+            ...this.getSharedStyle(this.index === 0, this.tracking.activityTime)
         };
     }
 
@@ -76,7 +83,7 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
         return {
             stroke: 'rgb(142, 222, 174)',
             transform: 'rotate(-90deg)',
-            ...this.getSharedStyle(this.active === 1, this.tracking.breakTime)
+            ...this.getSharedStyle(this.index === 1, this.tracking.breakTime)
         };
     }
 
@@ -84,12 +91,12 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
         return {
             stroke: 'rgb(100, 100, 100)',
             transform: `rotate(${-90 + 360 / 24 * this.tracking.breakTime}deg)`,
-            ...this.getSharedStyle(this.active === 2, this.tracking.untrackedTime)
+            ...this.getSharedStyle(this.index === 2, this.tracking.untrackedTime)
         };
     }
 
     private getSharedStyle(isHovered: boolean, time: number): StyleConfig {
-        const [inner, outer] = isHovered ? [12.75, 50] : [32, 45];
+        const [inner, outer] = isHovered ? [23.75, 50] : [33, 46];
         const radius = (outer + inner) / 2;
         const dasharray = 2 * Math.PI * radius;
 
@@ -117,8 +124,8 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 20vh;
-        height: 20vh;
+        width: 22.5vh;
+        height: 22.5vh;
 
         svg {
             z-index: 0;
@@ -150,11 +157,23 @@ export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdow
             }
         }
 
-        span {
-            z-index: 1;
-            font-size: var(--font-sizes-300);
+        .summary {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             opacity: 0;
             animation: fade-in 0.3s ease forwards;
+
+            span:first-of-type {
+                margin-bottom: 0.25vh;
+                text-transform: uppercase;
+                font-size: var(--font-sizes-300);
+            }
+
+            span:last-of-type {
+                font-size: var(--font-sizes-600);
+            }
         }
     }
 }
