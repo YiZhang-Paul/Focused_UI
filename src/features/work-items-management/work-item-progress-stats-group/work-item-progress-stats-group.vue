@@ -15,6 +15,7 @@
         </stats-breakdown>
 
         <time-tracking-breakdown class="stats-graph" :tracking="timeTracking"></time-tracking-breakdown>
+        <user-ratings-tracker class="stats-graph" :ratings="ratings"></user-ratings-tracker>
     </div>
 </template>
 
@@ -22,19 +23,24 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../../store';
+import { userKey } from '../../../store/user/user.state';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../core/dtos/time-tracking-breakdown-dto';
+import { UserProfile } from '../../../core/models/user/user-profile';
+import { PerformanceRating } from '../../../core/models/user/performance-rating';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
 import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown.vue';
+import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker.vue';
 
 @Options({
     components: {
         StatsBreakdown,
-        TimeTrackingBreakdown
+        TimeTrackingBreakdown,
+        UserRatingsTracker
     }
 })
 export default class WorkItemProgressStatsGroup extends Vue {
@@ -97,6 +103,12 @@ export default class WorkItemProgressStatsGroup extends Vue {
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
         return store.getters[`${performanceKey}/currentDayTimeTracking`];
+    }
+
+    get ratings(): PerformanceRating {
+        const user = store.getters[`${userKey}/profile`] as UserProfile;
+
+        return user?.ratings ?? new PerformanceRating();
     }
 }
 </script>
