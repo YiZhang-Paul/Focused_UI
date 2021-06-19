@@ -83,7 +83,8 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding: 2.5vh 0;
+    padding-top: 5vh;
+    padding-bottom: 2.5vh;
 
     .checklist-entry, .add-checklist {
         box-sizing: border-box;

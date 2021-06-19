@@ -56,7 +56,7 @@ export default class App extends Vue {
 @import './styles/animations.scss';
 @import './styles/presets.scss';
 
-$header-displays-height: 17.5%;
+$header-displays-height: 20%;
 
 html, body, #app {
     box-sizing: border-box;
