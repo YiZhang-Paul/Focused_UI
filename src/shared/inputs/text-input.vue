@@ -29,6 +29,11 @@ class TextInputProp {
 }
 
 @Options({
+    watch: {
+        modelValue(): void {
+            this.current = this.modelValue;
+        }
+    },
     emits: ['update:modelValue']
 })
 export default class TextInput extends Vue.with(TextInputProp) {

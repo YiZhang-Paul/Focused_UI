@@ -1,6 +1,19 @@
 <template>
     <div class="work-item-checklist-container">
+        <div class="checklist-entry" v-for="(entry, index) of entries" :key="index">
+            <text-input class="name"
+                v-model="entry.description"
+                @update:modelValue="$emit('update', entries)">
+            </text-input>
+
+            <delete class="delete-button action-button" @click="deleteEntry(index)" />
+        </div>
+
         <div class="add-checklist">
+            <plus-box class="add-button action-button"
+                :class="{ disabled: !pendingEntry }"
+                @click="addEntry()" />
+
             <text-input class="name"
                 v-model="pendingEntry"
                 :placeholder="'add checklist entry...'"
@@ -8,17 +21,16 @@
                 :isInstantUpdate="true"
                 @keyup.enter="addEntry()">
             </text-input>
-
-            <plus-box class="add-button" :class="{ disabled: !pendingEntry }" @click="addEntry()" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { PlusBox } from 'mdue';
+import { Delete, PlusBox } from 'mdue';
 
 import { ChecklistEntry } from '../../../../../core/models/work-item/checklist-entry';
+import { GenericUtility } from '../../../../../core/utilities/generic-utility/generic-utility';
 import TextInput from '../../../../../shared/inputs/text-input.vue';
 
 class WorkItemChecklistProp {
@@ -27,6 +39,7 @@ class WorkItemChecklistProp {
 
 @Options({
     components: {
+        Delete,
         PlusBox,
         TextInput
     },
@@ -35,10 +48,15 @@ class WorkItemChecklistProp {
 export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     public pendingEntry = '';
 
+    public deleteEntry(index: number): void {
+        this.$emit('update', GenericUtility.removeAt(this.entries, index));
+    }
+
     public addEntry(): void {
         if (this.pendingEntry) {
             const entry = { description: this.pendingEntry } as ChecklistEntry;
             this.$emit('update', [...this.entries, entry]);
+            this.pendingEntry = '';
         }
     }
 }
@@ -51,13 +69,11 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     flex-direction: column;
     padding: 2.5vh 0;
 
-    .add-checklist {
+    .checklist-entry, .add-checklist {
         box-sizing: border-box;
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding-left: 0.75vh;
-        padding-right: 1vh;
         width: 75%;
         height: 4vh;
         border-radius: 3px;
@@ -67,9 +83,8 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
             flex: 1;
         }
 
-        .add-button {
-            margin-left: 1vh;
-            color: var(--font-colors-0-08);
+        .action-button {
+            color: var(--font-colors-0-07);
             font-size: var(--font-sizes-500);
             transition: color 0.3s;
 
@@ -79,6 +94,32 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
 
             &:hover:not(.disabled) {
                 cursor: pointer;
+            }
+        }
+    }
+
+    .checklist-entry {
+        padding-left: 0.75vh;
+        padding-right: 1vh;
+        margin-bottom: 0.75vh;
+
+        .delete-button {
+            margin-left: 1vh;
+
+            &:hover {
+                color: var(--context-colors-warning-00);
+            }
+        }
+    }
+
+    .add-checklist {
+        padding-left: 1vh;
+        padding-right: 0.75vh;
+
+        .add-button {
+            margin-right: 1vh;
+
+            &:hover:not(.disabled) {
                 color: var(--font-colors-0-00);
             }
         }
