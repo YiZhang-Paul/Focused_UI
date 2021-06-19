@@ -5,11 +5,18 @@
             <path :class="`inner-ring inner-ring-${i}`" v-for="i in 3" :key="i" :d="innerRingPath" />
             <path class="grid-line" v-for="(path, index) of gridLinePaths" :key="index" :d="path" />
         </svg>
+
+        <calendar-check class="icon planning" />
+        <clock-time-three class="icon estimation" />
+        <head-alert class="icon determination" />
+        <shield class="icon sustainability" />
+        <yoga class="icon adaptability" />
     </display-panel>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { CalendarCheck, ClockTimeThree, HeadAlert, Shield, Yoga } from 'mdue';
 
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import DisplayPanel from '../panels/display-panel.vue';
@@ -19,7 +26,14 @@ class UserRatingsTrackerProp {
 }
 
 @Options({
-    components: { DisplayPanel }
+    components: {
+        CalendarCheck,
+        ClockTimeThree,
+        HeadAlert,
+        Shield,
+        Yoga,
+        DisplayPanel
+    }
 })
 export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp) {
     private readonly points = [
@@ -43,6 +57,7 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
 
 <style lang="scss" scoped>
 .user-ratings-tracker-container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,6 +94,42 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
         .inner-ring-3 {
             stroke-width: 12;
             transform: scale(0.25);
+        }
+    }
+
+    .icon {
+        $dimension: 3vh;
+
+        position: absolute;
+        width: $dimension;
+        height: $dimension;
+
+        &.estimation, &.planning {
+            top: 34.5%;
+        }
+
+        &.adaptability, &.sustainability {
+            bottom: 1.5%;
+        }
+
+        &.determination {
+            top: 1.25%;
+        }
+
+        &.estimation {
+            left: calc(11.5% - #{$dimension} / 2);
+        }
+
+        &.planning {
+            right: calc(11.5% - #{$dimension} / 2);
+        }
+
+        &.adaptability {
+            left: calc(28% - #{$dimension} / 2);
+        }
+
+        &.sustainability {
+            right: calc(28% - #{$dimension} / 2);
         }
     }
 }
