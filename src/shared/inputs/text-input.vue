@@ -1,6 +1,8 @@
 <template>
     <div class="text-input-container">
-        <span v-if="!isEditMode" @click="onEditStart()">{{ modelValue }}</span>
+        <span v-if="!isEditMode" @click="onEditStart()">
+            {{ modelValue ? modelValue : placeholder }}
+        </span>
 
         <input v-if="isEditMode"
             type="text"
@@ -19,6 +21,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 class TextInputProp {
     public modelValue = prop<string>({ default: '' });
     public maxLength = prop<number>({ default: 85 });
+    public placeholder = prop<string>({ default: '' });
 }
 
 @Options({
