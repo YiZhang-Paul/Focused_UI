@@ -1,6 +1,10 @@
 <template>
     <div class="user-widget-container" v-if="profile">
         <div class="avatar">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+                <path d="M5 22.25 L50 0 L95 22.25 L95 77.75 L50 100 L5 77.75Z" />
+            </svg>
+
             <img :src="profile.avatarUrl" @error="$event.target.src = 'focus-protocol://src/assets/images/avatar_placeholder.jpg'" />
         </div>
 
@@ -60,12 +64,19 @@ export default class UserWidget extends Vue {
     align-items: center;
 
     .avatar {
-        margin-right: 0.55vh;
+        position: relative;
+        margin-right: -0.25vh;
         width: $avatar-dimension;
         height: $avatar-dimension;
-        border: 2px solid var(--primary-colors-0-00);
+        clip-path: polygon(5% 22.25%, 50% 0, 95% 22.25%, 95% 77.75%, 50% 100%, 5% 77.75%);
 
-        img {
+        svg {
+            position: absolute;
+            stroke: var(--primary-colors-0-00);
+            stroke-width: 3;
+        }
+
+        svg, img {
             width: 100%;
             height: 100%;
         }
@@ -76,7 +87,7 @@ export default class UserWidget extends Vue {
         display: flex;
         align-items: center;
         padding: 0.5vh 1.75vh 0.5vh 1vh;
-        height: calc(#{$avatar-dimension} / 7 * 4);
+        height: calc(#{$avatar-dimension} / 9 * 5);
         border: 2px solid var(--primary-colors-0-00);
 
         .user-information {
