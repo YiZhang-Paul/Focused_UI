@@ -1,32 +1,36 @@
 <template>
-    <div class="textarea-input-container">
-        <span v-if="!isEditMode" @click="onEditStart()">
-            {{ modelValue?.trim() ? modelValue : 'no description available.' }}
-        </span>
+    <overlay-scroll-panel class="textarea-input-container">
+        <div class="content">
+            <span v-if="!isEditMode" @click="onEditStart()">
+                {{ modelValue?.trim() ? modelValue : 'no description available.' }}
+            </span>
 
-        <template v-if="isEditMode">
-            <textarea ref="textareaBox"
-                v-model="current"
-                :maxlength="maxLength"
-                @keyup.esc="isEditMode = false"
-                @blur="isEditMode = isBlurIgnored">
-            </textarea>
+            <template v-if="isEditMode">
+                <textarea ref="textareaBox"
+                    v-model="current"
+                    :maxlength="maxLength"
+                    @keyup.esc="isEditMode = false"
+                    @blur="isEditMode = isBlurIgnored">
+                </textarea>
 
-            <div class="action-buttons">
-                <check class="save-button"
-                    @mouseover="isBlurIgnored = true"
-                    @mouseout="isBlurIgnored = false"
-                    @click="onEditEnd()" />
+                <div class="action-buttons">
+                    <check class="save-button"
+                        @mouseover="isBlurIgnored = true"
+                        @mouseout="isBlurIgnored = false"
+                        @click="onEditEnd()" />
 
-                <close class="cancel-button" />
-            </div>
-        </template>
-    </div>
+                    <close class="cancel-button" />
+                </div>
+            </template>
+        </div>
+    </overlay-scroll-panel>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { Check, Close } from 'mdue';
+
+import OverlayScrollPanel from '../panels/overlay-scroll-panel.vue';
 
 class TextareaInputProp {
     public modelValue = prop<string>({ default: '' });
@@ -36,7 +40,8 @@ class TextareaInputProp {
 @Options({
     components: {
         Check,
-        Close
+        Close,
+        OverlayScrollPanel
     },
     emits: ['update:modelValue']
 })
@@ -69,67 +74,69 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
 
 <style lang="scss" scoped>
 .textarea-input-container {
-    position: relative;
-    display: flex;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 
-    & > span, & > textarea {
-        flex: 1;
-        padding: 0.5vh 0.75vh;
-        border-radius: 4px;
-        font-size: inherit;
+    &:hover {
+        cursor: pointer;
+        background-color: var(--primary-colors-7-02);
     }
 
-    & > span {
-        box-sizing: border-box;
-        width: 0;
-        height: 100%;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        transition: background-color 0.3s;
-
-        &:hover {
-            cursor: pointer;
-            background-color: var(--primary-colors-7-02);
-        }
-    }
-
-    & > textarea {
-        border: none;
-        outline: none;
-        resize: none;
-        color: var(--font-colors-0-00);
-        background-color: var(--primary-colors-7-00);
-        font-family: inherit;
-    }
-
-    .action-buttons {
+    .content {
+        position: relative;
         display: flex;
-        align-items: center;
-        position: absolute;
-        bottom: 0.5vh;
-        right: 1.75vh;
+        width: 100%;
+        height: 100%;
 
-        .save-button, .cancel-button {
-            cursor: pointer;
-            font-size: var(--font-sizes-600);
-            transition: color 0.3s;
+        & > span, textarea {
+            box-sizing: border-box;
+            padding: 0.75vh 1vh;
+            width: 100%;
         }
 
-        .save-button {
-            color: var(--context-colors-confirm-05);
+        & > span {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
 
-            &:hover {
-                color: var(--context-colors-confirm-00);
+        textarea {
+            border: none;
+            outline: none;
+            resize: none;
+            color: var(--font-colors-0-00);
+            background-color: var(--primary-colors-7-00);
+            font-size: inherit;
+            font-family: inherit;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            bottom: 0.5vh;
+            right: 2vh;
+
+            .save-button, .cancel-button {
+                cursor: pointer;
+                font-size: var(--font-sizes-600);
+                transition: color 0.3s;
             }
-        }
 
-        .cancel-button {
-            margin-left: 0.25vh;
-            color: var(--context-colors-warning-05);
+            .save-button {
+                color: var(--context-colors-confirm-05);
 
-            &:hover {
-                color: var(--context-colors-warning-00);
+                &:hover {
+                    color: var(--context-colors-confirm-00);
+                }
+            }
+
+            .cancel-button {
+                margin-left: 0.5vh;
+                color: var(--context-colors-warning-05);
+
+                &:hover {
+                    color: var(--context-colors-warning-00);
+                }
             }
         }
     }

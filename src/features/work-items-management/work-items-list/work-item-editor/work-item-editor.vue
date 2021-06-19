@@ -224,13 +224,14 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 height: 75%;
 
                 .icon {
-                    margin-right: 1vh;
+                    margin-right: 0.75vh;
                     color: var(--font-colors-1-00);
                     font-size: var(--font-sizes-700);
                 }
 
                 .description-input {
-                    flex: 1;
+                    width: 100%;
+                    height: 100%;
                     color: var(--font-colors-2-00);
                 }
             }

@@ -124,7 +124,7 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     }
 
     .entries-wrapper {
-        margin-bottom: 0.5vh;
+        margin-bottom: 0.75vh;
         width: 80%;
         height: 100%;
 
@@ -138,11 +138,14 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
             .entry {
                 padding-left: 1vh;
                 padding-right: 1vh;
-                margin-bottom: 0.75vh;
                 width: 93.75%;
 
                 &:hover .delete-button {
                     opacity: 1;
+                }
+
+                &:not(:last-of-type) {
+                    margin-bottom: 0.75vh;
                 }
 
                 .check-button, .uncheck-button {
