@@ -1,6 +1,14 @@
 <template>
     <div class="work-item-checklist-container">
         <div class="checklist-entry" v-for="(entry, index) of entries" :key="index">
+            <check class="check-button action-button"
+                v-if="entry.isCompleted"
+                @click="toggleCompletion(index)" />
+
+            <radiobox-blank class="uncheck-button action-button"
+                v-if="!entry.isCompleted"
+                @click="toggleCompletion(index)" />
+
             <text-input class="name"
                 v-model="entry.description"
                 @update:modelValue="$emit('update', entries)">
@@ -27,7 +35,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Delete, PlusBox } from 'mdue';
+import { Check, Delete, PlusBox, RadioboxBlank } from 'mdue';
 
 import { ChecklistEntry } from '../../../../../core/models/work-item/checklist-entry';
 import { GenericUtility } from '../../../../../core/utilities/generic-utility/generic-utility';
@@ -39,14 +47,22 @@ class WorkItemChecklistProp {
 
 @Options({
     components: {
+        Check,
         Delete,
         PlusBox,
+        RadioboxBlank,
         TextInput
     },
     emits: ['update']
 })
 export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     public pendingEntry = '';
+
+    public toggleCompletion(index: number): void {
+        const entry = this.entries[index];
+        const toggled = { ...entry, isCompleted: !entry.isCompleted };
+        this.$emit('update', GenericUtility.replaceAt(this.entries, toggled, index));
+    }
 
     public deleteEntry(index: number): void {
         this.$emit('update', GenericUtility.removeAt(this.entries, index));
@@ -99,12 +115,32 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     }
 
     .checklist-entry {
-        padding-left: 0.75vh;
+        padding-left: 1vh;
         padding-right: 1vh;
         margin-bottom: 0.75vh;
 
+        &:hover .delete-button {
+            opacity: 1;
+        }
+
+        .check-button, .uncheck-button {
+            margin-right: 0.75vh;
+            opacity: 0;
+            animation: fade-in 0.3s ease forwards;
+        }
+
+        .check-button {
+            color: var(--context-colors-confirm-00);
+        }
+
+        .uncheck-button {
+            color: var(--context-colors-alert-00);
+        }
+
         .delete-button {
-            margin-left: 1vh;
+            margin-left: 0.75vh;
+            opacity: 0;
+            transition: opacity 0.3s;
 
             &:hover {
                 color: var(--context-colors-warning-00);
@@ -117,7 +153,7 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
         padding-right: 0.75vh;
 
         .add-button {
-            margin-right: 1vh;
+            margin-right: 0.75vh;
 
             &:hover:not(.disabled) {
                 color: var(--font-colors-0-00);
