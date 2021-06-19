@@ -7,19 +7,24 @@
         <close class="close-button" @click="$emit('item:close')" />
 
         <detail-display-panel class="content">
-            <text-input class="name"
-                v-model="item.name"
-                @update:modelValue="$emit('item:update')">
-            </text-input>
-
-            <div class="description">
-                <notebook-edit-outline class="icon" />
-
-                <textarea-input class="description-input"
-                    v-model="item.description"
+            <div class="core-information" v-if="activeIndex === 0">
+                <text-input class="name"
+                    v-model="item.name"
                     @update:modelValue="$emit('item:update')">
-                </textarea-input>
+                </text-input>
+
+                <div class="description">
+                    <notebook-edit-outline class="icon" />
+
+                    <textarea-input class="description-input"
+                        v-model="item.description"
+                        @update:modelValue="$emit('item:update')">
+                    </textarea-input>
+                </div>
             </div>
+
+            <div class="subtask" v-if="activeIndex === 1"></div>
+            <div class="checklist" v-if="activeIndex === 2"></div>
 
             <div class="additional-information">
                 <div class="due-date" v-if="!isRecur">
@@ -28,8 +33,18 @@
                 </div>
 
                 <div class="completion-information">
-                    <item-progression :progress="meta.subtaskProgress"></item-progression>
-                    <item-progression :icon="checklistIcon" :progress="meta.checklistProgress"></item-progression>
+                    <item-progression class="progression"
+                        :class="{ active: activeIndex === 1 }"
+                        :progress="meta.subtaskProgress"
+                        @click="activeIndex = 1">
+                    </item-progression>
+
+                    <item-progression class="progression"
+                        :class="{ active: activeIndex === 2 }"
+                        :icon="checklistIcon"
+                        :progress="meta.checklistProgress"
+                        @click="activeIndex = 2">
+                    </item-progression>
                 </div>
             </div>
         </detail-display-panel>
@@ -98,6 +113,7 @@ class WorkItemEditorProp {
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
+    public activeIndex = 0;
 
     get isRecur(): boolean {
         return this.item.type === WorkItemType.Recurring;
@@ -156,30 +172,42 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
         align-items: center;
         height: $content-height;
 
-        .name {
-            margin-top: 2.5vh;
-            margin-bottom: 0.75vh;
-            width: 100%;
-            font-size: var(--font-sizes-500);
-        }
-
-        .description {
+        .core-information, .subtask, .checklist {
             box-sizing: border-box;
             display: flex;
-            padding: 1.5vh 0;
-            margin-bottom: 1.25vh;
-            width: 80%;
-            height: 67.5%;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 87.5%;
+        }
 
-            .icon {
-                margin-right: 1vh;
-                color: var(--font-colors-1-00);
-                font-size: var(--font-sizes-700);
+        .core-information {
+
+            .name {
+                margin-top: 2.5vh;
+                margin-bottom: 0.75vh;
+                width: 100%;
+                font-size: var(--font-sizes-500);
             }
 
-            .description-input {
-                flex: 1;
-                color: var(--font-colors-2-00);
+            .description {
+                box-sizing: border-box;
+                display: flex;
+                padding: 1.5vh 0;
+                margin-bottom: 1.25vh;
+                width: 80%;
+                height: 75%;
+
+                .icon {
+                    margin-right: 1vh;
+                    color: var(--font-colors-1-00);
+                    font-size: var(--font-sizes-700);
+                }
+
+                .description-input {
+                    flex: 1;
+                    color: var(--font-colors-2-00);
+                }
             }
         }
 
@@ -205,7 +233,22 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 align-items: center;
                 justify-content: space-between;
                 right: 2.5vh;
-                width: 12.5%;
+
+                .progression {
+                    padding: 0.35vh 1vh 0.35vh 0.75vh;
+                    border-radius: 3px;
+                    background-color: var(--primary-colors-7-02);
+                    transition: background-color 0.3s;
+
+                    &:hover, &.active {
+                        cursor: pointer;
+                        background-color: var(--primary-colors-7-07);
+                    }
+
+                    &:nth-child(2) {
+                        margin-left: 1vh;
+                    }
+                }
             }
         }
     }

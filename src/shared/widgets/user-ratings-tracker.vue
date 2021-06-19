@@ -125,30 +125,30 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
     }
 
     .icon {
-        $dimension: 3vh;
+        $dimension: 2.5vh;
 
         position: absolute;
         width: $dimension;
         height: $dimension;
 
         &.estimation, &.planning {
-            top: 34.5%;
+            top: 35%;
         }
 
         &.adaptability, &.sustainability {
-            bottom: 1.5%;
+            bottom: 2.75%;
         }
 
         &.determination {
-            top: 1.25%;
+            top: 2.5%;
         }
 
         &.estimation {
-            left: calc(11.5% - #{$dimension} / 2);
+            left: calc(12% - #{$dimension} / 2);
         }
 
         &.planning {
-            right: calc(11.5% - #{$dimension} / 2);
+            right: calc(12% - #{$dimension} / 2);
         }
 
         &.adaptability {

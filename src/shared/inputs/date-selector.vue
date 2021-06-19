@@ -231,7 +231,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         width: 100%;
         height: 100%;
         border-radius: 3px;
-        background-color: var(--primary-colors-7-04);
+        background-color: var(--primary-colors-7-02);
         transition: background-color 0.3s;
 
         &:hover, &.active {
