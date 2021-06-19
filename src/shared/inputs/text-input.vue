@@ -1,14 +1,16 @@
 <template>
     <div class="text-input-container">
-        <span v-if="!isEditMode" @click="onEditStart()">
-            {{ modelValue ? modelValue : placeholder }}
-        </span>
+        <template v-if="!isEditMode">
+            <span v-if="modelValue" @click="onEditStart()">{{ modelValue }}</span>
+            <span v-if="!modelValue" class="placeholder" @click="onEditStart()">{{ placeholder }}</span>
+        </template>
 
         <input v-if="isEditMode"
             type="text"
             ref="inputBox"
             v-model="current"
             :maxlength="maxLength"
+            @input="onEdit()"
             @keyup.enter="onEditEnd()"
             @keyup.esc="isEditMode = false"
             @blur="isEditMode = false" />
@@ -20,8 +22,10 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 class TextInputProp {
     public modelValue = prop<string>({ default: '' });
-    public maxLength = prop<number>({ default: 85 });
     public placeholder = prop<string>({ default: '' });
+    public isEmptyAllowed = prop<boolean>({ default: false });
+    public isInstantUpdate = prop<boolean>({ default: false });
+    public maxLength = prop<number>({ default: 85 });
 }
 
 @Options({
@@ -36,14 +40,23 @@ export default class TextInput extends Vue.with(TextInputProp) {
         setTimeout(() => (this.$refs.inputBox as HTMLElement).focus());
     }
 
+    public onEdit(): void {
+        const value = this.current?.trim() ?? '';
+
+        if (this.isInstantUpdate && value !== this.modelValue) {
+            this.$emit('update:modelValue', value);
+        }
+    }
+
     public onEditEnd(): void {
         const value = this.current?.trim() ?? '';
 
-        if (value && value !== this.modelValue) {
+        if (!this.isInstantUpdate && value !== this.modelValue && (value || this.isEmptyAllowed)) {
             this.$emit('update:modelValue', value);
         }
 
-        this.isEditMode = !value;
+        this.current = value;
+        this.isEditMode = this.isEmptyAllowed ? false : !value;
     }
 }
 </script>
@@ -52,11 +65,15 @@ export default class TextInput extends Vue.with(TextInputProp) {
 .text-input-container {
     display: flex;
 
+    .placeholder {
+        color: var(--font-colors-5-00);
+    }
+
     & > span, & > input {
         flex: 1;
         padding: 0.5vh 0.75vh;
         border-radius: 4px;
-        text-align: center;
+        text-align: inherit;
         font-size: inherit;
     }
 
