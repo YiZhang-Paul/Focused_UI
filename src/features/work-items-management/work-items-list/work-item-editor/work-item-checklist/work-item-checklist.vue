@@ -1,23 +1,25 @@
 <template>
     <div class="work-item-checklist-container">
-        <div class="checklist-entry" v-for="(entry, index) of entries" :key="index">
-            <check class="check-button action-button"
-                v-if="entry.isCompleted"
-                @click="toggleCompletion(index)" />
+        <div class="entries">
+            <div class="entry" v-for="(entry, index) of entries" :key="index">
+                <check class="check-button action-button"
+                    v-if="entry.isCompleted"
+                    @click="toggleCompletion(index)" />
 
-            <radiobox-blank class="uncheck-button action-button"
-                v-if="!entry.isCompleted"
-                @click="toggleCompletion(index)" />
+                <radiobox-blank class="uncheck-button action-button"
+                    v-if="!entry.isCompleted"
+                    @click="toggleCompletion(index)" />
 
-            <text-input class="name"
-                v-model="entry.description"
-                @update:modelValue="$emit('update', entries)">
-            </text-input>
+                <text-input class="name"
+                    v-model="entry.description"
+                    @update:modelValue="$emit('update', entries)">
+                </text-input>
 
-            <delete class="delete-button action-button" @click="deleteEntry(index)" />
+                <delete class="delete-button action-button" @click="deleteEntry(index)" />
+            </div>
         </div>
 
-        <div class="add-checklist">
+        <display-panel class="add-checklist">
             <plus-box class="add-button action-button"
                 :class="{ disabled: !pendingEntry }"
                 @click="addEntry()" />
@@ -29,7 +31,7 @@
                 :isInstantUpdate="true"
                 @keyup.enter="addEntry()">
             </text-input>
-        </div>
+        </display-panel>
     </div>
 </template>
 
@@ -39,6 +41,7 @@ import { Check, Delete, PlusBox, RadioboxBlank } from 'mdue';
 
 import { ChecklistEntry } from '../../../../../core/models/work-item/checklist-entry';
 import { GenericUtility } from '../../../../../core/utilities/generic-utility/generic-utility';
+import DisplayPanel from '../../../../../shared/panels/display-panel.vue';
 import TextInput from '../../../../../shared/inputs/text-input.vue';
 
 class WorkItemChecklistProp {
@@ -51,6 +54,7 @@ class WorkItemChecklistProp {
         Delete,
         PlusBox,
         RadioboxBlank,
+        DisplayPanel,
         TextInput
     },
     emits: ['update']
@@ -86,13 +90,14 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     padding-top: 5vh;
     padding-bottom: 2.5vh;
 
-    .checklist-entry, .add-checklist {
+    .entry, .add-checklist {
         box-sizing: border-box;
         display: flex;
         align-items: center;
         justify-content: space-around;
         width: 75%;
         height: 4vh;
+        min-height: 4vh;
         border-radius: 3px;
         background-color: var(--primary-colors-7-02);
 
@@ -115,36 +120,47 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
         }
     }
 
-    .checklist-entry {
-        padding-left: 1vh;
-        padding-right: 1vh;
-        margin-bottom: 0.75vh;
+    .entries {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0.5vh;
+        padding: 1vh 0;
+        width: 100%;
+        overflow-y: auto;
 
-        &:hover .delete-button {
-            opacity: 1;
-        }
+        .entry {
+            padding-left: 1vh;
+            padding-right: 1vh;
+            margin-bottom: 0.75vh;
 
-        .check-button, .uncheck-button {
-            margin-right: 0.75vh;
-            opacity: 0;
-            animation: fade-in 0.3s ease forwards;
-        }
+            &:hover .delete-button {
+                opacity: 1;
+            }
 
-        .check-button {
-            color: var(--context-colors-confirm-00);
-        }
+            .check-button, .uncheck-button {
+                margin-right: 0.75vh;
+                opacity: 0;
+                animation: fade-in 0.3s ease forwards;
+            }
 
-        .uncheck-button {
-            color: var(--context-colors-alert-00);
-        }
+            .check-button {
+                color: var(--context-colors-confirm-00);
+            }
 
-        .delete-button {
-            margin-left: 0.75vh;
-            opacity: 0;
-            transition: opacity 0.3s;
+            .uncheck-button {
+                color: var(--context-colors-alert-00);
+            }
 
-            &:hover {
-                color: var(--context-colors-warning-00);
+            .delete-button {
+                margin-left: 0.75vh;
+                opacity: 0;
+                transition: opacity 0.3s;
+
+                &:hover {
+                    color: var(--context-colors-warning-00);
+                }
             }
         }
     }
