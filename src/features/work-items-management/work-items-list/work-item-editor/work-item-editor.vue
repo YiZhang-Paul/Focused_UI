@@ -10,7 +10,7 @@
             <div class="core-information" v-if="activeIndex === 0">
                 <text-input class="name"
                     v-model="item.name"
-                    @update:modelValue="$emit('item:update')">
+                    @update:modelValue="onUpdate()">
                 </text-input>
 
                 <div class="description">
@@ -18,7 +18,7 @@
 
                     <textarea-input class="description-input"
                         v-model="item.description"
-                        @update:modelValue="$emit('item:update')">
+                        @update:modelValue="onUpdate()">
                     </textarea-input>
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <div class="additional-information">
                 <div class="due-date" v-if="!isRecur">
                     <span>Due</span>
-                    <date-selector v-model="item.dueDate" @update:modelValue="$emit('item:update')"></date-selector>
+                    <date-selector v-model="item.dueDate" @update:modelValue="onUpdate()"></date-selector>
                 </div>
 
                 <div class="completion-information">
@@ -123,6 +123,8 @@ class WorkItemEditorProp {
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
     public activeIndex = 0;
+    // eslint-disable-next-line no-undef
+    private debounceTimer: NodeJS.Timeout | null = null;
 
     get isRecur(): boolean {
         return this.item.type === WorkItemType.Recurring;
@@ -148,7 +150,15 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
     public onChecklistUpdate(entries: ChecklistEntry[]): void {
         this.item.checklist = entries;
-        this.$emit('item:update');
+        this.onUpdate();
+    }
+
+    public onUpdate(): void {
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+
+        this.debounceTimer = setTimeout(() => this.$emit('item:update'), 400);
     }
 }
 </script>
