@@ -95,6 +95,10 @@
     --priority-colors-3-07: rgba(218, 218, 218, 0.7);
     --priority-colors-3-08: rgba(218, 218, 218, 0.8);
     --priority-colors-3-09: rgba(218, 218, 218, 0.9);
+    // scrollbar colors
+    --scrollbar-colors-track: rgba(200, 200, 200, 0.3);
+    --scrollbar-colors-handle-default: rgba(215, 215, 215, 0.9);
+    --scrollbar-colors-handle-active: rgba(255, 255, 255, 0.9);
     // font sizes (16px as baseline)
     --font-sizes-000: 0.5rem; // 8px
     --font-sizes-100: 0.625rem; // 10px
@@ -107,4 +111,24 @@
     --font-sizes-800: 3rem; // 48px
     --font-sizes-900: 4.5rem; // 72px
     --font-sizes-1000: 6.75rem; // 108px
+}
+
+.os-theme-dark {
+
+    & > .os-scrollbar-vertical {
+        width: 9px;
+    }
+
+    & > .os-scrollbar > .os-scrollbar-track {
+        background-color: var(--scrollbar-colors-track);
+    }
+
+    & > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+        border-radius: 2px;
+        background-color: var(--scrollbar-colors-handle-default);
+
+        &:hover {
+            background-color: var(--scrollbar-colors-track-active);
+        }
+    }
 }

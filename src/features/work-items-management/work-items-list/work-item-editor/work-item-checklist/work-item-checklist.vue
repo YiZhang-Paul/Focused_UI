@@ -1,23 +1,25 @@
 <template>
     <div class="work-item-checklist-container">
-        <div class="entries">
-            <div class="entry" v-for="(entry, index) of entries" :key="index">
-                <check class="check-button action-button"
-                    v-if="entry.isCompleted"
-                    @click="toggleCompletion(index)" />
+        <overlay-scroll-panel class="entries-wrapper">
+            <div class="entries">
+                <div class="entry" v-for="(entry, index) of entries" :key="index">
+                    <check class="check-button action-button"
+                        v-if="entry.isCompleted"
+                        @click="toggleCompletion(index)" />
 
-                <radiobox-blank class="uncheck-button action-button"
-                    v-if="!entry.isCompleted"
-                    @click="toggleCompletion(index)" />
+                    <radiobox-blank class="uncheck-button action-button"
+                        v-if="!entry.isCompleted"
+                        @click="toggleCompletion(index)" />
 
-                <text-input class="name"
-                    v-model="entry.description"
-                    @update:modelValue="$emit('update', entries)">
-                </text-input>
+                    <text-input class="name"
+                        v-model="entry.description"
+                        @update:modelValue="$emit('update', entries)">
+                    </text-input>
 
-                <delete class="delete-button action-button" @click="deleteEntry(index)" />
+                    <delete class="delete-button action-button" @click="deleteEntry(index)" />
+                </div>
             </div>
-        </div>
+        </overlay-scroll-panel>
 
         <display-panel class="add-checklist">
             <plus-box class="add-button action-button"
@@ -42,6 +44,7 @@ import { Check, Delete, PlusBox, RadioboxBlank } from 'mdue';
 import { ChecklistEntry } from '../../../../../core/models/work-item/checklist-entry';
 import { GenericUtility } from '../../../../../core/utilities/generic-utility/generic-utility';
 import DisplayPanel from '../../../../../shared/panels/display-panel.vue';
+import OverlayScrollPanel from '../../../../../shared/panels/overlay-scroll-panel.vue';
 import TextInput from '../../../../../shared/inputs/text-input.vue';
 
 class WorkItemChecklistProp {
@@ -55,6 +58,7 @@ class WorkItemChecklistProp {
         PlusBox,
         RadioboxBlank,
         DisplayPanel,
+        OverlayScrollPanel,
         TextInput
     },
     emits: ['update']
@@ -95,7 +99,6 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        width: 75%;
         height: 4vh;
         min-height: 4vh;
         border-radius: 3px;
@@ -120,46 +123,50 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
         }
     }
 
-    .entries {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    .entries-wrapper {
         margin-bottom: 0.5vh;
-        padding: 1vh 0;
-        width: 100%;
-        overflow-y: auto;
+        width: 80%;
+        height: 100%;
 
-        .entry {
-            padding-left: 1vh;
-            padding-right: 1vh;
-            margin-bottom: 0.75vh;
+        .entries {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
 
-            &:hover .delete-button {
-                opacity: 1;
-            }
+            .entry {
+                padding-left: 1vh;
+                padding-right: 1vh;
+                margin-bottom: 0.75vh;
+                width: 93.75%;
 
-            .check-button, .uncheck-button {
-                margin-right: 0.75vh;
-                opacity: 0;
-                animation: fade-in 0.3s ease forwards;
-            }
+                &:hover .delete-button {
+                    opacity: 1;
+                }
 
-            .check-button {
-                color: var(--context-colors-confirm-00);
-            }
+                .check-button, .uncheck-button {
+                    margin-right: 0.75vh;
+                    opacity: 0;
+                    animation: fade-in 0.3s ease forwards;
+                }
 
-            .uncheck-button {
-                color: var(--context-colors-alert-00);
-            }
+                .check-button {
+                    color: var(--context-colors-confirm-00);
+                }
 
-            .delete-button {
-                margin-left: 0.75vh;
-                opacity: 0;
-                transition: opacity 0.3s;
+                .uncheck-button {
+                    color: var(--context-colors-alert-00);
+                }
 
-                &:hover {
-                    color: var(--context-colors-warning-00);
+                .delete-button {
+                    margin-left: 0.75vh;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+
+                    &:hover {
+                        color: var(--context-colors-warning-00);
+                    }
                 }
             }
         }
@@ -168,6 +175,7 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     .add-checklist {
         padding-left: 1vh;
         padding-right: 0.75vh;
+        width: 75%;
 
         .add-button {
             margin-right: 0.75vh;
