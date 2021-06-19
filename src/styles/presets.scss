@@ -1,0 +1,110 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('assets/fonts/Roboto-Regular.ttf');
+}
+
+:root {
+    // primary colors
+    --primary-colors-0-00: rgb(255, 255, 255);
+    --primary-colors-0-01: rgba(255, 255, 255, 0.1);
+    --primary-colors-0-03: rgba(255, 255, 255, 0.3);
+    --primary-colors-0-04: rgba(255, 255, 255, 0.4);
+    --primary-colors-2-00: rgb(205, 205, 205);
+    --primary-colors-3-00: rgb(180, 180, 180);
+    --primary-colors-6-00: rgb(110, 110, 110);
+    --primary-colors-6-01: rgba(110, 110, 110, 0.1);
+    --primary-colors-6-03: rgba(110, 110, 110, 0.3);
+    --primary-colors-7-00: rgb(76, 114, 150);
+    --primary-colors-7-01: rgba(76, 114, 150, 0.1);
+    --primary-colors-7-02: rgba(76, 114, 150, 0.2);
+    --primary-colors-7-04: rgba(76, 114, 150, 0.4);
+    --primary-colors-7-07: rgba(76, 114, 150, 0.7);
+    --primary-colors-8-00: rgb(59, 68, 91);
+    --primary-colors-8-01: rgba(59, 68, 91, 0.1);
+    --primary-colors-8-03: rgba(59, 68, 91, 0.3);
+    --primary-colors-10-00: rgb(15, 18, 26);
+    --primary-colors-10-08: rgba(15, 18, 26, 0.8);
+    // font colors
+    --font-colors-0-00: rgb(255, 255, 255);
+    --font-colors-0-05: rgba(255, 255, 255, 0.5);
+    --font-colors-0-07: rgba(255, 255, 255, 0.7);
+    --font-colors-1-00: rgb(225, 225, 225);
+    --font-colors-2-00: rgb(205, 205, 205);
+    --font-colors-3-00: rgb(185, 185, 185);
+    --font-colors-4-00: rgb(165, 165, 165);
+    --font-colors-5-00: rgb(140, 140, 140);
+    --font-colors-6-00: rgb(110, 110, 110);
+    --font-colors-9-00: rgb(35, 35, 35);
+    // context colors
+    --context-colors-info-00: rgb(81, 224, 255);
+    --context-colors-increase-00: rgb(66, 255, 0);
+    --context-colors-increase-04: rgba(66, 255, 0, 0.4);
+    --context-colors-decrease-00: rgb(255, 100, 100);
+    --context-colors-decrease-04: rgba(255, 100, 100, 0.4);
+    --context-colors-confirm-00: rgb(105, 255, 92);
+    --context-colors-confirm-04: rgba(105, 255, 92, 0.4);
+    --context-colors-confirm-05: rgba(105, 255, 92, 0.5);
+    --context-colors-alert-00: rgb(255, 203, 69);
+    --context-colors-alert-04: rgba(255, 203, 69, 0.4);
+    --context-colors-warning-00: rgb(255, 100, 100);
+    --context-colors-warning-04: rgba(255, 100, 100, 0.4);
+    --context-colors-warning-05: rgba(255, 100, 100, 0.5);
+    // activity colors
+    --activity-colors-regular-00: rgb(255, 255, 255);
+    --activity-colors-regular-04: rgba(255, 255, 255, 0.4);
+    --activity-colors-recurring-00: rgb(196, 222, 142);
+    --activity-colors-recurring-04: rgba(196, 222, 142, 0.4);
+    --activity-colors-interruption-00: rgb(250, 0, 255);
+    --activity-colors-interruption-04: rgba(250, 0, 255, 0.4);
+    --activity-colors-overlearning-00: rgb(98, 236, 255);
+    --activity-colors-overlearning-04: rgba(98, 236, 255, 0.4);
+    // focus progress colors
+    --focus-progress-colors-insufficient-00: rgb(255, 203, 69);
+    --focus-progress-colors-insufficient-05: rgba(255, 203, 69, 0.5);
+    --focus-progress-colors-sufficient-00: rgb(255, 255, 255);
+    --focus-progress-colors-sufficient-05: rgba(255, 255, 255, 0.5);
+    --focus-progress-colors-overdoing-00: rgb(255, 100, 100);
+    --focus-progress-colors-overdoing-05: rgba(255, 100, 100, 0.5);
+    // progress colors
+    --progress-colors-normal-00: rgb(255, 255, 255);
+    --progress-colors-normal-04: rgba(255, 255, 255, 0.4);
+    --progress-colors-faster-00: rgb(98, 255, 142);
+    --progress-colors-faster-04: rgba(98, 255, 142, 0.4);
+    --progress-colors-overestimate-00: rgb(255, 203, 69);
+    --progress-colors-overestimate-04: rgba(255, 203, 69, 0.4);
+    --progress-colors-underestimate-00: rgb(255, 100, 100);
+    --progress-colors-underestimate-04: rgba(255, 100, 100, 0.4);
+    // priority colors
+    --priority-colors-0-00: rgb(255, 26, 26);
+    --priority-colors-0-04: rgba(255, 26, 26, 0.4);
+    --priority-colors-0-07: rgba(255, 26, 26, 0.7);
+    --priority-colors-0-08: rgba(255, 26, 26, 0.8);
+    --priority-colors-0-09: rgba(255, 26, 26, 0.9);
+    --priority-colors-1-00: rgb(255, 232, 26);
+    --priority-colors-1-04: rgba(255, 232, 26, 0.4);
+    --priority-colors-1-07: rgba(255, 232, 26, 0.7);
+    --priority-colors-1-08: rgba(255, 232, 26, 0.8);
+    --priority-colors-1-09: rgba(255, 232, 26, 0.9);
+    --priority-colors-2-00: rgb(29, 255, 24);
+    --priority-colors-2-04: rgba(29, 255, 24, 0.4);
+    --priority-colors-2-07: rgba(29, 255, 24, 0.7);
+    --priority-colors-2-08: rgba(29, 255, 24, 0.8);
+    --priority-colors-2-09: rgba(29, 255, 24, 0.9);
+    --priority-colors-3-00: rgb(218, 218, 218);
+    --priority-colors-3-04: rgba(218, 218, 218, 0.4);
+    --priority-colors-3-07: rgba(218, 218, 218, 0.7);
+    --priority-colors-3-08: rgba(218, 218, 218, 0.8);
+    --priority-colors-3-09: rgba(218, 218, 218, 0.9);
+    // font sizes (16px as baseline)
+    --font-sizes-000: 0.5rem; // 8px
+    --font-sizes-100: 0.625rem; // 10px
+    --font-sizes-200: 0.75rem; // 12px
+    --font-sizes-300: 0.875rem; // 14px
+    --font-sizes-400: 1rem; // 16px
+    --font-sizes-500: 1.25rem; // 20px
+    --font-sizes-600: 1.5rem; // 24px
+    --font-sizes-700: 1.75rem; // 28px
+    --font-sizes-800: 3rem; // 48px
+    --font-sizes-900: 4.5rem; // 72px
+    --font-sizes-1000: 6.75rem; // 108px
+}
