@@ -1,6 +1,8 @@
 <template>
     <div class="user-widget-container" v-if="profile">
-        <div class="avatar"></div>
+        <div class="avatar">
+            <img :src="profile.avatarUrl" @error="$event.target.src = 'focus-protocol://src/assets/images/avatar_placeholder.jpg'" />
+        </div>
 
         <div class="content">
             <div class="user-information">
@@ -58,17 +60,22 @@ export default class UserWidget extends Vue {
     align-items: center;
 
     .avatar {
-        margin-right: 0.5vh;
+        margin-right: 0.55vh;
         width: $avatar-dimension;
         height: $avatar-dimension;
         border: 2px solid var(--primary-colors-0-00);
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
 
     .content {
         box-sizing: border-box;
         display: flex;
         align-items: center;
-        padding: 0.5vh 1vh;
+        padding: 0.5vh 1.75vh 0.5vh 1vh;
         height: calc(#{$avatar-dimension} / 7 * 4);
         border: 2px solid var(--primary-colors-0-00);
 
@@ -90,7 +97,7 @@ export default class UserWidget extends Vue {
             display: flex;
 
             .action-button {
-                margin-right: 1.25vh;
+                margin-left: 1.25vh;
                 font-size: var(--font-sizes-600);
                 transition: color 0.3s;
 

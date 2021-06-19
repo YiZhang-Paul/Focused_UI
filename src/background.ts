@@ -59,6 +59,19 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    const protocolName = 'focus-protocol';
+
+    protocol.registerFileProtocol(protocolName, (request, callback) => {
+        const url = request.url.replace(`${protocolName}://`, '');
+
+        try {
+            return callback(decodeURIComponent(url));
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         try {
