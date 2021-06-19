@@ -2,6 +2,7 @@
     <lightsource-panel class="lightsource-panel" :showGrids="true"></lightsource-panel>
 
     <div class="header-displays">
+        <user-widget class="user-widget"></user-widget>
         <current-date-time></current-date-time>
         <daily-focus-progression class="daily-progression"></daily-focus-progression>
     </div>
@@ -20,6 +21,7 @@ import { userKey } from './store/user/user.state';
 import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
+import UserWidget from './shared/widgets/user-widget.vue';
 import CurrentDateTime from './shared/widgets/current-date-time.vue';
 import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue';
 
@@ -27,6 +29,7 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue'
     components: {
         WorkItemsManagement,
         LightsourcePanel,
+        UserWidget,
         CurrentDateTime,
         DailyFocusProgression
     }
@@ -88,8 +91,15 @@ html, body, #app {
     width: 100%;
     height: $header-displays-height;
 
-    .daily-progression {
+    .user-widget, .daily-progression {
         position: absolute;
+    }
+
+    .user-widget {
+        left: 5vh;
+    }
+
+    .daily-progression {
         right: 5vh;
     }
 }
