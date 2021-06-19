@@ -28,7 +28,7 @@
             <work-item-checklist class="checklist"
                 v-if="activeIndex === 2"
                 :entries="item.checklist"
-                @update="$emit('item:update')">
+                @update="onChecklistUpdate($event)">
             </work-item-checklist>
 
             <div class="additional-information">
@@ -83,6 +83,7 @@ import { Close, FormatListCheckbox, NotebookEditOutline } from 'mdue';
 
 import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../../core/models/work-item/work-item';
+import { ChecklistEntry } from '../../../../core/models/work-item/checklist-entry';
 import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 import { ActionButtonType } from '../../../../core/enums/action-button-type.enum';
 import ActionButton from '../../../../shared/buttons/action-button.vue';
@@ -143,6 +144,11 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             hour: 'numeric',
             minute: '2-digit'
         });
+    }
+
+    public onChecklistUpdate(entries: ChecklistEntry[]): void {
+        this.item.checklist = entries;
+        this.$emit('item:update');
     }
 }
 </script>

@@ -5,10 +5,11 @@
                 v-model="pendingEntry"
                 :placeholder="'add checklist entry...'"
                 :isEmptyAllowed="true"
-                :isInstantUpdate="true">
+                :isInstantUpdate="true"
+                @keyup.enter="addEntry()">
             </text-input>
 
-            <plus-box class="add-button" :class="{ disabled: !pendingEntry }" />
+            <plus-box class="add-button" :class="{ disabled: !pendingEntry }" @click="addEntry()" />
         </div>
     </div>
 </template>
@@ -33,6 +34,13 @@ class WorkItemChecklistProp {
 })
 export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     public pendingEntry = '';
+
+    public addEntry(): void {
+        if (this.pendingEntry) {
+            const entry = { description: this.pendingEntry } as ChecklistEntry;
+            this.$emit('update', [...this.entries, entry]);
+        }
+    }
 }
 </script>
 
