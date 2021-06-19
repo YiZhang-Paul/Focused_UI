@@ -24,7 +24,12 @@
             </div>
 
             <div class="subtask" v-if="activeIndex === 1"></div>
-            <div class="checklist" v-if="activeIndex === 2"></div>
+
+            <work-item-checklist class="checklist"
+                v-if="activeIndex === 2"
+                :entries="item.checklist"
+                @update="$emit('item:update')">
+            </work-item-checklist>
 
             <div class="additional-information">
                 <div class="due-date" v-if="!isRecur">
@@ -88,6 +93,8 @@ import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
 
+import WorkItemChecklist from './work-item-checklist/work-item-checklist.vue';
+
 class WorkItemEditorProp {
     public meta = prop<WorkItemDto>({ default: null });
     public item = prop<WorkItem>({ default: null });
@@ -103,7 +110,8 @@ class WorkItemEditorProp {
         DateSelector,
         DisplayPanel,
         DetailDisplayPanel,
-        ItemProgression
+        ItemProgression,
+        WorkItemChecklist
     },
     emits: [
         'item:close',
@@ -188,6 +196,7 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 margin-bottom: 0.75vh;
                 width: 100%;
                 font-size: var(--font-sizes-500);
+                text-align: center;
             }
 
             .description {
