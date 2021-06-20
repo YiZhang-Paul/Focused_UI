@@ -39,7 +39,7 @@ export default class App extends Vue {
 
     public created(): void {
         store.dispatch(`${userKey}/loadProfile`);
-        store.dispatch(`${timeSessionKey}/loadActiveFocusSession`);
+        store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
         this.loadPerformanceBreakdowns();
     }
 

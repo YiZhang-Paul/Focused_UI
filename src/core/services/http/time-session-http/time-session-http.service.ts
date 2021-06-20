@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { FocusSession } from '../../../models/time-session/focus-session';
 import { BreakSession } from '../../../models/time-session/break-session';
 
@@ -12,6 +13,17 @@ export class TimeSessionHttpService {
         }
         catch {
             return null;
+        }
+    }
+
+    public async getFocusSessionActivities(id: string): Promise<ActivityBreakdownDto> {
+        try {
+            const endpoint = `${this._api}/focus-session/${id}/activity-breakdown`;
+
+            return (await axios.get(endpoint)).data;
+        }
+        catch {
+            return new ActivityBreakdownDto();
         }
     }
 
