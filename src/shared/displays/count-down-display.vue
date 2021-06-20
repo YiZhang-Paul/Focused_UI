@@ -1,8 +1,12 @@
 <template>
     <div class="count-down-display-container">
-        <span>{{ hours }}</span>
-        <span>:{{ minutes }}:</span>
-        <span>{{ seconds }}</span>
+        <template v-if="target">
+            <span>{{ hours }}</span>
+            <span>:{{ minutes }}:</span>
+            <span>{{ seconds }}</span>
+        </template>
+
+        <span v-if="!target">-- : -- : --</span>
     </div>
 </template>
 
@@ -51,5 +55,9 @@ export default class CountDownDisplay extends Vue.with(CountDownDisplayProp) {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    span {
+        white-space: nowrap;
+    }
 }
 </style>
