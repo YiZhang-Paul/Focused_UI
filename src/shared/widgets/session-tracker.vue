@@ -20,10 +20,10 @@
         </div>
 
         <div class="progress">
-            <stop-circle class="icon stop-button" @click="$emit('session:stop')" />
+            <stop-circle class="icon stop-button" v-if="!isIdle" @click="$emit('session:stop')" />
             <timer class="icon" />
-            <count-down-display class="time" :target="focusSessionEnd"></count-down-display>
-            <progress-bar class="progress-bar" :series="focusSessionProgressSeries"></progress-bar>
+            <count-down-display class="time" :target="sessionEnd"></count-down-display>
+            <progress-bar class="progress-bar" :series="progressSeries"></progress-bar>
         </div>
     </div>
 </template>
@@ -35,8 +35,10 @@ import { StopCircle, Tag, Timer, Undo } from 'mdue';
 import store from '../../store';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
 import { FocusSession } from '../../core/models/time-session/focus-session';
+import { BreakSession } from '../../core/models/time-session/break-session';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
@@ -62,7 +64,7 @@ export default class SessionTracker extends Vue {
     }
 
     get title(): string {
-        if (this.sessionStatus === TimeSessionStatus.Idle) {
+        if (this.isIdle) {
             return 'no active item.';
         }
 
@@ -70,13 +72,11 @@ export default class SessionTracker extends Vue {
             return 'waiting for next item...';
         }
 
-        if (this.sessionStatus === TimeSessionStatus.Resting) {
+        if (this.isResting) {
             return 'taking a break...';
         }
 
-        const items: WorkItemDto[] = store.getters[`${timeSessionKey}/activeWorkItems`];
-
-        return items.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
+        return this.workItems.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
     }
 
     get dropItemText(): string {
@@ -87,30 +87,75 @@ export default class SessionTracker extends Vue {
         return `drop to ${this.sessionStatus === TimeSessionStatus.Pending ? 'continue' : 'start'}`;
     }
 
+    get progressSeries(): PercentageSeries[] {
+        if (this.isIdle) {
+            return [];
+        }
+
+        const isValidBreakSession = this.isResting && this.breakSession;
+        const isValidFocusSession = !this.isResting && this.focusSession || this.focusSessionActivities;
+
+        if (!isValidBreakSession && !isValidFocusSession) {
+            return [];
+        }
+
+        if (this.isResting) {
+            const { startTime, endTime } = this.breakSession!;
+            const elapsed = Date.now() - new Date(startTime).getTime();
+            const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
+
+            return [{ percent: elapsed / duration * 100, colorType: 'session-status-colors-resting' }];
+        }
+
+        const oneHour = 60 * 60 * 1000;
+        const { startTime, endTime } = this.focusSession!;
+        const { regular, recurring, interruption, overlearning } = this.focusSessionActivities!;
+        const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / oneHour;
+
+        return [
+            { percent: (regular + recurring + interruption) / duration * 100, colorType: 'activity-colors-regular' },
+            { percent: overlearning / duration * 100, colorType: 'activity-colors-overlearning' }
+        ];
+    }
+
+    get sessionEnd(): Date | null {
+        if (this.isIdle) {
+            return null;
+        }
+
+        if (this.isResting) {
+            return this.breakSession ? new Date(this.breakSession.endTime) : null;
+        }
+
+        return this.focusSession ? new Date(this.focusSession.endTime) : null;
+    }
+
+    get isIdle(): boolean {
+        return this.sessionStatus === TimeSessionStatus.Idle;
+    }
+
+    get isResting(): boolean {
+        return this.sessionStatus === TimeSessionStatus.Resting;
+    }
+
     get sessionStatus(): TimeSessionStatus {
         return store.getters[`${timeSessionKey}/timeSessionStatus`];
     }
 
-    get focusSessionProgressSeries(): PercentageSeries[] {
-        if (!this.focusSession) {
-            return [];
-        }
-
-        const oneHour = 60 * 60 * 1000;
-        const { startTime, endTime, overlearningHours } = this.focusSession;
-        const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / oneHour;
-
-        return [
-            { percent: overlearningHours / duration * 100, colorType: 'activity-colors-overlearning' }
-        ];
-    }
-
-    get focusSessionEnd(): Date | null {
-        return this.focusSession ? new Date(this.focusSession.endTime) : null;
+    get workItems(): WorkItemDto[] {
+        return store.getters[`${timeSessionKey}/activeWorkItems`];
     }
 
     get focusSession(): FocusSession | null {
         return store.getters[`${timeSessionKey}/activeFocusSession`];
+    }
+
+    get focusSessionActivities(): ActivityBreakdownDto | null {
+        return store.getters[`${timeSessionKey}/activeFocusSessionActivities`];
+    }
+
+    get breakSession(): BreakSession | null {
+        return store.getters[`${timeSessionKey}/activeBreakSession`];
     }
 }
 </script>
