@@ -18,7 +18,7 @@
         <div class="progress">
             <stop-circle class="icon stop-button" />
             <timer class="icon" />
-            <span class="time">00:20:35</span>
+            <count-down-display class="time" :target="new Date(2021, 5, 21)"></count-down-display>
             <progress-bar class="progress-bar" :series="[]"></progress-bar>
         </div>
     </div>
@@ -28,6 +28,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
+import CountDownDisplay from '../../shared/displays/count-down-display.vue';
 import ProgressBar from '../../shared/displays/progress-bar.vue';
 
 @Options({
@@ -36,6 +37,7 @@ import ProgressBar from '../../shared/displays/progress-bar.vue';
         Tag,
         Timer,
         Undo,
+        CountDownDisplay,
         ProgressBar
     },
     emits: ['session:stop']
@@ -124,14 +126,22 @@ export default class SessionTracker extends Vue {}
 
         .stop-button {
             margin-right: 0.35vh;
+            color: var(--context-colors-warning-07);
+            transition: color 0.3s;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--context-colors-warning-00);
+            }
         }
 
         .time {
+            margin-left: 0.35vh;
+            margin-right: 1.5vh;
             font-size: var(--font-sizes-300);
         }
 
         .progress-bar {
-            margin-left: 1.5vh;
             width: calc(100% - 7.5vh);
             height: 100%;
         }

@@ -111,7 +111,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
 <style lang="scss" scoped>
 .work-items-list-container {
-    $content-width: 94.5%;
+    $content-width: 92.5%;
     $card-height: 5vh;
     $card-gap: 1.25vh;
 
@@ -188,7 +188,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         .items-thumbnail {
             position: absolute;
             top: 0;
-            right: 0;
+            right: 1vh;
         }
     }
 }
