@@ -4,11 +4,14 @@ import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { FocusSession } from '../../core/models/time-session/focus-session';
 import { BreakSession } from '../../core/models/time-session/break-session';
+import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
 
+const oneSecond = 1000;
+const oneHour = oneSecond * 60 * 60;
 const userProfileHttpService = new UserProfileHttpService();
 const timeSessionHttpService = new TimeSessionHttpService();
 
@@ -75,6 +78,27 @@ const actions = {
             context.commit('setActiveFocusSession', session);
             context.commit('setActiveFocusSessionActivities', activities);
         }
+    },
+    syncActiveTimeSession(context: ActionContext<ITimeSessionState, any>): void {
+        const { getters, commit } = context;
+        const breakSession = getters['activeBreakSession'] as BreakSession;
+        const activities = getters['activeFocusSessionActivities'] as ActivityBreakdownDto;
+
+        if (breakSession) {
+            commit('setActiveBreakSession', { ...breakSession });
+        }
+        else if (activities) {
+            const delta = oneSecond / oneHour;
+            const items: WorkItemDto[] = getters['activeWorkItems'];
+            const ongoing = items.find(_ => _.status === WorkItemStatus.Ongoing);
+            activities.regular += ongoing?.type === WorkItemType.Regular ? delta : 0;
+            activities.recurring += ongoing?.type === WorkItemType.Recurring ? delta : 0;
+            activities.interruption += ongoing?.type === WorkItemType.Interruption ? delta : 0;
+            activities.overlearning += ongoing ? 0 : delta;
+            commit('setActiveFocusSessionActivities', { ...activities });
+        }
+
+        setTimeout(() => actions.syncActiveTimeSession(context), oneSecond);
     }
 };
 

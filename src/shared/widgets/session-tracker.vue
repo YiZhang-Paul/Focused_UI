@@ -104,7 +104,7 @@ export default class SessionTracker extends Vue {
             const elapsed = Date.now() - new Date(startTime).getTime();
             const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
 
-            return [{ percent: elapsed / duration * 100, colorType: 'session-status-colors-resting' }];
+            return [{ percent: Math.min(100, elapsed / duration * 100), colorType: 'session-status-colors-resting' }];
         }
 
         const oneHour = 60 * 60 * 1000;
