@@ -18,6 +18,7 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from './store';
 import { userKey } from './store/user/user.state';
+import { timeSessionKey } from './store/time-session/time-session.state';
 import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel.vue';
@@ -38,6 +39,7 @@ export default class App extends Vue {
 
     public created(): void {
         store.dispatch(`${userKey}/loadProfile`);
+        store.dispatch(`${timeSessionKey}/loadActiveFocusSession`);
         this.loadPerformanceBreakdowns();
     }
 

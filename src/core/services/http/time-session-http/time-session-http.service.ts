@@ -7,7 +7,7 @@ export class TimeSessionHttpService {
 
     public async getFocusSession(id: string): Promise<FocusSession | null> {
         try {
-            return (await axios.get(`${this._api}/${id}`)).data;
+            return (await axios.get(`${this._api}/focus-session/${id}`)).data;
         }
         catch {
             return null;

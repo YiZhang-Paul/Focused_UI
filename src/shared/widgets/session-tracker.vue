@@ -19,7 +19,7 @@
             <stop-circle class="icon stop-button" @click="$emit('session:stop')" />
             <timer class="icon" />
             <count-down-display class="time" :target="new Date(2021, 5, 21)"></count-down-display>
-            <progress-bar class="progress-bar" :series="[]"></progress-bar>
+            <progress-bar class="progress-bar" :series="focusSessionProgressSeries"></progress-bar>
         </div>
     </div>
 </template>
@@ -28,6 +28,10 @@
 import { Options, Vue } from 'vue-class-component';
 import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
+import store from '../../store';
+import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { FocusSession } from '../../core/models/time-session/focus-session';
+import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import CountDownDisplay from '../../shared/displays/count-down-display.vue';
 import ProgressBar from '../../shared/displays/progress-bar.vue';
 
@@ -42,7 +46,26 @@ import ProgressBar from '../../shared/displays/progress-bar.vue';
     },
     emits: ['session:stop']
 })
-export default class SessionTracker extends Vue {}
+export default class SessionTracker extends Vue {
+
+    get focusSessionProgressSeries(): PercentageSeries[] {
+        if (!this.focusSession) {
+            return [];
+        }
+
+        const oneHour = 60 * 60 * 1000;
+        const { startTime, endTime, overlearningHours } = this.focusSession;
+        const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / oneHour;
+
+        return [
+            { percent: overlearningHours / duration * 100, colorType: 'activity-colors-overlearning' }
+        ];
+    }
+
+    get focusSession(): FocusSession | null {
+        return store.getters[`${timeSessionKey}/activeFocusSession`];
+    }
+}
 </script>
 
 <style lang="scss" scoped>
