@@ -1,5 +1,5 @@
 <template>
-    <display-panel class="work-items-list-container" :lineLength="'1.25vh'">
+    <div class="work-items-list-container">
         <work-item-card v-if="pendingItem"
             class="pending-item-card"
             :item="pendingItem"
@@ -51,7 +51,7 @@
                 :scrollContainer="$refs.cardWrappers">
             </item-thumbnail-scrollbar>
         </div>
-    </display-panel>
+    </div>
 </template>
 
 <script lang="ts">
@@ -62,7 +62,6 @@ import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
-import DisplayPanel from '../../../shared/panels/display-panel.vue';
 import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
@@ -77,7 +76,6 @@ class WorkItemsListProp {
 
 @Options({
     components: {
-        DisplayPanel,
         ItemThumbnailScrollbar,
         WorkItemStatusMenu,
         WorkItemCard,
@@ -121,14 +119,9 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5vh 3.5vh;
-    background-color: var(--primary-colors-8-01);
-
-    .pending-item-card, .card-wrapper, .editor-wrapper {
-        width: $content-width;
-    }
 
     .pending-item-card, .card-wrapper {
+        width: $content-width;
         height: $card-height;
     }
 
@@ -137,6 +130,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
+        width: $content-width;
         height: 100%;
 
         .editor-header {

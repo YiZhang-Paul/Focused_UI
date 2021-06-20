@@ -28,17 +28,19 @@
         <div class="content">
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
-            <work-items-list class="work-items-list"
-                :pendingItem="pendingItem"
-                :editedItem="editedItem"
-                @create:cancel="cancelCreate()"
-                @create:confirm="confirmCreate()"
-                @update:meta="onItemMetaUpdate($event)"
-                @item:close="onItemClose()"
-                @item:update="onItemUpdate($event)"
-                @item:delete="onItemDelete($event.id)"
-                @item:select="onItemSelect($event.id)">
-            </work-items-list>
+            <display-panel class="core-content" :lineLength="'1.25vh'">
+                <work-items-list class="work-items-list"
+                    :pendingItem="pendingItem"
+                    :editedItem="editedItem"
+                    @create:cancel="cancelCreate()"
+                    @create:confirm="confirmCreate()"
+                    @update:meta="onItemMetaUpdate($event)"
+                    @item:close="onItemClose()"
+                    @item:update="onItemUpdate($event)"
+                    @item:delete="onItemDelete($event.id)"
+                    @item:select="onItemSelect($event.id)">
+                </work-items-list>
+            </display-panel>
 
             <work-item-progress-stats-group class="stats-group"></work-item-progress-stats-group>
         </div>
@@ -59,6 +61,7 @@ import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button.vue';
+import DisplayPanel from '../../shared/panels/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
 
@@ -71,6 +74,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         SearchBox,
         SegmentedControl,
         CreationButton,
+        DisplayPanel,
         ContentViewPanel,
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
@@ -226,13 +230,13 @@ export default class WorkItemsManagement extends Vue {
 
     .content {
         $gap: 5%;
-        $list-width: 63.5%;
+        $core-content-width: 63.5%;
 
         display: flex;
         align-items: center;
         justify-content: space-evenly;
 
-        .stats-group, .work-items-list {
+        .stats-group, .core-content {
             height: 95%;
         }
 
@@ -240,11 +244,17 @@ export default class WorkItemsManagement extends Vue {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            width: calc((100% - #{$gap} - #{$list-width}) / 2);
+            width: calc((100% - #{$gap} - #{$core-content-width}) / 2);
         }
 
-        .work-items-list {
-            width: $list-width;
+        .core-content {
+            width: $core-content-width;
+            background-color: var(--primary-colors-8-01);
+
+            .work-items-list {
+                padding: 2.5vh 3.5vh;
+                height: calc(100% - 1.25vh - 6.5vh);
+            }
         }
     }
 }
