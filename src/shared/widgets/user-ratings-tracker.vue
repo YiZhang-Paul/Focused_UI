@@ -140,7 +140,7 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
         }
 
         &.determination {
-            top: 2.5%;
+            top: 2.25%;
         }
 
         &.estimation {

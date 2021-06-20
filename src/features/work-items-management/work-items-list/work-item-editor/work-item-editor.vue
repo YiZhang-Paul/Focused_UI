@@ -37,7 +37,9 @@
                     <date-selector v-model="item.dueDate" @update:modelValue="onUpdate()"></date-selector>
                 </div>
 
-                <div class="completion-information">
+                <div class="information-tabs">
+                    <notebook-edit-outline v-if="activeIndex" class="main-content" @click="activeIndex = 0" />
+
                     <item-progression class="progression"
                         :class="{ active: activeIndex === 1 }"
                         :progress="meta.subtaskProgress"
@@ -203,6 +205,8 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
             align-items: center;
             width: 100%;
             height: 87.5%;
+            opacity: 0;
+            animation: fade-in 0.3s ease forwards;
         }
 
         .core-information {
@@ -253,15 +257,14 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                 }
             }
 
-            .completion-information {
+            .information-tabs {
                 position: absolute;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 right: 2.5vh;
 
-                .progression {
-                    padding: 0.35vh 1vh 0.35vh 0.75vh;
+                .main-content, .progression {
                     border-radius: 3px;
                     background-color: var(--primary-colors-7-02);
                     transition: background-color 0.3s;
@@ -270,8 +273,20 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
                         cursor: pointer;
                         background-color: var(--primary-colors-7-07);
                     }
+                }
 
-                    &:nth-child(2) {
+                .main-content {
+                    padding: 0.35vh 0.75vh;
+                    color: var(--context-colors-info-00);
+                    font-size: var(--font-sizes-500);
+                    opacity: 0;
+                    animation: fade-in 0.5s ease 0.2s forwards;
+                }
+
+                .progression {
+                    padding: 0.35vh 1vh 0.35vh 0.75vh;
+
+                    &:nth-child(2), &:nth-child(3) {
                         margin-left: 1vh;
                     }
                 }
