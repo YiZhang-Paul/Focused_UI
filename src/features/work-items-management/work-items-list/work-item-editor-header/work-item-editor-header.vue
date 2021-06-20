@@ -100,7 +100,7 @@ export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderP
             return {
                 icon: setting.content,
                 colorType: `activity-colors-${setting.name}`,
-                description: setting.name,
+                description: setting.name ?? '',
                 value: _
             };
         });
