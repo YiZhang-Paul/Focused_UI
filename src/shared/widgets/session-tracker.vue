@@ -6,19 +6,23 @@
         <div class="guard-bottom"></div>
 
         <div class="name">
-            <tag class="icon" />
-            <span>waiting for next task...</span>
+            <component class="icon"
+                :is="icon.content"
+                :style="{ color: icon.color }">
+            </component>
+
+            <span>{{ title }}</span>
         </div>
 
         <div class="drop-text">
             <undo class="icon" />
-            <span>drop to continue</span>
+            <span>{{ dropItemText }}</span>
         </div>
 
         <div class="progress">
             <stop-circle class="icon stop-button" @click="$emit('session:stop')" />
             <timer class="icon" />
-            <count-down-display class="time" :target="new Date(2021, 5, 21)"></count-down-display>
+            <count-down-display class="time" :target="focusSessionEnd"></count-down-display>
             <progress-bar class="progress-bar" :series="focusSessionProgressSeries"></progress-bar>
         </div>
     </div>
@@ -30,8 +34,13 @@ import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
 import store from '../../store';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { IconMeta } from '../../core/models/generic/icon-meta';
 import { FocusSession } from '../../core/models/time-session/focus-session';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
+import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
+import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
+import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import CountDownDisplay from '../../shared/displays/count-down-display.vue';
 import ProgressBar from '../../shared/displays/progress-bar.vue';
 
@@ -48,6 +57,40 @@ import ProgressBar from '../../shared/displays/progress-bar.vue';
 })
 export default class SessionTracker extends Vue {
 
+    get icon(): IconMeta {
+        return IconUtility.getTimeSessionIcon(this.sessionStatus);
+    }
+
+    get title(): string {
+        if (this.sessionStatus === TimeSessionStatus.Idle) {
+            return 'no active item.';
+        }
+
+        if (this.sessionStatus === TimeSessionStatus.Pending) {
+            return 'waiting for next item...';
+        }
+
+        if (this.sessionStatus === TimeSessionStatus.Resting) {
+            return 'taking a break...';
+        }
+
+        const items: WorkItemDto[] = store.getters[`${timeSessionKey}/activeWorkItems`];
+
+        return items.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
+    }
+
+    get dropItemText(): string {
+        if (this.sessionStatus === TimeSessionStatus.Ongoing) {
+            return 'drop to swap';
+        }
+
+        return `drop to ${this.sessionStatus === TimeSessionStatus.Pending ? 'continue' : 'start'}`;
+    }
+
+    get sessionStatus(): TimeSessionStatus {
+        return store.getters[`${timeSessionKey}/timeSessionStatus`];
+    }
+
     get focusSessionProgressSeries(): PercentageSeries[] {
         if (!this.focusSession) {
             return [];
@@ -60,6 +103,10 @@ export default class SessionTracker extends Vue {
         return [
             { percent: overlearningHours / duration * 100, colorType: 'activity-colors-overlearning' }
         ];
+    }
+
+    get focusSessionEnd(): Date | null {
+        return this.focusSession ? new Date(this.focusSession.endTime) : null;
     }
 
     get focusSession(): FocusSession | null {
@@ -78,18 +125,18 @@ export default class SessionTracker extends Vue {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    border: 1px solid var(--session-status-colors-waiting-02);
-    background-color: var(--session-status-colors-waiting-04);
-    color: var(--session-status-colors-waiting-00);
-    text-shadow: 0 0 4px var(--session-status-colors-waiting-05);
+    border: 1px solid var(--session-status-colors-pending-02);
+    background-color: var(--session-status-colors-pending-04);
+    color: var(--session-status-colors-pending-00);
+    text-shadow: 0 0 4px var(--session-status-colors-pending-05);
 
     .guard-left, .guard-right {
         position: absolute;
         top: calc(50% - #{$side-guard-height} / 2);
         width: $guard-width;
         height: $side-guard-height;
-        background-color: var(--session-status-colors-waiting-00);
-        box-shadow: 0 0 4px var(--session-status-colors-waiting-05);
+        background-color: var(--session-status-colors-pending-00);
+        box-shadow: 0 0 4px var(--session-status-colors-pending-05);
     }
 
     .guard-left {
@@ -105,11 +152,11 @@ export default class SessionTracker extends Vue {
         left: 0;
         width: 100%;
         height: $guard-width;
-        box-shadow: 0 0 4px var(--session-status-colors-waiting-05);
+        box-shadow: 0 0 4px var(--session-status-colors-pending-05);
         background: linear-gradient(
             to right,
             transparent 0,
-            var(--session-status-colors-waiting-00) 50%,
+            var(--session-status-colors-pending-00) 50%,
             transparent 100%
         );
     }

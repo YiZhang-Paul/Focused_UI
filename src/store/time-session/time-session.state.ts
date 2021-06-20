@@ -12,14 +12,14 @@ const userProfileHttpService = new UserProfileHttpService();
 const timeSessionHttpService = new TimeSessionHttpService();
 
 export interface ITimeSessionState {
-    activeFocusSession: FocusSession | null;
     activeWorkItems: WorkItemDto[];
+    activeFocusSession: FocusSession | null;
     activeBreakSession: BreakSession | null;
 }
 
 const state = (): ITimeSessionState => ({
-    activeFocusSession: null,
     activeWorkItems: [],
+    activeFocusSession: null,
     activeBreakSession: null
 });
 
@@ -37,16 +37,17 @@ const getters = {
 
         return isOngoing ? TimeSessionStatus.Ongoing : TimeSessionStatus.Pending;
     },
+    activeWorkItems: (state: ITimeSessionState): WorkItemDto[] => state.activeWorkItems,
     activeFocusSession: (state: ITimeSessionState): FocusSession | null => state.activeFocusSession,
     activeBreakSession: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession
 };
 
 const mutations = {
-    setActiveFocusSession(state: ITimeSessionState, session: FocusSession | null): void {
-        state.activeFocusSession = session;
-    },
     setActiveWorkItems(state: ITimeSessionState, items: WorkItemDto[]): void {
         state.activeWorkItems = items;
+    },
+    setActiveFocusSession(state: ITimeSessionState, session: FocusSession | null): void {
+        state.activeFocusSession = session;
     },
     setActiveBreakSession(state: ITimeSessionState, session: BreakSession | null): void {
         state.activeBreakSession = session;
