@@ -16,7 +16,7 @@
         </div>
 
         <div class="progress">
-            <stop-circle class="icon stop-button" />
+            <stop-circle class="icon stop-button" @click="$emit('session:stop')" />
             <timer class="icon" />
             <count-down-display class="time" :target="new Date(2021, 5, 21)"></count-down-display>
             <progress-bar class="progress-bar" :series="[]"></progress-bar>
