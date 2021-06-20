@@ -52,13 +52,23 @@
     --context-colors-warning-07: rgba(255, 100, 100, 0.7);
     // session status colors
     --session-status-colors-idle-00: rgb(255, 255, 255);
+    --session-status-colors-idle-02: rgba(255, 255, 255, 0.2);
     --session-status-colors-idle-03: rgba(255, 255, 255, 0.3);
+    --session-status-colors-idle-04: rgba(255, 255, 255, 0.4);
+    --session-status-colors-idle-05: rgba(255, 255, 255, 0.5);
+    --session-status-colors-ongoing-00: rgb(255, 255, 255);
+    --session-status-colors-ongoing-02: rgba(255, 255, 255, 0.2);
+    --session-status-colors-ongoing-04: rgba(255, 255, 255, 0.4);
+    --session-status-colors-ongoing-05: rgba(255, 255, 255, 0.5);
     --session-status-colors-ongoing-icon: rgb(252, 255, 56);
     --session-status-colors-pending-00: rgb(52, 206, 255);
     --session-status-colors-pending-02: rgba(52, 206, 255, 0.2);
     --session-status-colors-pending-04: rgba(52, 206, 255, 0.4);
     --session-status-colors-pending-05: rgba(52, 206, 255, 0.5);
     --session-status-colors-resting-00: rgb(62, 245, 147);
+    --session-status-colors-resting-02: rgba(62, 245, 147, 0.2);
+    --session-status-colors-resting-04: rgba(62, 245, 147, 0.4);
+    --session-status-colors-resting-05: rgba(62, 245, 147, 0.5);
     // activity colors
     --activity-colors-regular-00: rgb(255, 255, 255);
     --activity-colors-regular-04: rgba(255, 255, 255, 0.4);

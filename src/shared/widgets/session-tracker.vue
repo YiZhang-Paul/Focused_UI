@@ -1,9 +1,9 @@
 <template>
-    <div class="session-tracker-container">
-        <div class="guard-left"></div>
-        <div class="guard-right"></div>
-        <div class="guard-top"></div>
-        <div class="guard-bottom"></div>
+    <div class="session-tracker-container" :style="containerStyle">
+        <div class="guard-left" :style="verticalGuardStyle"></div>
+        <div class="guard-right" :style="verticalGuardStyle"></div>
+        <div class="guard-top" :style="horizontalGuardStyle"></div>
+        <div class="guard-bottom" :style="horizontalGuardStyle"></div>
 
         <div class="name">
             <component class="icon"
@@ -37,6 +37,7 @@ import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
+import { StyleConfig } from '../../core/models/generic/style-config';
 import { FocusSession } from '../../core/models/time-session/focus-session';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
@@ -68,7 +69,7 @@ export default class SessionTracker extends Vue {
             return 'no active item.';
         }
 
-        if (this.sessionStatus === TimeSessionStatus.Pending) {
+        if (this.isPending) {
             return 'waiting for next item...';
         }
 
@@ -84,7 +85,7 @@ export default class SessionTracker extends Vue {
             return 'drop to swap';
         }
 
-        return `drop to ${this.sessionStatus === TimeSessionStatus.Pending ? 'continue' : 'start'}`;
+        return `drop to ${this.isPending ? 'continue' : 'start'}`;
     }
 
     get progressSeries(): PercentageSeries[] {
@@ -130,8 +131,24 @@ export default class SessionTracker extends Vue {
         return this.focusSession ? new Date(this.focusSession.endTime) : null;
     }
 
+    get colorType(): string {
+        if (this.isIdle) {
+            return 'session-status-colors-idle';
+        }
+
+        if (this.isResting) {
+            return 'session-status-colors-resting';
+        }
+
+        return this.isPending ? 'session-status-colors-pending' : 'session-status-colors-ongoing';
+    }
+
     get isIdle(): boolean {
         return this.sessionStatus === TimeSessionStatus.Idle;
+    }
+
+    get isPending(): boolean {
+        return this.sessionStatus === TimeSessionStatus.Pending;
     }
 
     get isResting(): boolean {
@@ -157,31 +174,53 @@ export default class SessionTracker extends Vue {
     get breakSession(): BreakSession | null {
         return store.getters[`${timeSessionKey}/activeBreakSession`];
     }
+
+    get containerStyle(): StyleConfig {
+        return {
+            border: `1px solid var(--${this.colorType}-02)`,
+            'background-color': `var(--${this.colorType}-04)`,
+            color: `var(--${this.colorType}-00)`,
+            'text-shadow': `0 0 4px var(--${this.colorType}-05)`
+        };
+    }
+
+    get verticalGuardStyle(): StyleConfig {
+        return {
+            'background-color': `var(--${this.colorType}-00)`,
+            'box-shadow': `0 0 4px var(--${this.colorType}-05)`
+        };
+    }
+
+    get horizontalGuardStyle(): StyleConfig {
+        return {
+            'box-shadow': `0 0 4px var(--${this.colorType}-05)`,
+            background: `linear-gradient(
+                to right,
+                transparent 0,
+                var(--${this.colorType}-00) 50%,
+                transparent 100%
+            )`
+        };
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 .session-tracker-container {
     $guard-width: 2px;
-    $side-guard-height: 50%;
+    $vertical-guard-height: 50%;
 
     box-sizing: border-box;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    border: 1px solid var(--session-status-colors-pending-02);
-    background-color: var(--session-status-colors-pending-04);
-    color: var(--session-status-colors-pending-00);
-    text-shadow: 0 0 4px var(--session-status-colors-pending-05);
 
     .guard-left, .guard-right {
         position: absolute;
-        top: calc(50% - #{$side-guard-height} / 2);
+        top: calc(50% - #{$vertical-guard-height} / 2);
         width: $guard-width;
-        height: $side-guard-height;
-        background-color: var(--session-status-colors-pending-00);
-        box-shadow: 0 0 4px var(--session-status-colors-pending-05);
+        height: $vertical-guard-height;
     }
 
     .guard-left {
@@ -197,13 +236,6 @@ export default class SessionTracker extends Vue {
         left: 0;
         width: 100%;
         height: $guard-width;
-        box-shadow: 0 0 4px var(--session-status-colors-pending-05);
-        background: linear-gradient(
-            to right,
-            transparent 0,
-            var(--session-status-colors-pending-00) 50%,
-            transparent 100%
-        );
     }
 
     .guard-top {
@@ -241,7 +273,7 @@ export default class SessionTracker extends Vue {
 
         .stop-button {
             margin-right: 0.35vh;
-            color: var(--context-colors-warning-07);
+            color: var(--primary-colors-0-00);
             transition: color 0.3s;
 
             &:hover {
