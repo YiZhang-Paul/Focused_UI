@@ -8,6 +8,7 @@ import { ChecklistEntry } from './checklist-entry';
 
 export class WorkItem {
     public id!: string;
+    public userId!: string;
     public parent: string | null = null;
     public subtasks: WorkItem[] = [];
     public name = '';

@@ -60,6 +60,34 @@ import ProgressBar from '../../shared/displays/progress-bar.vue';
 })
 export default class SessionTracker extends Vue {
 
+    get containerStyle(): StyleConfig {
+        return {
+            border: `1px solid var(--${this.colorType}-02)`,
+            'background-color': `var(--${this.colorType}-04)`,
+            color: `var(--${this.colorType}-00)`,
+            'text-shadow': `0 0 4px var(--${this.colorType}-05)`
+        };
+    }
+
+    get verticalGuardStyle(): StyleConfig {
+        return {
+            'background-color': `var(--${this.colorType}-00)`,
+            'box-shadow': `0 0 4px var(--${this.colorType}-05)`
+        };
+    }
+
+    get horizontalGuardStyle(): StyleConfig {
+        return {
+            'box-shadow': `0 0 4px var(--${this.colorType}-05)`,
+            background: `linear-gradient(
+                to right,
+                transparent 0,
+                var(--${this.colorType}-00) 50%,
+                transparent 100%
+            )`
+        };
+    }
+
     get icon(): IconMeta {
         return IconUtility.getTimeSessionIcon(this.sessionStatus);
     }
@@ -173,34 +201,6 @@ export default class SessionTracker extends Vue {
 
     get breakSession(): BreakSession | null {
         return store.getters[`${timeSessionKey}/activeBreakSession`];
-    }
-
-    get containerStyle(): StyleConfig {
-        return {
-            border: `1px solid var(--${this.colorType}-02)`,
-            'background-color': `var(--${this.colorType}-04)`,
-            color: `var(--${this.colorType}-00)`,
-            'text-shadow': `0 0 4px var(--${this.colorType}-05)`
-        };
-    }
-
-    get verticalGuardStyle(): StyleConfig {
-        return {
-            'background-color': `var(--${this.colorType}-00)`,
-            'box-shadow': `0 0 4px var(--${this.colorType}-05)`
-        };
-    }
-
-    get horizontalGuardStyle(): StyleConfig {
-        return {
-            'box-shadow': `0 0 4px var(--${this.colorType}-05)`,
-            background: `linear-gradient(
-                to right,
-                transparent 0,
-                var(--${this.colorType}-00) 50%,
-                transparent 100%
-            )`
-        };
     }
 }
 </script>
