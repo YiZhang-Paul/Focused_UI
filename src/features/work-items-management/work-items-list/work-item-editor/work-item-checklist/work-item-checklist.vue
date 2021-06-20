@@ -1,6 +1,12 @@
 <template>
     <div class="work-item-checklist-container">
-        <overlay-scroll-panel class="entries-wrapper">
+        <span class="title">Checklist</span>
+
+        <div class="placeholder" v-if="!entries.length">
+            <span>nothing created yet.</span>
+        </div>
+
+        <overlay-scroll-panel class="entries-wrapper" v-if="entries.length">
             <div class="entries">
                 <div class="entry" v-for="(entry, index) of entries" :key="index">
                     <check class="check-button action-button"
@@ -91,8 +97,18 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding-top: 5vh;
+    padding-top: 2.5vh;
     padding-bottom: 2.5vh;
+
+    .title {
+        margin-bottom: 2.5vh;
+        font-size: var(--font-sizes-500);
+    }
+
+    .placeholder, .entries-wrapper {
+        margin-bottom: 0.75vh;
+        height: 100%;
+    }
 
     .entry, .add-checklist {
         box-sizing: border-box;
@@ -123,10 +139,18 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
         }
     }
 
+    .placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 75%;
+        border-radius: 3px;
+        background-color: var(--primary-colors-7-02);
+        color: var(--font-colors-5-00);
+    }
+
     .entries-wrapper {
-        margin-bottom: 0.75vh;
         width: 80%;
-        height: 100%;
 
         .entries {
             box-sizing: border-box;
