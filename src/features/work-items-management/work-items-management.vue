@@ -29,6 +29,8 @@
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
             <display-panel class="core-content" :lineLength="'1.25vh'">
+                <session-tracker class="session-tracker"></session-tracker>
+
                 <work-items-list class="work-items-list"
                     :pendingItem="pendingItem"
                     :editedItem="editedItem"
@@ -63,6 +65,7 @@ import SegmentedControl from '../../shared/inputs/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button.vue';
 import DisplayPanel from '../../shared/panels/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
+import SessionTracker from '../../shared/widgets/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
@@ -76,6 +79,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         CreationButton,
         DisplayPanel,
         ContentViewPanel,
+        SessionTracker,
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
         WorkItemProgressStatsGroup,
@@ -248,12 +252,24 @@ export default class WorkItemsManagement extends Vue {
         }
 
         .core-content {
+            $tracker-height: 5.5vh;
+
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5vh 3.5vh;
             width: $core-content-width;
             background-color: var(--primary-colors-8-01);
 
+            .session-tracker {
+                width: 100%;
+                height: $tracker-height;
+            }
+
             .work-items-list {
-                padding: 2.5vh 3.5vh;
-                height: calc(100% - 1.25vh - 6.5vh);
+                width: 100%;
+                height: calc(100% - 1.5vh - #{$tracker-height});
             }
         }
     }
