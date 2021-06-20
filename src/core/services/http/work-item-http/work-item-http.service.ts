@@ -27,7 +27,7 @@ export class WorkItemHttpService {
 
     public async updateWorkItem(item: WorkItem): Promise<WorkItem | null> {
         try {
-            return (await axios.put(`${this._api}/${item.id}`, item)).data;
+            return (await axios.put(this._api, item)).data;
         }
         catch {
             return null;
@@ -63,7 +63,7 @@ export class WorkItemHttpService {
 
     public async updateWorkItemMeta(item: WorkItemDto): Promise<WorkItemDto | null> {
         try {
-            return (await axios.put(`${this._api}/${item.id}/meta`, item)).data;
+            return (await axios.put(`${this._api}/meta`, item)).data;
         }
         catch {
             return null;
