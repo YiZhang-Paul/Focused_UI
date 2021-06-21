@@ -5,7 +5,8 @@
         @mousedown="moveThumb($event)">
 
         <div class="block" v-for="item of items" :key="item.id" :style="getBlockStyle(item)">
-            <div v-if="item.status === highlightedStatus"></div>
+            <div class="highlighted" v-if="item.status === workItemStatus.Highlighted"></div>
+            <div class="ongoing" v-if="item.status === workItemStatus.Ongoing"></div>
         </div>
 
         <div class="scroll-thumb" :style="thumbStyle" @mousedown="isMouseHold = true"></div>
@@ -32,7 +33,7 @@ class ItemThumbnailScrollbarProp {
     }
 })
 export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScrollbarProp) {
-    public readonly highlightedStatus = WorkItemStatus.Highlighted;
+    public readonly workItemStatus = WorkItemStatus;
     public scrollTop = 0;
     public scrollHeight = 0;
     public clientHeight = 0;
@@ -119,12 +120,20 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
         justify-content: center;
         width: 100%;
 
-        div {
+        .highlighted, .ongoing {
             width: 80%;
             height: 3px;
             min-height: 1px;
+        }
+
+        .highlighted {
             background-color: var(--primary-colors-10-00);
             box-shadow: 0 0 4px var(--primary-colors-10-00);
+        }
+
+        .ongoing {
+            background-color: var(--context-colors-alert-00);
+            box-shadow: 0 0 4px var(--context-colors-alert-00);
         }
     }
 

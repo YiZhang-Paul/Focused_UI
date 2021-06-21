@@ -45,6 +45,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     public getClasses(status: WorkItemStatus): ClassConfig {
         return {
             icon: true,
+            ongoing: status === WorkItemStatus.Ongoing,
             'invisible-option': !this.showOptions,
             'active-option': this.activeOption === status
         };
@@ -96,6 +97,10 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
 
         &.active-option {
             color: var(--font-colors-1-00);
+        }
+
+        &.active-option.ongoing {
+            color: var(--context-colors-alert-00);
         }
     }
 }
