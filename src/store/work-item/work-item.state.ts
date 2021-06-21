@@ -119,17 +119,20 @@ const actions = {
         return true;
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
+        const { state, commit, dispatch } = context;
+        const previousOngoing = state.workItems.some(_ => _.status === WorkItemStatus.Ongoing);
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
         if (!updated) {
             return false;
         }
 
-        context.commit('setWorkItem', updated);
+        commit('setWorkItem', updated);
+        const isOngoingChanged = previousOngoing !== state.workItems.some(_ => _.status === WorkItemStatus.Ongoing);
 
-        if (updated.status === WorkItemStatus.Ongoing) {
-            context.dispatch('loadWorkItems', context.state.lastQuery);
-            context.dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+        if (isOngoingChanged || updated.status === WorkItemStatus.Ongoing) {
+            dispatch('loadWorkItems', state.lastQuery);
+            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
         }
 
         return true;
