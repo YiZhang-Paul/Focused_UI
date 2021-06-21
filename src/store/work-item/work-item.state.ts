@@ -1,20 +1,24 @@
 import { ActionContext } from 'vuex';
 
+import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
 const workItemHttpService = new WorkItemHttpService();
 
 export interface IWorkItemState {
+    lastQuery: WorkItemQuery | null;
     pendingWorkItem: WorkItemDto | null;
     editedWorkItem: WorkItem | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
+    lastQuery: null,
     pendingWorkItem: null,
     editedWorkItem: null,
     workItems: []
@@ -40,6 +44,9 @@ const getters = {
 };
 
 const mutations = {
+    setLastQuery(state: IWorkItemState, query: WorkItemQuery | null): void {
+        state.lastQuery = query;
+    },
     setPendingWorkItem(state: IWorkItemState, item: WorkItemDto | null): void {
         state.pendingWorkItem = item;
     },
@@ -114,17 +121,25 @@ const actions = {
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
-        if (updated) {
-            context.commit('setWorkItem', updated);
+        if (!updated) {
+            return false;
         }
 
-        return Boolean(updated);
+        context.commit('setWorkItem', updated);
+
+        if (updated.status === WorkItemStatus.Ongoing) {
+            context.dispatch('loadWorkItems', context.state.lastQuery);
+            context.dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+        }
+
+        return true;
     },
     async loadEditedWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<void> {
         context.commit('setEditedWorkItem', await workItemHttpService.getWorkItem(id));
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();
+        context.commit('setLastQuery', query);
         context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));
     }
 };
