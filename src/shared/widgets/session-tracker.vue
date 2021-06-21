@@ -34,11 +34,9 @@ import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
 import store from '../../store';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
-import { WorkItemDto } from '../../core/dtos/work-item-dto';
-import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
+import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
 import { StyleConfig } from '../../core/models/generic/style-config';
-import { FocusSession } from '../../core/models/time-session/focus-session';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
@@ -105,7 +103,9 @@ export default class SessionTracker extends Vue {
             return 'taking a break...';
         }
 
-        return this.workItems.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
+        const items = this.focusSession?.workItems ?? [];
+
+        return items.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
     }
 
     get dropItemText(): string {
@@ -121,10 +121,10 @@ export default class SessionTracker extends Vue {
             return [];
         }
 
-        const isValidBreakSession = this.isResting && this.breakSession;
-        const isValidFocusSession = !this.isResting && this.focusSession || this.focusSessionActivities;
+        const hasBreakSession = this.isResting && this.breakSession;
+        const hasFocusSession = !this.isResting && this.focusSession;
 
-        if (!isValidBreakSession && !isValidFocusSession) {
+        if (!hasBreakSession && !hasFocusSession) {
             return [];
         }
 
@@ -137,8 +137,8 @@ export default class SessionTracker extends Vue {
         }
 
         const oneHour = 60 * 60 * 1000;
-        const { startTime, endTime } = this.focusSession!;
-        const { regular, recurring, interruption, overlearning } = this.focusSessionActivities!;
+        const { startTime, endTime, activities } = this.focusSession!;
+        const { regular, recurring, interruption, overlearning } = activities;
         const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / oneHour;
 
         return [
@@ -187,16 +187,8 @@ export default class SessionTracker extends Vue {
         return store.getters[`${timeSessionKey}/timeSessionStatus`];
     }
 
-    get workItems(): WorkItemDto[] {
-        return store.getters[`${timeSessionKey}/activeWorkItems`];
-    }
-
-    get focusSession(): FocusSession | null {
+    get focusSession(): FocusSessionDto | null {
         return store.getters[`${timeSessionKey}/activeFocusSession`];
-    }
-
-    get focusSessionActivities(): ActivityBreakdownDto | null {
-        return store.getters[`${timeSessionKey}/activeFocusSessionActivities`];
     }
 
     get breakSession(): BreakSession | null {
