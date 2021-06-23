@@ -56,6 +56,7 @@ import { ChevronLeft, ChevronRight, CloseCircleOutline } from 'mdue';
 
 import { ClassConfig } from '../../core/models/generic/class-config';
 import { TimeUtility } from '../../core/utilities/time-utility/time-utility';
+import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 import DisplayPanel from '../../shared/panels/display-panel.vue';
 import LightsourcePanel from '../../shared/panels/lightsource-panel.vue';
 
@@ -203,7 +204,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     private getPrefixSum(month: number, includeOffset = true): number {
         const offset = includeOffset ? this.columnOffset : 0;
 
-        return this.days.slice(0, month).reduce((total, _) => _ + total, 0) + offset;
+        return GenericUtility.sum(this.days.slice(0, month), _ => _) + offset;
     }
 
     private onClickOutside(event: Event): void {

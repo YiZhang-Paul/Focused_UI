@@ -70,7 +70,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get averageFocus(): string {
-        const hours = this.activityHistories.reduce((total, _) => total + _.regular + _.recurring + _.overlearning, 0);
+        const hours = GenericUtility.sum(this.activityHistories, _ => _.regular + _.recurring + _.overlearning);
         const average = GenericUtility.roundTo(hours / this.activityHistories.length, 1);
 
         return `${average} hour${average > 1 ? 's' : ''}`;

@@ -14,33 +14,35 @@ import { Vue, prop } from 'vue-class-component';
 import { StyleConfig } from '../../core/models/generic/style-config';
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { BlockGroup } from '../../core/models/progress-bar/block-group';
+import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
 class ProgressBarProp {
     public series = prop<PercentageSeries[]>({ default: [] });
 }
 
 export default class ProgressBar extends Vue.with(ProgressBarProp) {
-    public readonly totalBlocks = 27;
+    private readonly blocks = 27;
 
     get blockGroups(): BlockGroup[] {
+        const total = Math.max(100, GenericUtility.sum(this.series, _ => _.percent));
+
         const groups: BlockGroup[] = this.series.filter(_ => _.percent).map(_ => {
-            const total = Math.round(_.percent / 100 * this.totalBlocks);
             const backgroundColor = `var(--${_.colorType}-00)`;
             const shadowColor = `var(--${_.colorType}-04)`;
 
-            return { total, backgroundColor, shadowColor };
+            return { total: Math.round(_.percent / total * this.blocks), backgroundColor, shadowColor };
         });
 
         if (groups.length > 1) {
-            const otherBlocks = groups.slice(0, -1).reduce((total, _) => total + _.total, 0);
-            groups.slice(-1)[0].total = this.totalBlocks - otherBlocks;
+            const otherBlocks = GenericUtility.sum(groups.slice(0, -1), _ => _.total);
+            groups.slice(-1)[0].total = this.blocks - otherBlocks;
         }
 
         return groups;
     }
 
     get placeholders(): number {
-        return this.totalBlocks - this.blockGroups.reduce((total, _) => total + _.total, 0);
+        return this.blocks - GenericUtility.sum(this.blockGroups, _ => _.total);
     }
 
     public getGroupStyle(group: BlockGroup): StyleConfig {
