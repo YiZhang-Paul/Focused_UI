@@ -31,15 +31,22 @@
             <display-panel class="core-content" :lineLength="'1.25vh'">
                 <session-tracker class="session-tracker"></session-tracker>
 
-                <work-items-list class="work-items-list"
+                <work-item-editor v-if="editedItemMeta && editedItem"
+                    class="work-item-editor"
+                    :meta="editedItemMeta"
+                    :item="editedItem"
+                    @item:close="onItemClose()"
+                    @item:update="onItemUpdate(editedItem)"
+                    @item:delete="onItemDelete(editedItem.id)">
+                </work-item-editor>
+
+                <work-items-list v-if="!editedItem"
+                    class="work-items-list"
                     :pendingItem="pendingItem"
                     :editedItem="editedItem"
                     @create:cancel="cancelCreate()"
                     @create:confirm="confirmCreate()"
                     @update:meta="onItemMetaUpdate($event)"
-                    @item:close="onItemClose()"
-                    @item:update="onItemUpdate($event)"
-                    @item:delete="onItemDelete($event.id)"
                     @item:select="onItemSelect($event.id)">
                 </work-items-list>
             </display-panel>
@@ -70,6 +77,7 @@ import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';
+import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
@@ -83,6 +91,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
         WorkItemProgressStatsGroup,
+        WorkItemEditor,
         WorkItemsList
     },
     emits: [
@@ -108,6 +117,10 @@ export default class WorkItemsManagement extends Vue {
 
     get pendingItem(): WorkItemDto | null {
         return store.getters[`${workItemKey}/pendingWorkItem`];
+    }
+
+    get editedItemMeta(): WorkItemDto | null {
+        return store.getters[`${workItemKey}/editedWorkItemMeta`];
     }
 
     get editedItem(): WorkItem | null {
@@ -257,6 +270,7 @@ export default class WorkItemsManagement extends Vue {
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: space-between;
             padding: 2.5vh 3.5vh;
             width: $core-content-width;
@@ -267,9 +281,16 @@ export default class WorkItemsManagement extends Vue {
                 height: $tracker-height;
             }
 
+            .work-item-editor, .work-items-list {
+                height: calc(100% - 1.5vh - #{$tracker-height});
+            }
+
+            .work-item-editor {
+                width: 92.5%;
+            }
+
             .work-items-list {
                 width: 100%;
-                height: calc(100% - 1.5vh - #{$tracker-height});
             }
         }
     }

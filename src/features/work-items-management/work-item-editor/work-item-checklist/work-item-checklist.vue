@@ -47,11 +47,11 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { Check, Delete, PlusBox, RadioboxBlank } from 'mdue';
 
-import { ChecklistEntry } from '../../../../../core/models/work-item/checklist-entry';
-import { GenericUtility } from '../../../../../core/utilities/generic-utility/generic-utility';
-import DisplayPanel from '../../../../../shared/panels/display-panel.vue';
-import OverlayScrollPanel from '../../../../../shared/panels/overlay-scroll-panel.vue';
-import TextInput from '../../../../../shared/inputs/text-input.vue';
+import { ChecklistEntry } from '../../../../core/models/work-item/checklist-entry';
+import { GenericUtility } from '../../../../core/utilities/generic-utility/generic-utility';
+import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import OverlayScrollPanel from '../../../../shared/panels/overlay-scroll-panel.vue';
+import TextInput from '../../../../shared/inputs/text-input.vue';
 
 class WorkItemChecklistProp {
     public entries = prop<ChecklistEntry[]>({ default: [] });
