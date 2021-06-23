@@ -1,81 +1,85 @@
 <template>
-    <display-panel v-if="meta && item"
-        class="work-item-editor-container"
-        :lineLength="'1vh'"
-        :corners="[false, false, true, true]">
+    <div class="work-item-editor-container" v-if="meta && item">
+        <work-item-editor-header class="editor-header"
+            :meta="meta"
+            :item="item"
+            @item:update="$emit('item:update')">
+        </work-item-editor-header>
 
-        <close class="close-button" @click="$emit('item:close')" />
+        <display-panel class="editor-panel" :lineLength="'1vh'" :corners="[false, false, true, true]">
+            <close class="close-button" @click="$emit('item:close')" />
 
-        <detail-display-panel class="content">
-            <div class="core-information" v-if="activeIndex === 0">
-                <text-input class="name"
-                    v-model="item.name"
-                    @update:modelValue="onUpdate()">
-                </text-input>
-
-                <div class="description">
-                    <notebook-edit-outline class="icon" />
-
-                    <textarea-input class="description-input"
-                        v-model="item.description"
+            <detail-display-panel class="content">
+                <div class="core-information" v-if="activeIndex === 0">
+                    <text-input class="name"
+                        v-model="item.name"
                         @update:modelValue="onUpdate()">
-                    </textarea-input>
-                </div>
-            </div>
+                    </text-input>
 
-            <div class="subtask" v-if="activeIndex === 1"></div>
+                    <div class="description">
+                        <notebook-edit-outline class="icon" />
 
-            <work-item-checklist class="checklist"
-                v-if="activeIndex === 2"
-                :entries="item.checklist"
-                @update="onChecklistUpdate($event)">
-            </work-item-checklist>
-
-            <div class="additional-information">
-                <div class="due-date" v-if="!isRecur">
-                    <span>Due</span>
-                    <date-selector v-model="item.dueDate" @update:modelValue="onUpdate()"></date-selector>
+                        <textarea-input class="description-input"
+                            v-model="item.description"
+                            @update:modelValue="onUpdate()">
+                        </textarea-input>
+                    </div>
                 </div>
 
-                <div class="information-tabs">
-                    <notebook-edit-outline v-if="activeIndex" class="main-content" @click="activeIndex = 0" />
+                <div class="subtask" v-if="activeIndex === 1"></div>
 
-                    <item-progression class="progression"
-                        :class="{ active: activeIndex === 1 }"
-                        :progress="meta.subtaskProgress"
-                        @click="activeIndex = 1">
-                    </item-progression>
+                <work-item-checklist class="checklist"
+                    v-if="activeIndex === 2"
+                    :entries="item.checklist"
+                    @update="onChecklistUpdate($event)">
+                </work-item-checklist>
 
-                    <item-progression class="progression"
-                        :class="{ active: activeIndex === 2 }"
-                        :icon="checklistIcon"
-                        :progress="meta.checklistProgress"
-                        @click="activeIndex = 2">
-                    </item-progression>
+                <div class="additional-information">
+                    <div class="due-date" v-if="!isRecur">
+                        <span>Due</span>
+                        <date-selector v-model="item.dueDate" @update:modelValue="onUpdate()"></date-selector>
+                    </div>
+
+                    <div class="information-tabs">
+                        <notebook-edit-outline v-if="activeIndex" class="main-content" @click="activeIndex = 0" />
+
+                        <item-progression class="progression"
+                            :class="{ active: activeIndex === 1 }"
+                            :progress="meta.subtaskProgress"
+                            @click="activeIndex = 1">
+                        </item-progression>
+
+                        <item-progression class="progression"
+                            :class="{ active: activeIndex === 2 }"
+                            :icon="checklistIcon"
+                            :progress="meta.checklistProgress"
+                            @click="activeIndex = 2">
+                        </item-progression>
+                    </div>
+                </div>
+            </detail-display-panel>
+
+            <div class="footer">
+                <action-button class="delete-button"
+                    :text="'delete'"
+                    :type="buttonType.Warning"
+                    @click="$emit('item:delete', item)">
+                </action-button>
+
+                <div class="creation-time">
+                    <span>
+                        created on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ getTime(item.timeInfo.created) }}
+                    </span>
+
+                    <span>
+                        last modified:&nbsp;&nbsp;
+                        {{ getTime(item.timeInfo.lastModified) }}
+                    </span>
                 </div>
             </div>
-        </detail-display-panel>
-
-        <div class="footer">
-            <action-button class="delete-button"
-                :text="'delete'"
-                :type="buttonType.Warning"
-                @click="$emit('item:delete', item)">
-            </action-button>
-
-            <div class="creation-time">
-                <span>
-                    created on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {{ getTime(item.timeInfo.created) }}
-                </span>
-
-                <span>
-                    last modified:&nbsp;&nbsp;
-                    {{ getTime(item.timeInfo.lastModified) }}
-                </span>
-            </div>
-        </div>
-    </display-panel>
+        </display-panel>
+    </div>
 </template>
 
 <script lang="ts">
@@ -96,6 +100,7 @@ import DisplayPanel from '../../../../shared/panels/display-panel.vue';
 import DetailDisplayPanel from '../../../../shared/panels/detail-display-panel.vue';
 import ItemProgression from '../../../../shared/displays/item-progression.vue';
 
+import WorkItemEditorHeader from './work-item-editor-header/work-item-editor-header.vue';
 import WorkItemChecklist from './work-item-checklist/work-item-checklist.vue';
 
 class WorkItemEditorProp {
@@ -114,6 +119,7 @@ class WorkItemEditorProp {
         DisplayPanel,
         DetailDisplayPanel,
         ItemProgression,
+        WorkItemEditorHeader,
         WorkItemChecklist
     },
     emits: [
@@ -167,160 +173,176 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
 
 <style lang="scss" scoped>
 .work-item-editor-container {
-    $content-height: 75%;
+    $card-height: 5vh;
 
-    position: relative;
-    box-sizing: border-box;
-    padding: 3.5% 8.75% 0 8.75%;
-    background: linear-gradient(
-        269.98deg,
-        var(--primary-colors-7-02) 0.02%,
-        var(--primary-colors-7-01) 99.98%
-    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 
-    .close-button {
-        position: absolute;
-        top: 2.75vh;
-        right: 2.75vh;
-        color: var(--primary-colors-2-00);
-        font-size: var(--font-sizes-600);
-        transition: color 0.3s;
-
-        &:hover {
-            cursor: pointer;
-            color: var(--context-colors-warning-00);
-        }
+    .editor-header {
+        width: 100%;
+        height: $card-height;
     }
 
-    .content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: $content-height;
+    .editor-panel {
+        $content-height: 75%;
 
-        .core-information, .subtask, .checklist {
-            box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+        padding: 3.5% 8.75% 0 8.75%;
+        width: 99%;
+        height: calc(100% - #{$card-height} - 10px);
+        background: linear-gradient(
+            269.98deg,
+            var(--primary-colors-7-02) 0.02%,
+            var(--primary-colors-7-01) 99.98%
+        );
+
+        .close-button {
+            position: absolute;
+            top: 2.75vh;
+            right: 2.75vh;
+            color: var(--primary-colors-2-00);
+            font-size: var(--font-sizes-600);
+            transition: color 0.3s;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--context-colors-warning-00);
+            }
+        }
+
+        .content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            height: 87.5%;
-            opacity: 0;
-            animation: fade-in 0.3s ease forwards;
-        }
+            height: $content-height;
 
-        .core-information {
-
-            .name {
-                margin-top: 2.5vh;
-                margin-bottom: 0.75vh;
-                width: 100%;
-                font-size: var(--font-sizes-500);
-                text-align: center;
-            }
-
-            .description {
+            .core-information, .subtask, .checklist {
                 box-sizing: border-box;
                 display: flex;
-                padding: 1.5vh 0;
-                margin-bottom: 1.25vh;
-                width: 80%;
-                height: 75%;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                height: 87.5%;
+                opacity: 0;
+                animation: fade-in 0.3s ease forwards;
+            }
 
-                .icon {
-                    margin-right: 0.75vh;
-                    color: var(--font-colors-1-00);
-                    font-size: var(--font-sizes-700);
+            .core-information {
+
+                .name {
+                    margin-top: 2.5vh;
+                    margin-bottom: 0.75vh;
+                    width: 100%;
+                    font-size: var(--font-sizes-500);
+                    text-align: center;
                 }
 
-                .description-input {
-                    width: 100%;
-                    height: 100%;
-                    color: var(--font-colors-2-00);
+                .description {
+                    box-sizing: border-box;
+                    display: flex;
+                    padding: 1.5vh 0;
+                    margin-bottom: 1.25vh;
+                    width: 80%;
+                    height: 75%;
+
+                    .icon {
+                        margin-right: 0.75vh;
+                        color: var(--font-colors-1-00);
+                        font-size: var(--font-sizes-700);
+                    }
+
+                    .description-input {
+                        width: 100%;
+                        height: 100%;
+                        color: var(--font-colors-2-00);
+                    }
+                }
+            }
+
+            .additional-information {
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+                height: 12.5%;
+
+                .due-date {
+                    display: flex;
+                    align-items: center;
+
+                    & > span {
+                        margin-right: 0.75vh;
+                    }
+                }
+
+                .information-tabs {
+                    position: absolute;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    right: 2.5vh;
+
+                    .main-content, .progression {
+                        border-radius: 3px;
+                        background-color: var(--primary-colors-7-02);
+                        transition: background-color 0.3s;
+
+                        &:hover, &.active {
+                            cursor: pointer;
+                            background-color: var(--primary-colors-7-07);
+                        }
+                    }
+
+                    .main-content {
+                        padding: 0.35vh 0.75vh;
+                        color: var(--context-colors-info-00);
+                        font-size: var(--font-sizes-500);
+                        opacity: 0;
+                        animation: fade-in 0.5s ease 0.2s forwards;
+                    }
+
+                    .progression {
+                        padding: 0.35vh 1vh 0.35vh 0.75vh;
+
+                        &:nth-child(2), &:nth-child(3) {
+                            margin-left: 1vh;
+                        }
+                    }
                 }
             }
         }
 
-        .additional-information {
+        .footer {
             position: relative;
             display: flex;
             align-items: center;
+            justify-content: center;
             width: 100%;
-            height: 12.5%;
+            height: calc(100% - #{$content-height});
+            opacity: 0;
+            animation: fade-in 0.2s ease 0.3s forwards;
 
-            .due-date {
-                display: flex;
-                align-items: center;
-
-                & > span {
-                    margin-right: 0.75vh;
-                }
-            }
-
-            .information-tabs {
+            .delete-button {
                 position: absolute;
+            }
+
+            .creation-time {
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
-                right: 2.5vh;
+                flex-direction: column;
+                position: absolute;
+                right: 0.5vh;
+                font-size: var(--font-sizes-300);
 
-                .main-content, .progression {
-                    border-radius: 3px;
-                    background-color: var(--primary-colors-7-02);
-                    transition: background-color 0.3s;
-
-                    &:hover, &.active {
-                        cursor: pointer;
-                        background-color: var(--primary-colors-7-07);
-                    }
+                span {
+                    color: var(--font-colors-0-05);
                 }
 
-                .main-content {
-                    padding: 0.35vh 0.75vh;
-                    color: var(--context-colors-info-00);
-                    font-size: var(--font-sizes-500);
-                    opacity: 0;
-                    animation: fade-in 0.5s ease 0.2s forwards;
+                span:first-of-type {
+                    margin-bottom: 0.5vh;
                 }
-
-                .progression {
-                    padding: 0.35vh 1vh 0.35vh 0.75vh;
-
-                    &:nth-child(2), &:nth-child(3) {
-                        margin-left: 1vh;
-                    }
-                }
-            }
-        }
-    }
-
-    .footer {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: calc(100% - #{$content-height});
-        opacity: 0;
-        animation: fade-in 0.2s ease 0.3s forwards;
-
-        .delete-button {
-            position: absolute;
-        }
-
-        .creation-time {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            right: 0.5vh;
-            font-size: var(--font-sizes-300);
-
-            span {
-                color: var(--font-colors-0-05);
-            }
-
-            span:first-of-type {
-                margin-bottom: 0.5vh;
             }
         }
     }

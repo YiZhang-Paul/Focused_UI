@@ -8,21 +8,14 @@
             @edit:confirm="$emit('create:confirm')">
         </work-item-card>
 
-        <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
-            <work-item-editor-header class="editor-header"
-                :meta="editedWorkItemMeta"
-                :item="editedItem"
-                @item:update="$emit('item:update', editedItem)">
-            </work-item-editor-header>
-
-            <work-item-editor class="item-editor"
-                :meta="editedWorkItemMeta"
-                :item="editedItem"
-                @item:close="$emit('item:close')"
-                @item:update="$emit('item:update', editedItem)"
-                @item:delete="$emit('item:delete', editedItem)">
-            </work-item-editor>
-        </div>
+        <work-item-editor v-if="editedWorkItemMeta && editedItem"
+            class="item-editor"
+            :meta="editedWorkItemMeta"
+            :item="editedItem"
+            @item:close="$emit('item:close')"
+            @item:update="$emit('item:update', editedItem)"
+            @item:delete="$emit('item:delete', editedItem)">
+        </work-item-editor>
 
         <div v-if="!editedItem" class="item-cards">
             <div class="cards-wrapper" ref="cardWrappers">
@@ -66,7 +59,6 @@ import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrol
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';
-import WorkItemEditorHeader from './work-item-editor-header/work-item-editor-header.vue';
 import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 
 class WorkItemsListProp {
@@ -79,7 +71,6 @@ class WorkItemsListProp {
         ItemThumbnailScrollbar,
         WorkItemStatusMenu,
         WorkItemCard,
-        WorkItemEditorHeader,
         WorkItemEditor
     },
     emits: [
@@ -112,7 +103,6 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 <style lang="scss" scoped>
 .work-items-list-container {
     $content-width: 92.5%;
-    $card-height: 5vh;
     $card-gap: 1.25vh;
 
     box-sizing: border-box;
@@ -122,26 +112,12 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
     .pending-item-card, .card-wrapper {
         width: $content-width;
-        height: $card-height;
+        height: 5vh;
     }
 
-    .editor-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
+    .item-editor {
         width: $content-width;
         height: 100%;
-
-        .editor-header {
-            width: 100%;
-            height: $card-height;
-        }
-
-        .item-editor {
-            width: 99%;
-            height: calc(100% - #{$card-height} - 10px);
-        }
     }
 
     .item-cards {

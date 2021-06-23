@@ -35,17 +35,17 @@ import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
 import { AlertCircle } from 'mdue';
 
-import { WorkItemDto } from '../../../../core/dtos/work-item-dto';
-import { WorkItem } from '../../../../core/models/work-item/work-item';
-import { IconSelectionOption } from '../../../../core/models/generic/icon-selection-option';
-import { WorkItemPriority } from '../../../../core/enums/work-item-priority.enum';
-import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
-import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
-import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
-import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
-import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
-import DisplayPanel from '../../../../shared/panels/display-panel.vue';
-import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
+import { WorkItemDto } from '../../../../../core/dtos/work-item-dto';
+import { WorkItem } from '../../../../../core/models/work-item/work-item';
+import { IconSelectionOption } from '../../../../../core/models/generic/icon-selection-option';
+import { WorkItemPriority } from '../../../../../core/enums/work-item-priority.enum';
+import { WorkItemType } from '../../../../../core/enums/work-item-type.enum';
+import { IconUtility } from '../../../../../core/utilities/icon-utility/icon-utility';
+import IconValueSelector from '../../../../../shared/inputs/icon-value-selector.vue';
+import EstimationSelector from '../../../../../shared/inputs/estimation-selector.vue';
+import DueTimeDisplay from '../../../../../shared/displays/due-time-display.vue';
+import DisplayPanel from '../../../../../shared/panels/display-panel.vue';
+import ItemCompletionProgress from '../../../../../shared/widgets/item-completion-progress.vue';
 
 class WorkItemEditorHeaderProp {
     public meta = prop<WorkItemDto>({ default: null });
