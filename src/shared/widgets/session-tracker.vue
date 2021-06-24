@@ -57,6 +57,7 @@ import ProgressBar from '../../shared/displays/progress-bar.vue';
     emits: ['session:stop']
 })
 export default class SessionTracker extends Vue {
+    private readonly oneHour = 60 * 60 * 1000;
 
     get containerStyle(): StyleConfig {
         return {
@@ -129,21 +130,18 @@ export default class SessionTracker extends Vue {
         }
 
         if (this.isResting) {
-            const { startTime, endTime } = this.breakSession!;
-            const elapsed = Date.now() - new Date(startTime).getTime();
-            const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
+            const { startTime, targetDuration } = this.breakSession!;
+            const elapsed = (Date.now() - new Date(startTime).getTime()) / this.oneHour;
 
-            return [{ percent: Math.min(100, elapsed / duration * 100), colorType: 'session-status-colors-resting' }];
+            return [{ percent: Math.min(100, elapsed / targetDuration * 100), colorType: 'session-status-colors-resting' }];
         }
 
-        const oneHour = 60 * 60 * 1000;
-        const { startTime, endTime, activities } = this.focusSession!;
+        const { targetDuration, activities } = this.focusSession!;
         const { regular, recurring, interruption, overlearning } = activities;
-        const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / oneHour;
 
         return [
-            { percent: (regular + recurring + interruption) / duration * 100, colorType: 'activity-colors-regular' },
-            { percent: overlearning / duration * 100, colorType: 'activity-colors-overlearning' }
+            { percent: (regular + recurring + interruption) / targetDuration * 100, colorType: 'activity-colors-regular' },
+            { percent: overlearning / targetDuration * 100, colorType: 'activity-colors-overlearning' }
         ];
     }
 
@@ -152,11 +150,17 @@ export default class SessionTracker extends Vue {
             return null;
         }
 
-        if (this.isResting) {
-            return this.breakSession ? new Date(this.breakSession.endTime) : null;
+        const hasBreakSession = this.isResting && this.breakSession;
+        const hasFocusSession = !this.isResting && this.focusSession;
+
+        if (!hasBreakSession && !hasFocusSession) {
+            return null;
         }
 
-        return this.focusSession ? new Date(this.focusSession.endTime) : null;
+        const start = this.isResting ? this.breakSession!.startTime : this.focusSession!.startTime;
+        const duration = this.isResting ? this.breakSession!.targetDuration : this.focusSession!.targetDuration;
+
+        return new Date(new Date(start).getTime() + duration * this.oneHour);
     }
 
     get colorType(): string {
