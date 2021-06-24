@@ -5,7 +5,7 @@ export class FocusSessionDto {
     public id!: string;
     public userId!: string;
     public startTime = '';
-    public endTime = '';
+    public endTime? = '';
     public activities = new ActivityBreakdownDto();
     public workItems: WorkItemDto[] = [];
 }

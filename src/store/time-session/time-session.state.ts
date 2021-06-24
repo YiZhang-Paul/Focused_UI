@@ -5,12 +5,10 @@ import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
-import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
 
 const oneSecond = 1000;
 const oneHour = oneSecond * 60 * 60;
-const userProfileHttpService = new UserProfileHttpService();
 const timeSessionHttpService = new TimeSessionHttpService();
 
 export interface ITimeSessionState {
@@ -54,16 +52,8 @@ const mutations = {
 
 const actions = {
     async loadActiveTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
-        const user = await userProfileHttpService.getUserProfile('60cd1862629e063c384f3ea1');
-
-        if (user?.focusSessionId) {
-            const session = await timeSessionHttpService.getFocusSessionMeta(user.focusSessionId);
-            context.commit('setActiveFocusSession', session);
-        }
-        else if (user?.breakSessionId) {
-            const session = await timeSessionHttpService.getBreakSession(user.breakSessionId);
-            context.commit('setActiveBreakSession', session);
-        }
+        context.commit('setActiveFocusSession', await timeSessionHttpService.getActiveFocusSessionMeta());
+        context.commit('setActiveBreakSession', await timeSessionHttpService.getActiveBreakSession());
     },
     syncActiveTimeSession(context: ActionContext<ITimeSessionState, any>): void {
         const { getters, commit } = context;
