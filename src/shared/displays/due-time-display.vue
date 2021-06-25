@@ -23,7 +23,7 @@ export default class DueTimeDisplay extends Vue.with(DueTimeDisplayProp) {
             return 'past due';
         }
 
-        if (this.dueTime <= 1) {
+        if (this.dueTime < 1) {
             const minutes = this.dueTime * 60;
 
             return `due in ${minutes.toFixed(0)} minute${minutes > 1 ? 's' : ''}`;
@@ -35,7 +35,13 @@ export default class DueTimeDisplay extends Vue.with(DueTimeDisplayProp) {
     get dueTime(): number {
         const date = this.date ? new Date(this.date) : null;
 
-        return date ? (date.getTime() - Date.now()) / this.oneHour : 0;
+        if (!date) {
+            return 0;
+        }
+
+        const time = (date.getTime() - Date.now()) / this.oneHour;
+
+        return time > 1 ? Math.round(time) : time;
     }
 }
 </script>
