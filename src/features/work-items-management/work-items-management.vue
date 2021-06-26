@@ -7,20 +7,20 @@
 
                 <segmented-control class="filter-group"
                     :title="'completed'"
-                    :options="genericFilterOptions"
-                    @select="onCompletionFilter($event.name)">
+                    :options="completionFilterOptions"
+                    @select="onCompletionFilter()">
                 </segmented-control>
 
                 <segmented-control class="filter-group"
                     :title="'highlighted'"
-                    :options="genericFilterOptions"
-                    @select="onHighlightFilter($event.name)">
+                    :options="highlightFilterOptions"
+                    @select="onHighlightFilter()">
                 </segmented-control>
 
                 <segmented-control class="filter-group"
                     :title="'work item type'"
                     :options="typeFilterOptions"
-                    @select="onTypeFilter($event.name)">
+                    @select="onTypeFilter()">
                 </segmented-control>
             </div>
         </template>
@@ -66,6 +66,7 @@ import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
@@ -102,17 +103,23 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
     ]
 })
 export default class WorkItemsManagement extends Vue {
-    public readonly genericFilterOptions = [
-        IconUtility.getGenericFilterIcon(GenericFilterType.All),
-        IconUtility.getGenericFilterIcon(GenericFilterType.Yes),
-        IconUtility.getGenericFilterIcon(GenericFilterType.No)
+    public readonly completionFilterOptions = [
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
+    ];
+
+    public readonly highlightFilterOptions = [
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
     ];
 
     public readonly typeFilterOptions = [
-        IconUtility.getGenericFilterIcon(GenericFilterType.All),
-        IconUtility.getWorkItemIcon(WorkItemType.Regular),
-        IconUtility.getWorkItemIcon(WorkItemType.Recurring),
-        IconUtility.getWorkItemIcon(WorkItemType.Interruption)
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Regular)),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Recurring)),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Interruption))
     ];
 
     private query = new WorkItemQuery();
@@ -193,29 +200,31 @@ export default class WorkItemsManagement extends Vue {
         this.loadWorkItems();
     }
 
-    public onCompletionFilter(name: string): void {
-        if (name === this.genericFilterOptions[0].name) {
-            this.query.isCompleted = undefined;
+    public onCompletionFilter(): void {
+        if (this.completionFilterOptions[1].isActive) {
+            this.query.isCompleted = true;
+            this.resetHighlightFilter();
         }
         else {
-            this.query.isCompleted = name === this.genericFilterOptions[1].name;
+            this.query.isCompleted = this.completionFilterOptions[0].isActive ? undefined : false;
         }
 
         this.loadWorkItems();
     }
 
-    public onHighlightFilter(name: string): void {
-        if (name === this.genericFilterOptions[0].name) {
-            this.query.isHighlighted = undefined;
+    public onHighlightFilter(): void {
+        if (this.highlightFilterOptions[1].isActive) {
+            this.query.isHighlighted = true;
+            this.resetCompletionFilter();
         }
         else {
-            this.query.isHighlighted = name === this.genericFilterOptions[1].name;
+            this.query.isHighlighted = this.highlightFilterOptions[0].isActive ? undefined : false;
         }
 
         this.loadWorkItems();
     }
 
-    public onTypeFilter(name: string): void {
+    public onTypeFilter(): void {
         const types = [
             undefined,
             WorkItemType.Regular,
@@ -223,9 +232,19 @@ export default class WorkItemsManagement extends Vue {
             WorkItemType.Interruption
         ];
 
-        const index = this.typeFilterOptions.findIndex(_ => name === _.name);
+        const index = this.typeFilterOptions.findIndex(_ => _.isActive);
         this.query.type = types[index];
         this.loadWorkItems();
+    }
+
+    private resetCompletionFilter(): void {
+        this.query.isCompleted = undefined;
+        this.completionFilterOptions.forEach((_, index) => _.isActive = !index);
+    }
+
+    private resetHighlightFilter(): void {
+        this.query.isHighlighted = undefined;
+        this.highlightFilterOptions.forEach((_, index) => _.isActive = !index);
     }
 
     private async loadWorkItems(): Promise<void> {

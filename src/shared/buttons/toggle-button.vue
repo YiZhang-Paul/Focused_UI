@@ -14,8 +14,8 @@
 
         <component class="icon"
             :class="{ 'left-icon': type === 'left', 'right-icon': type === 'right' }"
-            :is="option.content"
-            :style="{ color: isActive ? option.color : null }">
+            :is="icon.content"
+            :style="{ color: isActive ? icon.color : null }">
         </component>
     </div>
 </template>
@@ -26,7 +26,7 @@ import { Vue, prop } from 'vue-class-component';
 
 class ToggleButtonProp {
     public type = prop<string>({ default: 'left' });
-    public option = prop<IconMeta>({ default: null });
+    public icon = prop<IconMeta>({ default: null });
     public isActive = prop<boolean>({ default: false });
 }
 

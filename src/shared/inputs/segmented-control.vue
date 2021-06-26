@@ -4,25 +4,25 @@
 
         <div class="buttons">
             <toggle-button class="button"
-                :option="options[0]"
-                :isActive="activeIndex === 0"
-                @click="onSelect(0)">
+                :icon="options[0].icon"
+                :isActive="options[0].isActive"
+                @click="onSelect(options[0])">
             </toggle-button>
 
             <toggle-button class="button"
                 v-for="(option, index) of options.slice(1, -1)"
                 :key="index"
                 :type="'middle'"
-                :option="option"
-                :isActive="activeIndex === index + 1"
-                @click="onSelect(index + 1)">
+                :icon="option.icon"
+                :isActive="option.isActive"
+                @click="onSelect(option)">
             </toggle-button>
 
             <toggle-button class="button"
                 :type="'right'"
-                :option="options.slice(-1)[0]"
-                :isActive="activeIndex === options.length - 1"
-                @click="onSelect(options.length - 1)">
+                :icon="options.slice(-1)[0].icon"
+                :isActive="options.slice(-1)[0].isActive"
+                @click="onSelect(options.slice(-1)[0])">
             </toggle-button>
         </div>
     </display-panel>
@@ -31,13 +31,13 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { IconMeta } from '../../core/models/generic/icon-meta';
+import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import ToggleButton from '../buttons/toggle-button.vue';
 import DisplayPanel from '../panels/display-panel.vue';
 
 class SegmentedControlProp {
     public title = prop<string>({ default: '' });
-    public options = prop<IconMeta[]>({ default: null });
+    public options = prop<ControlButtonOption[]>({ default: null });
 }
 
 @Options({
@@ -48,12 +48,12 @@ class SegmentedControlProp {
     emits: ['select']
 })
 export default class SegmentedControl extends Vue.with(SegmentedControlProp) {
-    public activeIndex = 0;
 
-    public onSelect(index: number): void {
-        if (this.activeIndex !== index) {
-            this.activeIndex = index;
-            this.$emit('select', this.options[index]);
+    public onSelect(option: ControlButtonOption): void {
+        if (!option.isActive) {
+            this.options.forEach(_ => _.isActive = false);
+            option.isActive = true;
+            this.$emit('select', option);
         }
     }
 }
