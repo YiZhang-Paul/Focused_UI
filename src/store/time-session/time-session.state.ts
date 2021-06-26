@@ -11,7 +11,7 @@ import { TimeSessionHttpService } from '../../core/services/http/time-session-ht
 
 const oneSecond = 1000;
 const oneHour = oneSecond * 60 * 60;
-const timeSessionHttpService = container.get<TimeSessionHttpService>(types.TimeSessionHttpService);
+let timeSessionHttpService: TimeSessionHttpService;
 
 export interface ITimeSessionState {
     activeFocusSession: FocusSessionDto | null;
@@ -82,10 +82,16 @@ const actions = {
 
 export const timeSessionKey = 'timeSession';
 
-export const timeSession = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+export const createStore = () => {
+    timeSessionHttpService = container.get<TimeSessionHttpService>(types.TimeSessionHttpService);
+
+    return {
+        namespaced: true,
+        state,
+        getters,
+        mutations,
+        actions
+    };
 };
+
+export const timeSession = createStore();

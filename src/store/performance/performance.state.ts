@@ -11,7 +11,7 @@ import { ProgressionCounter } from '../../core/models/generic/progression-counte
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 const oneDay = 24 * 60 * 60 * 1000;
-const performanceHttpService = container.get<PerformanceHttpService>(types.PerformanceHttpService);
+let performanceHttpService: PerformanceHttpService;
 
 function getDateRange(): DateRange {
     const end = new Date(Date.now() + oneDay);
@@ -108,10 +108,16 @@ const actions = {
 
 export const performanceKey = 'performance';
 
-export const performance = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+export const createStore = () => {
+    performanceHttpService = container.get<PerformanceHttpService>(types.PerformanceHttpService);
+
+    return {
+        namespaced: true,
+        state,
+        getters,
+        mutations,
+        actions
+    };
 };
+
+export const performance = createStore();

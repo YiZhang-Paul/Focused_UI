@@ -9,7 +9,7 @@ import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
-const workItemHttpService = container.get<WorkItemHttpService>(types.WorkItemHttpService);
+let workItemHttpService: WorkItemHttpService;
 
 export interface IWorkItemState {
     lastQuery: WorkItemQuery | null;
@@ -156,10 +156,16 @@ const actions = {
 
 export const workItemKey = 'workItem';
 
-export const workItem = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+export const createStore = () => {
+    workItemHttpService = container.get<WorkItemHttpService>(types.WorkItemHttpService);
+
+    return {
+        namespaced: true,
+        state,
+        getters,
+        mutations,
+        actions
+    };
 };
+
+export const workItem = createStore();
