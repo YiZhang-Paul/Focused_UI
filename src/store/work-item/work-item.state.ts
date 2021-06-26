@@ -4,7 +4,6 @@ import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
-import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
@@ -118,24 +117,30 @@ const actions = {
 
         return true;
     },
-    async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
-        const { state, commit, dispatch } = context;
-        const previousOngoing = state.workItems.some(_ => _.status === WorkItemStatus.Ongoing);
-        const updated = await workItemHttpService.updateWorkItemMeta(payload);
+    async startWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<void> {
+        const { state, dispatch } = context;
 
-        if (!updated) {
-            return false;
-        }
-
-        commit('setWorkItem', updated);
-        const isOngoingChanged = previousOngoing !== state.workItems.some(_ => _.status === WorkItemStatus.Ongoing);
-
-        if (isOngoingChanged || updated.status === WorkItemStatus.Ongoing) {
+        if (await workItemHttpService.startWorkItem(id)) {
             dispatch('loadWorkItems', state.lastQuery);
             dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
         }
+    },
+    async stopWorkItem(context: ActionContext<IWorkItemState, any>): Promise<void> {
+        const { state, dispatch } = context;
 
-        return true;
+        if (await workItemHttpService.stopWorkItem()) {
+            dispatch('loadWorkItems', state.lastQuery);
+            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+        }
+    },
+    async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
+        const updated = await workItemHttpService.updateWorkItemMeta(payload);
+
+        if (updated) {
+            context.commit('setWorkItem', updated);
+        }
+
+        return Boolean(updated);
     },
     async loadEditedWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<void> {
         context.commit('setEditedWorkItem', await workItemHttpService.getWorkItem(id));
