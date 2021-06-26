@@ -1,5 +1,7 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -9,7 +11,7 @@ import { TimeSessionHttpService } from '../../core/services/http/time-session-ht
 
 const oneSecond = 1000;
 const oneHour = oneSecond * 60 * 60;
-const timeSessionHttpService = new TimeSessionHttpService();
+const timeSessionHttpService = container.get<TimeSessionHttpService>(types.TimeSessionHttpService);
 
 export interface ITimeSessionState {
     activeFocusSession: FocusSessionDto | null;

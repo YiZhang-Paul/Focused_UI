@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { injectable } from 'inversify';
 
 import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
@@ -6,6 +7,7 @@ import { DueDateBreakdownDto } from '../../../dtos/due-date-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../dtos/time-tracking-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
+@injectable()
 export class PerformanceHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/performance`;
 

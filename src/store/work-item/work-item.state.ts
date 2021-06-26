@@ -1,5 +1,7 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
@@ -7,7 +9,7 @@ import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
-const workItemHttpService = new WorkItemHttpService();
+const workItemHttpService = container.get<WorkItemHttpService>(types.WorkItemHttpService);
 
 export interface IWorkItemState {
     lastQuery: WorkItemQuery | null;

@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { injectable } from 'inversify';
 
 import { FocusSessionDto } from '../../../dtos/focus-session-dto';
 import { BreakSession } from '../../../models/time-session/break-session';
 
+@injectable()
 export class TimeSessionHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/time-session`;
 

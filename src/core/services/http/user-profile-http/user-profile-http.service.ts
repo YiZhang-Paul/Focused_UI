@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { injectable } from 'inversify';
 
 import { UserProfile } from '../../../models/user/user-profile';
 
+@injectable()
 export class UserProfileHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/user-profile`;
 

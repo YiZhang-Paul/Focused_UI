@@ -1,5 +1,7 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
@@ -9,7 +11,7 @@ import { ProgressionCounter } from '../../core/models/generic/progression-counte
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 const oneDay = 24 * 60 * 60 * 1000;
-const performanceHttpService = new PerformanceHttpService();
+const performanceHttpService = container.get<PerformanceHttpService>(types.PerformanceHttpService);
 
 function getDateRange(): DateRange {
     const end = new Date(Date.now() + oneDay);

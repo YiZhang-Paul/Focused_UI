@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { injectable } from 'inversify';
 
 import { WorkItemDto } from '../../../dtos/work-item-dto';
 import { WorkItem } from '../../../models/work-item/work-item';
 import { WorkItemQuery } from '../../../models/work-item/work-item-query';
 
+@injectable()
 export class WorkItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/work-items`;
 

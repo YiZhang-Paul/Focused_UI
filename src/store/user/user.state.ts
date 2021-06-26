@@ -1,9 +1,11 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
 import { UserProfile } from '../../core/models/user/user-profile';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 
-const userProfileHttpService = new UserProfileHttpService();
+const userProfileHttpService = container.get<UserProfileHttpService>(types.UserProfileHttpService);
 
 export interface IUserState {
     profile: UserProfile | null;
