@@ -19,7 +19,9 @@
                     <work-item-status-menu class="status-menu"
                         :activeOption="item.status"
                         :showOptions="activeIndex === index"
-                        @select="onStatusSelected(item, $event)">
+                        @select="onStatusSelected(item, $event)"
+                        @start="$emit('item:start', item.id)"
+                        @stop="$emit('item:stop')">
                     </work-item-status-menu>
 
                     <work-item-card class="item-card"
@@ -66,7 +68,9 @@ class WorkItemsListProp {
         'create:cancel',
         'create:confirm',
         'update:meta',
-        'item:select'
+        'item:select',
+        'item:start',
+        'item:stop'
     ]
 })
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {

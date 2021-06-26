@@ -33,7 +33,11 @@ class WorkItemStatusMenuProp {
             this.initializeOptions();
         }
     },
-    emits: ['select']
+    emits: [
+        'select',
+        'start',
+        'stop'
+    ]
 })
 export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp) {
     public options: { icon: any; status: WorkItemStatus }[] = [];
@@ -52,7 +56,15 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     }
 
     public onSelect(status: WorkItemStatus): void {
-        this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
+        if (this.activeOption === WorkItemStatus.Ongoing) {
+            this.$emit('stop');
+        }
+        else if (status === WorkItemStatus.Ongoing) {
+            this.$emit('start');
+        }
+        else {
+            this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
+        }
     }
 
     private initializeOptions(): void {

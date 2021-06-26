@@ -47,7 +47,9 @@
                     @create:cancel="cancelCreate()"
                     @create:confirm="confirmCreate()"
                     @update:meta="onItemMetaUpdate($event)"
-                    @item:select="onItemSelect($event.id)">
+                    @item:select="onItemSelect($event.id)"
+                    @item:start="onItemStart($event)"
+                    @item:stop="onItemStop()">
                 </work-items-list>
             </display-panel>
 
@@ -172,6 +174,18 @@ export default class WorkItemsManagement extends Vue {
 
     public async onItemSelect(id: string): Promise<void> {
         await store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+    }
+
+    public async onItemStart(id: string): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/startWorkItem`, id)) {
+            this.$emit('item:update');
+        }
+    }
+
+    public async onItemStop(): Promise<void> {
+        if (await store.dispatch(`${workItemKey}/stopWorkItem`)) {
+            this.$emit('item:update');
+        }
     }
 
     public onSearch(text: string): void {
