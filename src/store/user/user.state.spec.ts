@@ -23,14 +23,9 @@ describe('user store unit test', () => {
     });
 
     describe('loadProfile', () => {
-        let user: UserProfile;
-
-        beforeEach(() => {
-            user = { name: 'john doe' } as UserProfile;
-            userProfileHttpStub.getUserProfile.resolves(user);
-        });
-
         test('should load user profile', async() => {
+            const user = { name: 'john doe' } as UserProfile;
+            userProfileHttpStub.getUserProfile.resolves(user);
             expect(store.getters['profile']).not.toEqual(user);
 
             await store.dispatch('loadProfile');
