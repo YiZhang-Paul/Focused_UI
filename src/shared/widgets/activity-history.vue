@@ -20,10 +20,25 @@
 
         <div class="activity-breakdowns">
             <div class="breakdown" v-for="(history, index) of histories" :key="index">
-                <div v-if="history.interruption" class="interruption"></div>
-                <div v-if="history.regular" class="regular"></div>
-                <div v-if="history.overlearning" class="overlearning"></div>
-                <div v-if="history.recurring" class="recurring"></div>
+                <div v-if="history.interruption"
+                    class="interruption"
+                    :style="getBreakdownStyle(history.interruption, history)">
+                </div>
+
+                <div v-if="history.regular"
+                    class="regular"
+                    :style="getBreakdownStyle(history.regular, history)">
+                </div>
+
+                <div v-if="history.overlearning"
+                    class="overlearning"
+                    :style="getBreakdownStyle(history.overlearning, history)">
+                </div>
+
+                <div v-if="history.recurring"
+                    class="recurring"
+                    :style="getBreakdownStyle(history.recurring, history)">
+                </div>
             </div>
 
             <span v-if="startDate">{{ startDate }}</span>
@@ -96,6 +111,10 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
             height: `${height}%`,
             'max-height': `${height}%`
         };
+    }
+
+    public getBreakdownStyle(hours: number, breakdown: ActivityBreakdownDto): StyleConfig {
+        return { 'max-height': `${hours / this.getFocus(breakdown) * 100}%` };
     }
 
     private getFocus(breakdown: ActivityBreakdownDto): number {
