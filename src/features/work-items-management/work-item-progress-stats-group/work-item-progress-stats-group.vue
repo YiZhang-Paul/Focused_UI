@@ -22,7 +22,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../../store';
 import { userKey } from '../../../store/user/user.state';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
@@ -46,7 +45,7 @@ import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker.vue
 export default class WorkItemProgressStatsGroup extends Vue {
 
     get dueDateBreakdown(): DueDateBreakdownDto | null {
-        return store.getters[`${performanceKey}/dueDateBreakdown`];
+        return this.$store.getters[`${performanceKey}/dueDateBreakdown`];
     }
 
     get pastDueAndLooming(): string {
@@ -66,7 +65,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.getters[`${performanceKey}/activityHistories`] ?? [];
+        return this.$store.getters[`${performanceKey}/activityHistories`] ?? [];
     }
 
     get averageFocus(): string {
@@ -102,11 +101,11 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
-        return store.getters[`${performanceKey}/currentDayTimeTracking`];
+        return this.$store.getters[`${performanceKey}/currentDayTimeTracking`];
     }
 
     get ratings(): PerformanceRating {
-        const user = store.getters[`${userKey}/profile`] as UserProfile;
+        const user = this.$store.getters[`${userKey}/profile`] as UserProfile;
 
         return user?.ratings ?? new PerformanceRating();
     }
