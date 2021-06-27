@@ -26,7 +26,6 @@
 import { Options, Vue } from 'vue-class-component';
 import { AccountReactivate, Logout } from 'mdue';
 
-import store from '../../../store';
 import { userKey } from '../../../store/user/user.state';
 import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
@@ -44,7 +43,7 @@ import { PerformanceRating } from '../../../core/models/user/performance-rating'
 export default class UserWidget extends Vue {
 
     get profile(): UserProfile | null {
-        return store.getters[`${userKey}/profile`];
+        return this.$store.getters[`${userKey}/profile`];
     }
 
     get rating(): number {
