@@ -32,7 +32,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import { ControlButtonOption } from '../../core/models/generic/control-button-option';
-import ToggleButton from '../buttons/toggle-button.vue';
+import ToggleButton from '../buttons/toggle-button/toggle-button.vue';
 import DisplayPanel from '../panels/display-panel.vue';
 
 class SegmentedControlProp {

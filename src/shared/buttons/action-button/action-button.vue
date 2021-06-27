@@ -8,8 +8,8 @@
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
 
-import { ClassConfig } from '../../core/models/generic/class-config';
-import { ActionButtonType } from '../../core/enums/action-button-type.enum';
+import { ClassConfig } from '../../../core/models/generic/class-config';
+import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 
 class ActionButtonProp {
     public text = prop<string>({ default: '' });

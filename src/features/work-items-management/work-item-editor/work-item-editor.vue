@@ -92,7 +92,7 @@ import { WorkItem } from '../../../core/models/work-item/work-item';
 import { ChecklistEntry } from '../../../core/models/work-item/checklist-entry';
 import { WorkItemType } from '../../../core/enums/work-item-type.enum';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
-import ActionButton from '../../../shared/buttons/action-button.vue';
+import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
 import TextInput from '../../../shared/inputs/text-input.vue';
 import TextareaInput from '../../../shared/inputs/textarea-input.vue';
 import DateSelector from '../../../shared/inputs/date-selector.vue';

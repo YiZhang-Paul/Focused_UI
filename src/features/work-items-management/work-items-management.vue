@@ -72,7 +72,7 @@ import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control.vue';
-import CreationButton from '../../shared/buttons/creation-button.vue';
+import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DisplayPanel from '../../shared/panels/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
 import SessionTracker from '../../shared/widgets/session-tracker.vue';

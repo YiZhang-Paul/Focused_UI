@@ -12,7 +12,8 @@
             <path d="M35 1H4.59999L1.39999 25H35V1Z" />
         </svg>
 
-        <component class="icon"
+        <component v-if="icon"
+            class="icon"
             :class="{ 'left-icon': type === 'left', 'right-icon': type === 'right' }"
             :is="icon.content"
             :style="{ color: isActive ? icon.color : null }">
