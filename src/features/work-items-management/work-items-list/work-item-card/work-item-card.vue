@@ -48,7 +48,7 @@ import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utilit
 import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
 import DueTimeDisplay from '../../../../shared/displays/due-time-display/due-time-display.vue';
 import ItemProgression from '../../../../shared/displays/item-progression/item-progression.vue';
-import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
+import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress/item-completion-progress.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });

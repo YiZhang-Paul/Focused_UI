@@ -84,7 +84,7 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
 
     public addEntry(): void {
         if (this.pendingEntry) {
-            const entry = { description: this.pendingEntry } as ChecklistEntry;
+            const entry: ChecklistEntry = { ...new ChecklistEntry(), description: this.pendingEntry };
             this.$emit('update', [...this.entries, entry]);
             this.pendingEntry = '';
         }

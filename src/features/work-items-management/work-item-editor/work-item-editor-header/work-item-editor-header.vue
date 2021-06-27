@@ -45,7 +45,7 @@ import IconValueSelector from '../../../../shared/inputs/icon-value-selector/ico
 import EstimationSelector from '../../../../shared/inputs/estimation-selector/estimation-selector.vue';
 import DueTimeDisplay from '../../../../shared/displays/due-time-display/due-time-display.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
-import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
+import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress/item-completion-progress.vue';
 
 class WorkItemEditorHeaderProp {
     public meta = prop<WorkItemDto>({ default: null });

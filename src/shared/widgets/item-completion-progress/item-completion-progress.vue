@@ -1,13 +1,13 @@
 <template>
-    <progress-bar :series="series"></progress-bar>
+    <progress-bar v-if="progress" :series="series"></progress-bar>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
-import { ProgressionCounter } from '../../core/models/generic/progression-counter';
-import ProgressBar from '../displays/progress-bar/progress-bar.vue';
+import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
+import { ProgressionCounter } from '../../../core/models/generic/progression-counter';
+import ProgressBar from '../../displays/progress-bar/progress-bar.vue';
 
 class ItemCompletionProgressProp {
     public progress = prop<ProgressionCounter<number>>({ default: null });
