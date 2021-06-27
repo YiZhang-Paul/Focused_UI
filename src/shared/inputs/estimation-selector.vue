@@ -18,7 +18,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import DisplayPanel from '../panels/display-panel.vue';
-import LightsourcePanel from '../panels/lightsource-panel.vue';
+import LightsourcePanel from '../panels/lightsource-panel/lightsource-panel.vue';
 
 class EstimationSelectorProp {
     public modelValue = prop<number>({ default: 0 });

@@ -29,7 +29,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { StyleConfig } from '../../core/models/generic/style-config';
 import { IconSelectionOption } from '../../core/models/generic/icon-selection-option';
 import DisplayPanel from '../panels/display-panel.vue';
-import LightsourcePanel from '../panels/lightsource-panel.vue';
+import LightsourcePanel from '../panels/lightsource-panel/lightsource-panel.vue';
 
 class IconValueSelectorProp {
     public modelValue = prop<any>({ default: null });

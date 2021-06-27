@@ -16,9 +16,9 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import ContentViewSeparator from '../separators/content-view-separator/content-view-separator.vue';
+import ContentViewSeparator from '../../separators/content-view-separator/content-view-separator.vue';
 
-import ViewNameDisplay from '../displays/view-name-display.vue';
+import ViewNameDisplay from '../../displays/view-name-display.vue';
 
 @Options({
     components: {
