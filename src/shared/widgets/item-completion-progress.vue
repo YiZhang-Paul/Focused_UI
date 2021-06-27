@@ -39,7 +39,7 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
 
             return [
                 { percent, colorType: `${prefix}normal` },
-                { percent: 1 - percent, colorType: `${prefix}underestimate` },
+                { percent: 100 - percent, colorType: `${prefix}underestimate` },
             ];
         }
 
@@ -48,7 +48,7 @@ export default class ItemCompletionProgress extends Vue.with(ItemCompletionProgr
 
         return [
             { percent, colorType: `${prefix}normal` },
-            { percent: isCompleted ? 1 - percent : 0, colorType }
+            { percent: isCompleted ? 100 - percent : 0, colorType }
         ];
     }
 }
