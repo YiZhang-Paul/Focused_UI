@@ -68,6 +68,7 @@ class WorkItemCardProp {
     ]
 })
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
+    public readonly checklistIcon = markRaw(FormatListCheckbox);
     public isHovering = false;
     public workItemStatus = WorkItemStatus;
 
@@ -85,10 +86,6 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
 
     get typeIcon(): IconMeta {
         return IconUtility.getWorkItemIcon(this.item.type);
-    }
-
-    get checklistIcon(): any {
-        return markRaw(FormatListCheckbox);
     }
 
     public mounted(): void {

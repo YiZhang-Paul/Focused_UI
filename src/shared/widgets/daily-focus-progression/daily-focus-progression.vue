@@ -12,9 +12,9 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { performanceKey } from '../../store/performance/performance.state';
-import { StyleConfig } from '../../core/models/generic/style-config';
-import { ProgressionCounter } from '../../core/models/generic/progression-counter';
+import { performanceKey } from '../../../store/performance/performance.state';
+import { StyleConfig } from '../../../core/models/generic/style-config';
+import { ProgressionCounter } from '../../../core/models/generic/progression-counter';
 
 export default class DailyFocusProgression extends Vue {
 

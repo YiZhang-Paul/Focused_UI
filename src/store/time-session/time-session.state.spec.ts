@@ -5,7 +5,6 @@ import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
-import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -38,7 +37,7 @@ describe('time session store unit test', () => {
 
         test('should return correct status during break session', () => {
             store.commit('setActiveFocusSession', null);
-            store.commit('setActiveBreakSession', { id: '1' } as BreakSession);
+            store.commit('setActiveBreakSession', { ...new BreakSession(), id: '1' });
 
             expect(store.getters['timeSessionStatus']).toEqual(TimeSessionStatus.Resting);
         });
@@ -48,18 +47,18 @@ describe('time session store unit test', () => {
             store.commit('setActiveFocusSession', session);
             store.commit('setActiveBreakSession', null);
 
-            session.workItems = [{ status: WorkItemStatus.Ongoing } as WorkItemDto];
+            session.workItems = [{ ...new WorkItemDto(), status: WorkItemStatus.Ongoing }];
             expect(store.getters['timeSessionStatus']).toEqual(TimeSessionStatus.Ongoing);
 
-            session.workItems = [{ status: WorkItemStatus.Completed } as WorkItemDto];
+            session.workItems = [{ ...new WorkItemDto(), status: WorkItemStatus.Completed }];
             expect(store.getters['timeSessionStatus']).toEqual(TimeSessionStatus.Pending);
         });
     });
 
     describe('loadActiveTimeSession', () => {
         test('should load active time sessions', async() => {
-            const focusSession = { id: '1' } as FocusSessionDto;
-            const breakSession = { id: '2' } as BreakSession;
+            const focusSession: FocusSessionDto = { ...new FocusSessionDto(), id: '1' };
+            const breakSession: BreakSession = { ...new BreakSession(), id: '2' };
             timeSessionHttpStub.getActiveFocusSessionMeta.resolves(focusSession);
             timeSessionHttpStub.getActiveBreakSession.resolves(breakSession);
             expect(store.getters['activeFocusSession']).not.toEqual(focusSession);
@@ -85,8 +84,8 @@ describe('time session store unit test', () => {
 
         test('should sync focus session time', () => {
             const oneHour = 60 * 60 * 1000;
-            const workItem = { status: WorkItemStatus.Ongoing, type: WorkItemType.Regular } as WorkItemDto;
-            const session = { workItems: [workItem], activities: new ActivityBreakdownDto() } as FocusSessionDto;
+            const workItem: WorkItemDto = { ...new WorkItemDto(), status: WorkItemStatus.Ongoing, type: WorkItemType.Regular };
+            const session: FocusSessionDto = { ...new FocusSessionDto(), workItems: [workItem] };
             const { regular, recurring, interruption, overlearning } = session.activities;
 
             store.dispatch('syncActiveTimeSession');
@@ -123,7 +122,7 @@ describe('time session store unit test', () => {
         });
 
         test('should sync break session time', () => {
-            const session = { id: '1' } as BreakSession;
+            const session: BreakSession = { ...new BreakSession(), id: '1' };
 
             store.dispatch('syncActiveTimeSession');
             store.commit('setActiveFocusSession', null);

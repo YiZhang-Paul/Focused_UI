@@ -24,7 +24,7 @@ describe('user store unit test', () => {
 
     describe('loadProfile', () => {
         test('should load user profile', async() => {
-            const user = { name: 'john doe' } as UserProfile;
+            const user: UserProfile = { ...new UserProfile(), name: 'john doe' };
             userProfileHttpStub.getUserProfile.resolves(user);
             expect(store.getters['profile']).not.toEqual(user);
 

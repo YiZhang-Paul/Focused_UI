@@ -32,7 +32,7 @@ describe('work item progress stats group unit test', () => {
 
     describe('pastDueAndLooming', () => {
         test('should return total past due and looming items', () => {
-            const breakdown = { pastDue: 2, looming: 3 } as DueDateBreakdownDto;
+            const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
             store.commit(`${performanceKey}/setDueDateBreakdown`, breakdown);
 
             expect(component.vm.pastDueAndLooming).toEqual('5');
@@ -41,12 +41,12 @@ describe('work item progress stats group unit test', () => {
 
     describe('pastDueAndLoomingSeries', () => {
         test('should return past due and looming item percentages', () => {
-            const expected = [
-                { percent: 40, colorType: 'context-colors-warning' } as PercentageSeries,
-                { percent: 60, colorType: 'context-colors-alert' } as PercentageSeries
+            const expected: PercentageSeries[] = [
+                { percent: 40, colorType: 'context-colors-warning' },
+                { percent: 60, colorType: 'context-colors-alert' }
             ];
 
-            const breakdown = { pastDue: 2, looming: 3 } as DueDateBreakdownDto;
+            const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
             store.commit(`${performanceKey}/setDueDateBreakdown`, breakdown);
 
             expect(component.vm.pastDueAndLoomingSeries).toEqual(expected);
@@ -55,11 +55,11 @@ describe('work item progress stats group unit test', () => {
 
     describe('averageFocus', () => {
         test('should return average focus', () => {
-            const histories = [
-                { regular: 3, recurring: 1, overlearning: 1, interruption: 3 } as ActivityBreakdownDto,
-                { regular: 6, recurring: 0, overlearning: 1.5, interruption: 1 } as ActivityBreakdownDto,
-                { regular: 0, recurring: 0, overlearning: 0, interruption: 0 } as ActivityBreakdownDto,
-                { regular: 2.5, recurring: 3, overlearning: 0, interruption: 0 } as ActivityBreakdownDto
+            const histories: ActivityBreakdownDto[] = [
+                { regular: 3, recurring: 1, overlearning: 1, interruption: 3 },
+                { regular: 6, recurring: 0, overlearning: 1.5, interruption: 1 },
+                { regular: 0, recurring: 0, overlearning: 0, interruption: 0 },
+                { regular: 2.5, recurring: 3, overlearning: 0, interruption: 0 }
             ];
 
             store.commit(`${performanceKey}/setActivityHistories`, histories);
@@ -68,10 +68,10 @@ describe('work item progress stats group unit test', () => {
         });
 
         test('should handle plural for hours', () => {
-            const histories = [
-                { regular: 1, recurring: 1, overlearning: 1, interruption: 3 } as ActivityBreakdownDto,
-                { regular: 0, recurring: 0, overlearning: 0, interruption: 1 } as ActivityBreakdownDto,
-                { regular: 0, recurring: 0, overlearning: 0, interruption: 0 } as ActivityBreakdownDto
+            const histories: ActivityBreakdownDto[] = [
+                { regular: 1, recurring: 1, overlearning: 1, interruption: 3 },
+                { regular: 0, recurring: 0, overlearning: 0, interruption: 1 },
+                { regular: 0, recurring: 0, overlearning: 0, interruption: 0 }
             ];
 
             store.commit(`${performanceKey}/setActivityHistories`, histories);
@@ -82,17 +82,17 @@ describe('work item progress stats group unit test', () => {
 
     describe('dailyFocusSeries', () => {
         test('should return correct daily focus breakdown', () => {
-            const expected = [
-                { percent: 25, colorType: 'focus-progress-colors-overdoing' } as PercentageSeries,
-                { percent: 25, colorType: 'focus-progress-colors-insufficient' } as PercentageSeries,
-                { percent: 50, colorType: 'focus-progress-colors-sufficient' } as PercentageSeries
+            const expected: PercentageSeries[] = [
+                { percent: 25, colorType: 'focus-progress-colors-overdoing' },
+                { percent: 25, colorType: 'focus-progress-colors-insufficient' },
+                { percent: 50, colorType: 'focus-progress-colors-sufficient' }
             ];
 
-            const histories = [
-                { regular: 3, recurring: 3, overlearning: 1, interruption: 3 } as ActivityBreakdownDto,
-                { regular: 6, recurring: 6, overlearning: 0, interruption: 1 } as ActivityBreakdownDto,
-                { regular: 6, recurring: 3, overlearning: 2, interruption: 0 } as ActivityBreakdownDto,
-                { regular: 3, recurring: 3, overlearning: 2, interruption: 0 } as ActivityBreakdownDto
+            const histories: ActivityBreakdownDto[] = [
+                { regular: 3, recurring: 3, overlearning: 1, interruption: 3 },
+                { regular: 6, recurring: 6, overlearning: 0, interruption: 1 },
+                { regular: 6, recurring: 3, overlearning: 2, interruption: 0 },
+                { regular: 3, recurring: 3, overlearning: 2, interruption: 0 }
             ];
 
             store.commit(`${performanceKey}/setActivityHistories`, histories);
@@ -109,15 +109,15 @@ describe('work item progress stats group unit test', () => {
         });
 
         test('should return user ratings', () => {
-            const ratings = {
+            const ratings: PerformanceRating = {
                 determination: 55,
                 estimation: 65,
                 planning: 80,
                 adaptability: 60,
                 sustainability: 40
-            } as PerformanceRating;
+            };
 
-            store.commit(`${userKey}/setProfile`, { ratings } as UserProfile);
+            store.commit(`${userKey}/setProfile`, { ...new UserProfile(), ratings } );
 
             expect(component.vm.ratings).toEqual(ratings);
         });

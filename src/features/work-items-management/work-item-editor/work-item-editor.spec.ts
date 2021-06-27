@@ -29,8 +29,8 @@ describe('work item editor unit test', () => {
     describe('onChecklistUpdate', () => {
         test('should emit updated checklist', async() => {
             jest.useFakeTimers();
-            const checklist = [{ description: 'new_description' } as ChecklistEntry];
-            await component.setProps({ item: { checklist: [] as ChecklistEntry[] } as WorkItem });
+            const checklist: ChecklistEntry[] = [{ description: 'new_description', isCompleted: false }];
+            await component.setProps({ item: { ...new WorkItem(), checklist: new Array<ChecklistEntry>() } });
 
             component.vm.onChecklistUpdate(checklist);
             jest.advanceTimersByTime(400);

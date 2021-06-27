@@ -38,7 +38,7 @@ describe('performance store unit test', () => {
 
     describe('loadCurrentDayProgression', () => {
         test('should load current day progression', async() => {
-            const progression = { current: 2, target: 3 } as ProgressionCounter<number>;
+            const progression: ProgressionCounter<number> = { current: 2, target: 3, isCompleted: false };
             performanceHttpStub.getDailyProgression.resolves(progression);
             expect(store.getters['currentDayProgression']).not.toEqual(progression);
 
@@ -51,7 +51,7 @@ describe('performance store unit test', () => {
 
     describe('loadCurrentDayTimeTracking', () => {
         test('should load current day time tracking', async() => {
-            const tracking = { activityTime: 5, breakTime: 5, untrackedTime: 14 } as TimeTrackingBreakdownDto;
+            const tracking: TimeTrackingBreakdownDto = { activityTime: 5, breakTime: 5, untrackedTime: 14 };
             performanceHttpStub.getDailyTimeTracking.resolves(tracking);
             expect(store.getters['currentDayTimeTracking']).not.toEqual(tracking);
 
@@ -64,7 +64,7 @@ describe('performance store unit test', () => {
 
     describe('loadActivityBreakdown', () => {
         test('should load activity breakdown', async() => {
-            const breakdown = { regular: 5, recurring: 2 } as ActivityBreakdownDto;
+            const breakdown: ActivityBreakdownDto = { regular: 5, recurring: 2, overlearning: 2, interruption: 1 };
             performanceHttpStub.getActivityBreakdownByDateRange.resolves(breakdown);
             expect(store.getters['activityBreakdown']).not.toEqual(breakdown);
 
@@ -77,7 +77,7 @@ describe('performance store unit test', () => {
 
     describe('loadActivityHistories', () => {
         test('should load activity histories', async() => {
-            const histories = [{ regular: 5, recurring: 2 } as ActivityBreakdownDto];
+            const histories: ActivityBreakdownDto[] = [{ regular: 5, recurring: 2, overlearning: 2, interruption: 1 }];
             performanceHttpStub.getActivityBreakdownByDays.resolves(histories);
             expect(store.getters['activityHistories']).not.toEqual(histories);
 
@@ -90,7 +90,7 @@ describe('performance store unit test', () => {
 
     describe('loadEstimationBreakdown', () => {
         test('should load estimation breakdown', async() => {
-            const breakdown = { underestimate: 1, overestimate: 1.2 } as EstimationBreakdownDto;
+            const breakdown: EstimationBreakdownDto = { underestimate: 1, overestimate: 1.2, normal: 2 };
             performanceHttpStub.getEstimationBreakdown.resolves(breakdown);
             expect(store.getters['estimationBreakdown']).not.toEqual(breakdown);
 
@@ -103,7 +103,7 @@ describe('performance store unit test', () => {
 
     describe('loadDueDateBreakdown', () => {
         test('should load due date breakdown', async() => {
-            const breakdown = { pastDue: 0, looming: 2 } as DueDateBreakdownDto;
+            const breakdown: DueDateBreakdownDto = { pastDue: 0, looming: 2 };
             performanceHttpStub.getDueDateBreakdown.resolves(breakdown);
             expect(store.getters['dueDateBreakdown']).not.toEqual(breakdown);
 

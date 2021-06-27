@@ -34,15 +34,15 @@ describe('work item store unit test', () => {
         });
 
         test('should return null when edited work item does not exist in work items list', () => {
-            store.commit('setEditedWorkItem', { id: '1' } as WorkItem);
-            store.commit('setWorkItems', [{ id: '2' } as WorkItemDto, { id: '3' } as WorkItemDto]);
+            store.commit('setEditedWorkItem', { ...new WorkItem(), id: '1' });
+            store.commit('setWorkItems', [{ ...new WorkItemDto(), id: '2' }, { ...new WorkItemDto(), id: '3' }]);
 
             expect(store.getters['editedWorkItemMeta']).toBeNull();
         });
 
         test('should return edited work item meta', () => {
-            store.commit('setEditedWorkItem', { id: '2' } as WorkItem);
-            store.commit('setWorkItems', [{ id: '1' } as WorkItemDto, { id: '2' } as WorkItemDto]);
+            store.commit('setEditedWorkItem', { ...new WorkItem(), id: '2' });
+            store.commit('setWorkItems', [{ ...new WorkItemDto(), id: '1' }, { ...new WorkItemDto(), id: '2' }]);
 
             expect(store.getters['editedWorkItemMeta'].id).toEqual('2');
         });
@@ -50,10 +50,10 @@ describe('work item store unit test', () => {
 
     describe('workItems', () => {
         test('should always return sorted work items', () => {
-            const unsorted = [
-                { id: '1', priority: WorkItemPriority.NotUrgentNotImportant, type: WorkItemType.Recurring } as WorkItemDto,
-                { id: '2', priority: WorkItemPriority.ImportantNotUrgent, type: WorkItemType.Regular } as WorkItemDto,
-                { id: '3', priority: WorkItemPriority.ImportantNotUrgent, type: WorkItemType.Recurring } as WorkItemDto,
+            const unsorted: WorkItemDto[] = [
+                { ...new WorkItemDto(), id: '1', priority: WorkItemPriority.NotUrgentNotImportant, type: WorkItemType.Recurring },
+                { ...new WorkItemDto(), id: '2', priority: WorkItemPriority.ImportantNotUrgent, type: WorkItemType.Regular },
+                { ...new WorkItemDto(), id: '3', priority: WorkItemPriority.ImportantNotUrgent, type: WorkItemType.Recurring },
             ];
 
             const sorted = [unsorted[2], unsorted[1], unsorted[0]];
@@ -111,11 +111,11 @@ describe('work item store unit test', () => {
         });
 
         test('should return true and reload work item content on update success', async() => {
-            const toUpdate = { id: '1', name: 'updated_name' } as WorkItem;
-            const updated = { id: toUpdate.id, name: toUpdate.name } as WorkItemDto;
+            const toUpdate: WorkItem = { ...new WorkItem(), id: '1', name: 'updated_name' };
+            const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };
             workItemHttpStub.updateWorkItem.resolves(toUpdate);
             workItemHttpStub.getWorkItemMeta.resolves(updated);
-            store.commit('setWorkItems', [{ id: toUpdate.id, name: 'previous_name' } as WorkItemDto]);
+            store.commit('setWorkItems', [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
             store.commit('setEditedWorkItem', toUpdate);
 
             const result = await store.dispatch('updateWorkItem', toUpdate);
@@ -130,8 +130,8 @@ describe('work item store unit test', () => {
 
     describe('deleteWorkItem', () => {
         beforeEach(() => {
-            store.commit('setWorkItems', [{ id: '1' } as WorkItemDto]);
-            store.commit('setEditedWorkItem', { id: '1' } as WorkItem);
+            store.commit('setWorkItems', [{ ...new WorkItemDto(), id: '1' }]);
+            store.commit('setEditedWorkItem', { ...new WorkItem(), id: '1' });
         });
 
         test('should do nothing and return false when delete failed', async() => {
@@ -200,7 +200,7 @@ describe('work item store unit test', () => {
 
     describe('updateWorkItemMeta', () => {
         beforeEach(() => {
-            store.commit('setWorkItems', [{ id: '1', name: 'previous_name' } as WorkItemDto]);
+            store.commit('setWorkItems', [{ ...new WorkItemDto(), id: '1', name: 'previous_name' }]);
         });
 
         test('should return false when failed to update work item meta', async() => {
@@ -214,7 +214,7 @@ describe('work item store unit test', () => {
         });
 
         test('should return true and reload work item content when updated successfully', async() => {
-            workItemHttpStub.updateWorkItemMeta.resolves({ id: '1', name: 'updated_name' } as WorkItemDto);
+            workItemHttpStub.updateWorkItemMeta.resolves({ ...new WorkItemDto(), id: '1', name: 'updated_name' });
 
             const result = await store.dispatch('updateWorkItemMeta', new WorkItemDto());
 
@@ -226,7 +226,7 @@ describe('work item store unit test', () => {
 
     describe('loadEditedWorkItem', () => {
         test('should load edited work item', async() => {
-            const item = { id: '1' } as WorkItem;
+            const item: WorkItem = { ...new WorkItem(), id: '1' };
             workItemHttpStub.getWorkItem.resolves(item);
             expect(store.getters['editedWorkItem']).not.toEqual(item);
 
@@ -239,8 +239,8 @@ describe('work item store unit test', () => {
 
     describe('loadWorkItems', () => {
         test('should load work items and cache most recent query', async() => {
-            const query = { searchText: 'search_text' } as WorkItemQuery;
-            const items = [{ id: '1' } as WorkItemDto];
+            const query: WorkItemQuery = { ...new WorkItemQuery(), searchText: 'search_text' };
+            const items: WorkItemDto[] = [{ ...new WorkItemDto(), id: '1' }];
             workItemHttpStub.getWorkItems.resolves(items);
             expect(store.state.lastQuery).not.toEqual(query);
 

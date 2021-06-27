@@ -17,14 +17,14 @@ describe('work item checklist unit test', () => {
 
     describe('toggleCompletion', () => {
         test('should toggle completion status', async() => {
-            const entries = [
-                { description: 'description_1', isCompleted: true } as ChecklistEntry,
-                { description: 'description_2', isCompleted: true } as ChecklistEntry
+            const entries: ChecklistEntry[] = [
+                { description: 'description_1', isCompleted: true },
+                { description: 'description_2', isCompleted: true }
             ];
 
-            const expected = [
-                { description: 'description_1', isCompleted: true } as ChecklistEntry,
-                { description: 'description_2', isCompleted: false } as ChecklistEntry
+            const expected: ChecklistEntry[] = [
+                { description: 'description_1', isCompleted: true },
+                { description: 'description_2', isCompleted: false }
             ];
 
             await component.setProps({ entries });
@@ -38,10 +38,10 @@ describe('work item checklist unit test', () => {
 
     describe('deleteEntry', () => {
         test('should emit remaining entries', async() => {
-            const entries = [
-                { description: 'description_1' } as ChecklistEntry,
-                { description: 'description_2' } as ChecklistEntry,
-                { description: 'description_3' } as ChecklistEntry
+            const entries: ChecklistEntry[] = [
+                { description: 'description_1', isCompleted: false },
+                { description: 'description_2', isCompleted: false },
+                { description: 'description_3', isCompleted: false }
             ];
 
             await component.setProps({ entries });
@@ -63,8 +63,8 @@ describe('work item checklist unit test', () => {
         });
 
         test('should emit new entry', async() => {
-            const entries = [{ description: 'description_1' } as ChecklistEntry];
-            const expected = [...entries, { description: 'new_description' } as ChecklistEntry];
+            const entries: ChecklistEntry[] = [{ description: 'description_1', isCompleted: false }];
+            const expected: ChecklistEntry[] = [...entries, { description: 'new_description', isCompleted: false }];
             await component.setProps({ entries });
             component.vm.pendingEntry = 'new_description';
 

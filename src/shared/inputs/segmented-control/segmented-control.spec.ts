@@ -21,9 +21,9 @@ describe('segmented control unit test', () => {
 
         beforeEach(async() => {
             options = [
-                { icon: { name: 'name_1' } as IconMeta, isActive: false } as ControlButtonOption,
-                { icon: { name: 'name_2' } as IconMeta, isActive: true } as ControlButtonOption,
-                { icon: { name: 'name_3' } as IconMeta, isActive: false } as ControlButtonOption
+                { icon: { ...new IconMeta(), name: 'name_1' }, isActive: false },
+                { icon: { ...new IconMeta(), name: 'name_2' }, isActive: true },
+                { icon: { ...new IconMeta(), name: 'name_3' }, isActive: false }
             ];
 
             await component.setProps({ options });
@@ -40,9 +40,9 @@ describe('segmented control unit test', () => {
 
         test('should emit selected option', () => {
             const expected = [
-                { icon: { name: 'name_1' } as IconMeta, isActive: true } as ControlButtonOption,
-                { icon: { name: 'name_2' } as IconMeta, isActive: false } as ControlButtonOption,
-                { icon: { name: 'name_3' } as IconMeta, isActive: false } as ControlButtonOption
+                { icon: { ...new IconMeta(), name: 'name_1' }, isActive: true },
+                { icon: { ...new IconMeta(), name: 'name_2' }, isActive: false },
+                { icon: { ...new IconMeta(), name: 'name_3' }, isActive: false }
             ];
 
             component.vm.onSelect(options[0]);

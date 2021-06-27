@@ -20,9 +20,9 @@ describe('icon value selector unit test', () => {
 
         beforeEach(() => {
             options = [
-                { value: 2 } as IconSelectionOption<number>,
-                { value: 4 } as IconSelectionOption<number>,
-                { value: 6 } as IconSelectionOption<number>
+                { ...new IconSelectionOption<number>(), value: 2 },
+                { ...new IconSelectionOption<number>(), value: 4 },
+                { ...new IconSelectionOption<number>(), value: 6 }
             ]
         });
 
@@ -41,7 +41,7 @@ describe('icon value selector unit test', () => {
 
     describe('getOptionStyle', () => {
         test('should return correct option style', () => {
-            const style = component.vm.getOptionStyle({ colorType: 'color-type' } as IconSelectionOption<number>);
+            const style = component.vm.getOptionStyle({ ...new IconSelectionOption<number>(), colorType: 'color-type' });
 
             expect(style.color).toEqual('var(--color-type-00)');
         });
@@ -52,8 +52,8 @@ describe('icon value selector unit test', () => {
 
         beforeEach(() => {
             options = [
-                { value: 2 } as IconSelectionOption<number>,
-                { value: 4 } as IconSelectionOption<number>
+                { ...new IconSelectionOption<number>(), value: 2 },
+                { ...new IconSelectionOption<number>(), value: 4 }
             ]
         });
 

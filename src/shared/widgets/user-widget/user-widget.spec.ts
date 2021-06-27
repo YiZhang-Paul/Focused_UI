@@ -27,15 +27,15 @@ describe('user widget unit test', () => {
         });
 
         test('should return user rating', () => {
-            const ratings = {
+            const ratings: PerformanceRating = {
                 determination: 55,
                 estimation: 65,
                 planning: 80,
                 adaptability: 60,
                 sustainability: 40
-            } as PerformanceRating;
+            };
 
-            store.commit(`${userKey}/setProfile`, { ratings } as UserProfile);
+            store.commit(`${userKey}/setProfile`, { ...new UserProfile(), ratings });
 
             expect(component.vm.rating).toEqual(60);
         });
