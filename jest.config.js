@@ -7,6 +7,10 @@ module.exports = {
     coverageReporters: ['cobertura', 'text', 'text-summary'],
     collectCoverageFrom: [
         '**/src/**/*.{js,ts,vue}',
-        '!**/{node_modules,mocks}/**'
+        '!**/{node_modules,mocks}/**',
+        '!**/src/core/services/http/**',
+        '!**/src/background.ts',
+        '!**/src/main.ts',
+        '!**/src/store/index.ts'
     ]
 };
