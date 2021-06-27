@@ -9,7 +9,7 @@
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
 
-import { StyleConfig } from '../../core/models/generic/style-config';
+import { StyleConfig } from '../../../core/models/generic/style-config';
 
 class DisplayPanelProp {
     public lineWidth = prop<string>({ default: '1px' });

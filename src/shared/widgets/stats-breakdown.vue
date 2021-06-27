@@ -13,7 +13,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 import ProgressBar from '../displays/progress-bar.vue';
 
 class StatsBreakdownProp {

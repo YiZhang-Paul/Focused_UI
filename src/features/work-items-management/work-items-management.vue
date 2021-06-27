@@ -73,7 +73,7 @@ import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
-import DisplayPanel from '../../shared/panels/display-panel.vue';
+import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import SessionTracker from '../../shared/widgets/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';

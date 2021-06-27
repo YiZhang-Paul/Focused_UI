@@ -30,7 +30,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { Check, Close } from 'mdue';
 
-import OverlayScrollPanel from '../panels/overlay-scroll-panel.vue';
+import OverlayScrollPanel from '../panels/overlay-scroll-panel/overlay-scroll-panel.vue';
 
 class TextareaInputProp {
     public modelValue = prop<string>({ default: '' });

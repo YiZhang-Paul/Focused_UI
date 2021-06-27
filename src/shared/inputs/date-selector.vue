@@ -57,7 +57,7 @@ import { ChevronLeft, ChevronRight, CloseCircleOutline } from 'mdue';
 import { ClassConfig } from '../../core/models/generic/class-config';
 import { TimeUtility } from '../../core/utilities/time-utility/time-utility';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
-import DisplayPanel from '../../shared/panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 import LightsourcePanel from '../panels/lightsource-panel/lightsource-panel.vue';
 
 class DateSelectorProp {

@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 import LightsourcePanel from '../panels/lightsource-panel/lightsource-panel.vue';
 
 class EstimationSelectorProp {

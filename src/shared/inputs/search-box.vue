@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 
 @Options({
     components: { DisplayPanel },

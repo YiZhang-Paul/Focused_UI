@@ -44,7 +44,7 @@ import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utilit
 import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
 import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
 import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
-import DisplayPanel from '../../../../shared/panels/display-panel.vue';
+import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
 import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
 
 class WorkItemEditorHeaderProp {

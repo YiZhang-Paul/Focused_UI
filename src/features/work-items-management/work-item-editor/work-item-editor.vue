@@ -96,8 +96,8 @@ import ActionButton from '../../../shared/buttons/action-button/action-button.vu
 import TextInput from '../../../shared/inputs/text-input.vue';
 import TextareaInput from '../../../shared/inputs/textarea-input.vue';
 import DateSelector from '../../../shared/inputs/date-selector.vue';
-import DisplayPanel from '../../../shared/panels/display-panel.vue';
-import DetailDisplayPanel from '../../../shared/panels/detail-display-panel.vue';
+import DisplayPanel from '../../../shared/panels/display-panel/display-panel.vue';
+import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
 import ItemProgression from '../../../shared/displays/item-progression.vue';
 
 import WorkItemEditorHeader from './work-item-editor-header/work-item-editor-header.vue';

@@ -46,7 +46,7 @@ import { Coffee, Help, LightbulbOn } from 'mdue';
 import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { StyleConfig } from '../../core/models/generic/style-config';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 
 class TimeTrackingBreakdownProp {
     public tracking = prop<TimeTrackingBreakdownDto>({ default: null });

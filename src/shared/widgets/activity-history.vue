@@ -53,7 +53,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { DateRange } from '../../core/models/generic/date-range';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { StyleConfig } from '../../core/models/generic/style-config';
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 
 class ActivityHistoryProp {
     public dateRange = prop<DateRange>({ default: null });

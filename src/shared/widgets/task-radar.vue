@@ -31,7 +31,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 import { StyleConfig } from '../../core/models/generic/style-config';
 import { RadarSeries } from '../../core/models/generic/radar-series';
-import DisplayPanel from '../panels/display-panel.vue';
+import DisplayPanel from '../panels/display-panel/display-panel.vue';
 
 class TaskRadarProp {
     public series = prop<RadarSeries[]>({ default: [] });
