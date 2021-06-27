@@ -46,8 +46,8 @@ import { StyleConfig } from '../../../../core/models/generic/style-config';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
-import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
-import ItemProgression from '../../../../shared/displays/item-progression.vue';
+import DueTimeDisplay from '../../../../shared/displays/due-time-display/due-time-display.vue';
+import ItemProgression from '../../../../shared/displays/item-progression/item-progression.vue';
 import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
 
 class WorkItemCardProp {

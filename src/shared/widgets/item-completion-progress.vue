@@ -7,7 +7,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
-import ProgressBar from '../displays/progress-bar.vue';
+import ProgressBar from '../displays/progress-bar/progress-bar.vue';
 
 class ItemCompletionProgressProp {
     public progress = prop<ProgressionCounter<number>>({ default: null });

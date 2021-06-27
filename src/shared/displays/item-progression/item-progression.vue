@@ -1,5 +1,5 @@
 <template>
-    <div class="item-progression-container" :class="{ completed: progress.isCompleted }">
+    <div v-if="progress" class="item-progression-container" :class="{ completed: progress.isCompleted }">
         <component class="icon" :is="progressIcon"></component>
         <span class="counters">{{ progress.current ?? 0 }}/{{ progress.target ?? 0 }}</span>
     </div>
@@ -10,7 +10,7 @@ import { markRaw } from 'vue';
 import { Vue, prop } from 'vue-class-component';
 import { FileTree } from 'mdue';
 
-import { ProgressionCounter } from '../../core/models/generic/progression-counter';
+import { ProgressionCounter } from '../../../core/models/generic/progression-counter';
 
 class ItemProgressionProp {
     public icon = prop<any>({ default: null });

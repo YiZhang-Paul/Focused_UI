@@ -41,7 +41,7 @@ export default class DueTimeDisplay extends Vue.with(DueTimeDisplayProp) {
 
         const time = (date.getTime() - Date.now()) / this.oneHour;
 
-        return time > 1 ? Math.round(time) : time;
+        return time > 0.999 ? Math.round(time) : time;
     }
 }
 </script>

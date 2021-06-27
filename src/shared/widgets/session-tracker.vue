@@ -42,8 +42,8 @@ import { PercentageSeries } from '../../core/models/progress-bar/percentage-seri
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import CountDownDisplay from '../../shared/displays/count-down-display.vue';
-import ProgressBar from '../../shared/displays/progress-bar.vue';
+import CountDownDisplay from '../displays/count-down-display/count-down-display.vue';
+import ProgressBar from '../displays/progress-bar/progress-bar.vue';
 
 @Options({
     components: {
