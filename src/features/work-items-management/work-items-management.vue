@@ -61,7 +61,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../store';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
@@ -125,15 +124,15 @@ export default class WorkItemsManagement extends Vue {
     private query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
-        return store.getters[`${workItemKey}/pendingWorkItem`];
+        return this.$store.getters[`${workItemKey}/pendingWorkItem`];
     }
 
     get editedItemMeta(): WorkItemDto | null {
-        return store.getters[`${workItemKey}/editedWorkItemMeta`];
+        return this.$store.getters[`${workItemKey}/editedWorkItemMeta`];
     }
 
     get editedItem(): WorkItem | null {
-        return store.getters[`${workItemKey}/editedWorkItem`];
+        return this.$store.getters[`${workItemKey}/editedWorkItem`];
     }
 
     public created(): void {
@@ -141,15 +140,15 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public startCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
+        this.$store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
     }
 
     public cancelCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`, null);
+        this.$store.commit(`${workItemKey}/setPendingWorkItem`, null);
     }
 
     public async confirmCreate(): Promise<void> {
-        const id = await store.dispatch(`${workItemKey}/createWorkItem`);
+        const id = await this.$store.dispatch(`${workItemKey}/createWorkItem`);
 
         if (id) {
             await this.onItemSelect(id);
@@ -158,39 +157,39 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/updateWorkItemMeta`, item)) {
+        if (await this.$store.dispatch(`${workItemKey}/updateWorkItemMeta`, item)) {
             this.$emit('item:update');
         }
     }
 
     public onItemClose(): void {
-        store.commit(`${workItemKey}/setEditedWorkItem`, null);
+        this.$store.commit(`${workItemKey}/setEditedWorkItem`, null);
     }
 
     public async onItemUpdate(item: WorkItem): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/updateWorkItem`, item)) {
+        if (await this.$store.dispatch(`${workItemKey}/updateWorkItem`, item)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemDelete(id: string): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/deleteWorkItem`, id)) {
+        if (await this.$store.dispatch(`${workItemKey}/deleteWorkItem`, id)) {
             this.$emit('item:delete');
         }
     }
 
     public async onItemSelect(id: string): Promise<void> {
-        await store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+        await this.$store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
     public async onItemStart(id: string): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/startWorkItem`, id)) {
+        if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, id)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemStop(): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/stopWorkItem`)) {
+        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
             this.$emit('item:update');
         }
     }
@@ -248,7 +247,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     private async loadWorkItems(): Promise<void> {
-        await store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        await this.$store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }
 </script>

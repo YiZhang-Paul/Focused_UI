@@ -16,7 +16,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from './store';
 import { userKey } from './store/user/user.state';
 import { timeSessionKey } from './store/time-session/time-session.state';
 import { performanceKey } from './store/performance/performance.state';
@@ -38,19 +37,19 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue'
 export default class App extends Vue {
 
     public created(): void {
-        store.dispatch(`${userKey}/loadProfile`);
-        store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
-        store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);
+        this.$store.dispatch(`${userKey}/loadProfile`);
+        this.$store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
+        this.$store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);
         this.loadPerformanceBreakdowns();
     }
 
     public loadPerformanceBreakdowns(): void {
-        store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
-        store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
-        store.dispatch(`${performanceKey}/loadActivityBreakdown`);
-        store.dispatch(`${performanceKey}/loadActivityHistories`);
-        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
-        store.dispatch(`${performanceKey}/loadDueDateBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
+        this.$store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
+        this.$store.dispatch(`${performanceKey}/loadActivityBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadActivityHistories`);
+        this.$store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadDueDateBreakdown`);
     }
 }
 </script>

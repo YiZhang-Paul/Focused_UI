@@ -32,7 +32,6 @@
 import { Options, Vue } from 'vue-class-component';
 import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
-import store from '../../store';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { IconMeta } from '../../core/models/generic/icon-meta';
@@ -188,15 +187,15 @@ export default class SessionTracker extends Vue {
     }
 
     get sessionStatus(): TimeSessionStatus {
-        return store.getters[`${timeSessionKey}/timeSessionStatus`];
+        return this.$store.getters[`${timeSessionKey}/timeSessionStatus`];
     }
 
     get focusSession(): FocusSessionDto | null {
-        return store.getters[`${timeSessionKey}/activeFocusSession`];
+        return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
     }
 
     get breakSession(): BreakSession | null {
-        return store.getters[`${timeSessionKey}/activeBreakSession`];
+        return this.$store.getters[`${timeSessionKey}/activeBreakSession`];
     }
 }
 </script>

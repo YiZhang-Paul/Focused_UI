@@ -26,7 +26,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../../store';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
@@ -50,15 +49,15 @@ import ActivityHistory from '../../../shared/widgets/activity-history.vue';
 export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
-        return store.getters[`${performanceKey}/dateRange`];
+        return this.$store.getters[`${performanceKey}/dateRange`];
     }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
-        return store.getters[`${performanceKey}/activityBreakdown`];
+        return this.$store.getters[`${performanceKey}/activityBreakdown`];
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.getters[`${performanceKey}/activityHistories`];
+        return this.$store.getters[`${performanceKey}/activityHistories`];
     }
 
     get timeTracked(): string {
@@ -81,7 +80,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get estimationBreakdown(): EstimationBreakdownDto | null {
-        return store.getters[`${performanceKey}/estimationBreakdown`];
+        return this.$store.getters[`${performanceKey}/estimationBreakdown`];
     }
 
     get inaccurateEstimate(): string {
@@ -103,7 +102,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get radarSeries(): RadarSeries[] {
-        const items: WorkItemDto[] = store.getters[`${workItemKey}/workItems`] ?? [];
+        const items: WorkItemDto[] = this.$store.getters[`${workItemKey}/workItems`] ?? [];
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,

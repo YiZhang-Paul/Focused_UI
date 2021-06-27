@@ -43,7 +43,6 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
@@ -77,7 +76,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
 
     get workItems(): WorkItemDto[] {
-        return store.getters[`${workItemKey}/workItems`];
+        return this.$store.getters[`${workItemKey}/workItems`];
     }
 
     public onStatusSelected(item: WorkItemDto, status: WorkItemStatus): void {
