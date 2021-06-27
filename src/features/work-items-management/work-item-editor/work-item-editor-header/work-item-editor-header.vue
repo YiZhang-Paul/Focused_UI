@@ -41,8 +41,8 @@ import { IconSelectionOption } from '../../../../core/models/generic/icon-select
 import { WorkItemPriority } from '../../../../core/enums/work-item-priority.enum';
 import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
-import IconValueSelector from '../../../../shared/inputs/icon-value-selector.vue';
-import EstimationSelector from '../../../../shared/inputs/estimation-selector.vue';
+import IconValueSelector from '../../../../shared/inputs/icon-value-selector/icon-value-selector.vue';
+import EstimationSelector from '../../../../shared/inputs/estimation-selector/estimation-selector.vue';
 import DueTimeDisplay from '../../../../shared/displays/due-time-display/due-time-display.vue';
 import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
 import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';

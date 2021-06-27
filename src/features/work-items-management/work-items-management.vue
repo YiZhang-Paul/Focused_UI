@@ -70,13 +70,13 @@ import { ControlButtonOption } from '../../core/models/generic/control-button-op
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import SearchBox from '../../shared/inputs/search-box.vue';
-import SegmentedControl from '../../shared/inputs/segmented-control.vue';
+import SearchBox from '../../shared/inputs/search-box/search-box.vue';
+import SegmentedControl from '../../shared/inputs/segmented-control/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import SessionTracker from '../../shared/widgets/session-tracker.vue';
-import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
+import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';

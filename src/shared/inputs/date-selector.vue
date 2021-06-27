@@ -206,7 +206,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
         return GenericUtility.sum(this.days.slice(0, month), _ => _) + offset;
     }
-
+    /* istanbul ignore next */
     private onClickOutside(event: Event): void {
         const path = event.composedPath();
         const target = event.target as HTMLElement;

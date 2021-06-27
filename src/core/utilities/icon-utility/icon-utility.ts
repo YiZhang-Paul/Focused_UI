@@ -22,7 +22,7 @@ import { TimeSessionStatus } from '../../enums/time-session-status.enum';
 import { WorkItemType } from '../../enums/work-item-type.enum';
 
 export class IconUtility {
-
+    /* istanbul ignore next */
     public static getGenericFilterIcon(type: GenericFilterType): IconMeta {
         if (type === GenericFilterType.All) {
             return {
@@ -40,7 +40,7 @@ export class IconUtility {
             color: isYes ? 'rgb(15, 255, 39)' : 'rgb(255, 0, 0)'
         };
     }
-
+    /* istanbul ignore next */
     public static getTimeSessionIcon(status: TimeSessionStatus): IconMeta {
         if (status === TimeSessionStatus.Idle) {
             return {
@@ -68,7 +68,7 @@ export class IconUtility {
             color: 'var(--session-status-colors-resting-00)'
         };
     }
-
+    /* istanbul ignore next */
     public static getWorkItemIcon(type: WorkItemType): IconMeta {
         if (type === WorkItemType.Interruption) {
             return {

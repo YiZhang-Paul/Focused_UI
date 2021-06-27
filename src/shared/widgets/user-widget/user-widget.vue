@@ -26,10 +26,10 @@
 import { Options, Vue } from 'vue-class-component';
 import { AccountReactivate, Logout } from 'mdue';
 
-import store from '../../store';
-import { userKey } from '../../store/user/user.state';
-import { UserProfile } from '../../core/models/user/user-profile';
-import { PerformanceRating } from '../../core/models/user/performance-rating';
+import store from '../../../store';
+import { userKey } from '../../../store/user/user.state';
+import { UserProfile } from '../../../core/models/user/user-profile';
+import { PerformanceRating } from '../../../core/models/user/performance-rating';
 
 @Options({
     components: {

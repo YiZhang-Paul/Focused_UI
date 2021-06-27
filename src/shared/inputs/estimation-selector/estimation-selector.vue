@@ -1,24 +1,15 @@
 <template>
-    <div class="icon-value-selector-container" ref="container">
-        <component v-if="selectedOption"
-            class="icon"
-            :class="{ active: showOptions }"
-            :is="selectedOption.icon"
-            :style="getOptionStyle(selectedOption)"
-            @click="showOptions = !showOptions">
-        </component>
+    <div class="estimation-selector-container" ref="container">
+        <div class="value-wrapper" :class="{ active: showOptions }" @click="showOptions = !showOptions">
+            <span>{{ transform ? transform(modelValue) : modelValue }}</span>
+        </div>
 
         <display-panel class="options" v-if="showOptions">
             <lightsource-panel class="lightsource-panel"></lightsource-panel>
 
-            <div class="option-wrapper"
-                v-for="(option, index) of options"
-                :key="index"
-                @click="onSelect(option.value)">
-
-                <component class="icon" :is="option.icon" :style="getOptionStyle(option)"></component>
-                <span>{{ option.description }}</span>
-            </div>
+            <span v-for="(option, index) of options" :key="index" @click="onSelect(option)">
+                {{ transform ? transform(option) : option }}
+            </span>
         </display-panel>
     </div>
 </template>
@@ -26,14 +17,13 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { StyleConfig } from '../../core/models/generic/style-config';
-import { IconSelectionOption } from '../../core/models/generic/icon-selection-option';
-import DisplayPanel from '../panels/display-panel/display-panel.vue';
-import LightsourcePanel from '../panels/lightsource-panel/lightsource-panel.vue';
+import DisplayPanel from '../../panels/display-panel/display-panel.vue';
+import LightsourcePanel from '../../panels/lightsource-panel/lightsource-panel.vue';
 
-class IconValueSelectorProp {
-    public modelValue = prop<any>({ default: null });
-    public options = prop<IconSelectionOption<any>[]>({ default: [] });
+class EstimationSelectorProp {
+    public modelValue = prop<number>({ default: 0 });
+    public options = prop<number[]>({ default: [] });
+    public transform = prop<() => string>({ default: null });
 }
 
 @Options({
@@ -43,12 +33,8 @@ class IconValueSelectorProp {
     },
     emits: ['update:modelValue']
 })
-export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
+export default class EstimationSelector extends Vue.with(EstimationSelectorProp) {
     public showOptions = false;
-
-    get selectedOption(): IconSelectionOption<any> | null {
-        return this.options.find(_ => _.value === this.modelValue) ?? null;
-    }
 
     public mounted(): void {
         document.addEventListener('click', this.onClickOutside);
@@ -58,18 +44,14 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
         document.removeEventListener('click', this.onClickOutside);
     }
 
-    public getOptionStyle(option: IconSelectionOption<any>): StyleConfig {
-        return { color: `var(--${option.colorType}-00)` };
-    }
-
-    public onSelect(option: any): void {
+    public onSelect(option: number): void {
         if (option !== this.modelValue) {
             this.$emit('update:modelValue', option);
         }
 
         this.showOptions = false;
     }
-
+    /* istanbul ignore next */
     private onClickOutside(event: Event): void {
         const path = event.composedPath();
         const target = event.target as HTMLElement;
@@ -83,13 +65,17 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
 </script>
 
 <style lang="scss" scoped>
-.icon-value-selector-container {
+.estimation-selector-container {
     position: relative;
     display: flex;
     justify-content: center;
 
-    .icon {
-        font-size: var(--font-sizes-600);
+    .value-wrapper {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
         transition: color 0.3s;
 
         &:hover, &.active {
@@ -116,20 +102,13 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
             transform: rotateX(180deg);
         }
 
-        .option-wrapper {
+        span {
             z-index: 999;
-            display: flex;
-            align-items: center;
             padding: 0.3vh 1vh;
             border-radius: 4px;
             font-size: var(--font-sizes-300);
             white-space: nowrap;
             transition: background-color 0.1s;
-
-            .icon {
-                margin-right: 6px;
-                font-size: var(--font-sizes-400);
-            }
 
             &:hover {
                 cursor: pointer;

@@ -22,8 +22,8 @@ import { timeSessionKey } from './store/time-session/time-session.state';
 import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel/lightsource-panel.vue';
-import UserWidget from './shared/widgets/user-widget.vue';
-import CurrentDateTime from './shared/widgets/current-date-time.vue';
+import UserWidget from './shared/widgets/user-widget/user-widget.vue';
+import CurrentDateTime from './shared/widgets/current-date-time/current-date-time.vue';
 import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue';
 
 @Options({

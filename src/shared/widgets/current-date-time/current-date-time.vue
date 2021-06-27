@@ -16,9 +16,9 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { IconMeta } from '../../core/models/generic/icon-meta';
-import { TimeUtility } from '../../core/utilities/time-utility/time-utility';
-import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
+import { IconMeta } from '../../../core/models/generic/icon-meta';
+import { TimeUtility } from '../../../core/utilities/time-utility/time-utility';
+import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
 
 export default class CurrentDateTime extends Vue {
     private current = new Date();
