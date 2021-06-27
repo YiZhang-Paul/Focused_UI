@@ -130,16 +130,13 @@ class WorkItemEditorProp {
 })
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
+    public readonly checklistIcon = markRaw(FormatListCheckbox);
     public activeIndex = 0;
     // eslint-disable-next-line no-undef
     private debounceTimer: NodeJS.Timeout | null = null;
 
     get isRecur(): boolean {
         return this.item.type === WorkItemType.Recurring;
-    }
-
-    get checklistIcon(): any {
-        return markRaw(FormatListCheckbox);
     }
 
     public getTime(time: string): string {
