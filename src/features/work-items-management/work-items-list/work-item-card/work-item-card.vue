@@ -101,7 +101,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     public onEditConfirm(): void {
-        const name = this.item?.name?.trim() ?? '';
+        const name = this.item.name.trim() ?? '';
 
         if (name) {
             this.item.name = name;
