@@ -32,8 +32,8 @@ import { PerformanceRating } from '../../../core/models/user/performance-rating'
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown/stats-breakdown.vue';
-import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown.vue';
-import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker.vue';
+import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown/time-tracking-breakdown.vue';
+import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker/user-ratings-tracker.vue';
 
 @Options({
     components: {

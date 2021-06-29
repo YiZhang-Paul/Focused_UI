@@ -110,7 +110,7 @@ describe('work item store unit test', () => {
             expect(result).toBeFalsy();
         });
 
-        test('should return true and reload work item content on update success', async() => {
+        test('should return true and reload work item content when applicable on update success', async() => {
             const toUpdate: WorkItem = { ...new WorkItem(), id: '1', name: 'updated_name' };
             const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };
             workItemHttpStub.updateWorkItem.resolves(toUpdate);
@@ -146,7 +146,19 @@ describe('work item store unit test', () => {
             expect(result).toBeFalsy();
         });
 
-        test('should return true and remove work item content on delete success', async() => {
+        test('should return true on delete success', async() => {
+            workItemHttpStub.deleteWorkItem.resolves(true);
+            store.commit('setEditedWorkItem', { ...new WorkItem(), id: '2' });
+
+            const result = await store.dispatch('deleteWorkItem', '1');
+
+            sinonExpect.calledOnce(workItemHttpStub.deleteWorkItem);
+            expect(store.getters['workItems'].length).toEqual(0);
+            expect(store.getters['editedWorkItem']).not.toBeNull();
+            expect(result).toBeTruthy();
+        });
+
+        test('should return true and remove work item content when applicable on delete success', async() => {
             workItemHttpStub.deleteWorkItem.resolves(true);
 
             const result = await store.dispatch('deleteWorkItem', '1');

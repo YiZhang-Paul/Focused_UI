@@ -36,7 +36,7 @@ import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown/stats-breakdown.vue';
-import TaskRadar from '../../../shared/widgets/task-radar.vue';
+import TaskRadar from '../../../shared/widgets/task-radar/task-radar.vue';
 import ActivityHistory from '../../../shared/widgets/activity-history.vue';
 
 @Options({

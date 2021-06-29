@@ -20,8 +20,8 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { CalendarCheck, ClockTimeThree, HeadAlert, Shield, Yoga } from 'mdue';
 import { Point } from 'electron';
 
-import { PerformanceRating } from '../../core/models/user/performance-rating';
-import DisplayPanel from '../panels/display-panel/display-panel.vue';
+import { PerformanceRating } from '../../../core/models/user/performance-rating';
+import DisplayPanel from '../../panels/display-panel/display-panel.vue';
 
 class UserRatingsTrackerProp {
     public ratings = prop<PerformanceRating>({ default: null });

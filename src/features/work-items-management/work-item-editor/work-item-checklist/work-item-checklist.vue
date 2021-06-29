@@ -51,7 +51,7 @@ import { ChecklistEntry } from '../../../../core/models/work-item/checklist-entr
 import { GenericUtility } from '../../../../core/utilities/generic-utility/generic-utility';
 import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
 import OverlayScrollPanel from '../../../../shared/panels/overlay-scroll-panel/overlay-scroll-panel.vue';
-import TextInput from '../../../../shared/inputs/text-input.vue';
+import TextInput from '../../../../shared/inputs/text-input/text-input.vue';
 
 class WorkItemChecklistProp {
     public entries = prop<ChecklistEntry[]>({ default: [] });
