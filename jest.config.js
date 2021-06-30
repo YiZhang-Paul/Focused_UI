@@ -8,7 +8,6 @@ module.exports = {
     collectCoverageFrom: [
         '**/src/**/*.{js,ts,vue}',
         '!**/{node_modules,mocks}/**',
-        '!**/src/core/services/http/**',
         '!**/src/background.ts',
         '!**/src/main.ts',
         '!**/src/store/index.ts'
