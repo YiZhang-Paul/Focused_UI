@@ -131,16 +131,17 @@ export default class SessionTracker extends Vue {
         if (this.isResting) {
             const { startTime, targetDuration } = this.breakSession!;
             const elapsed = (Date.now() - new Date(startTime).getTime()) / this.oneHour;
+            const percent = Math.min(100, elapsed / targetDuration * 100);
 
-            return [{ percent: Math.min(100, elapsed / targetDuration * 100), colorType: 'session-status-colors-resting' }];
+            return [new PercentageSeries(percent, 'session-status-colors-resting')];
         }
 
         const { targetDuration, activities } = this.focusSession!;
         const { regular, recurring, interruption, overlearning } = activities;
 
         return [
-            { percent: (regular + recurring + interruption) / targetDuration * 100, colorType: 'activity-colors-regular' },
-            { percent: overlearning / targetDuration * 100, colorType: 'activity-colors-overlearning' }
+            new PercentageSeries((regular + recurring + interruption) / targetDuration * 100, 'activity-colors-regular'),
+            new PercentageSeries(overlearning / targetDuration * 100, 'activity-colors-overlearning')
         ];
     }
 

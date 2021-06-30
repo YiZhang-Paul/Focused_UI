@@ -72,10 +72,10 @@ export default class WorkItemTrackingStatsGroup extends Vue {
         const total = regular + recurring + interruption + overlearning;
 
         return [
-            { percent: interruption / total * 100, colorType: 'activity-colors-interruption' },
-            { percent: regular / total * 100, colorType: 'activity-colors-regular' },
-            { percent: overlearning / total * 100, colorType: 'activity-colors-overlearning' },
-            { percent: recurring / total * 100, colorType: 'activity-colors-recurring' }
+            new PercentageSeries(interruption / total * 100, 'activity-colors-interruption'),
+            new PercentageSeries(regular / total * 100, 'activity-colors-regular'),
+            new PercentageSeries(overlearning / total * 100, 'activity-colors-overlearning'),
+            new PercentageSeries(recurring / total * 100, 'activity-colors-recurring')
         ];
     }
 
@@ -95,9 +95,9 @@ export default class WorkItemTrackingStatsGroup extends Vue {
         const total = normal + overestimate + underestimate;
 
         return [
-            { percent: underestimate / total * 100, colorType: 'progress-colors-underestimate' },
-            { percent: overestimate / total * 100, colorType: 'progress-colors-overestimate' },
-            { percent: normal / total * 100, colorType: 'progress-colors-normal' }
+            new PercentageSeries(underestimate / total * 100, 'progress-colors-underestimate'),
+            new PercentageSeries(overestimate / total * 100, 'progress-colors-overestimate'),
+            new PercentageSeries(normal / total * 100, 'progress-colors-normal')
         ];
     }
 

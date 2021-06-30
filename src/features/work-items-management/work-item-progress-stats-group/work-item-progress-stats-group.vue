@@ -59,8 +59,8 @@ export default class WorkItemProgressStatsGroup extends Vue {
         const total = pastDue + looming;
 
         return [
-            { percent: pastDue / total * 100, colorType: 'context-colors-warning' },
-            { percent: looming / total * 100, colorType: 'context-colors-alert' }
+            new PercentageSeries(pastDue / total * 100, 'context-colors-warning'),
+            new PercentageSeries(looming / total * 100, 'context-colors-alert')
         ];
     }
 
@@ -94,9 +94,9 @@ export default class WorkItemProgressStatsGroup extends Vue {
         }, aggregate);
 
         return [
-            { percent: overdoing / total * 100, colorType: 'focus-progress-colors-overdoing' },
-            { percent: insufficient / total * 100, colorType: 'focus-progress-colors-insufficient' },
-            { percent: sufficient / total * 100, colorType: 'focus-progress-colors-sufficient' }
+            new PercentageSeries(overdoing / total * 100, 'focus-progress-colors-overdoing'),
+            new PercentageSeries(insufficient / total * 100, 'focus-progress-colors-insufficient'),
+            new PercentageSeries(sufficient / total * 100, 'focus-progress-colors-sufficient')
         ];
     }
 

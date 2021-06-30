@@ -31,7 +31,7 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
             const backgroundColor = `var(--${_.colorType}-00)`;
             const shadowColor = `var(--${_.colorType}-04)`;
 
-            return { total: Math.round(blocks), backgroundColor, shadowColor };
+            return new BlockGroup(Math.round(blocks), backgroundColor, shadowColor);
         });
 
         if (total >= 100) {

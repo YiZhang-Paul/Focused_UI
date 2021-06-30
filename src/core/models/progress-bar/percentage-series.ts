@@ -1,4 +1,9 @@
 export class PercentageSeries {
-    public percent = 0;
-    public colorType = '';
+    public percent: number;
+    public colorType: string;
+
+    constructor(percent: number, colorType: string) {
+        this.percent = percent;
+        this.colorType = colorType;
+    }
 }
