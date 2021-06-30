@@ -37,7 +37,7 @@ import { PercentageSeries } from '../../../core/models/progress-bar/percentage-s
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import StatsBreakdown from '../../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 import TaskRadar from '../../../shared/widgets/task-radar/task-radar.vue';
-import ActivityHistory from '../../../shared/widgets/activity-history.vue';
+import ActivityHistory from '../../../shared/widgets/activity-history/activity-history.vue';
 
 @Options({
     components: {

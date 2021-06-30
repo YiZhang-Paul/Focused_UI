@@ -82,13 +82,13 @@ describe('task radar unit test', () => {
         test('should return correct style for items', () => {
             const point: RadarSeries = { ...new RadarSeries(), value: 0.5 };
             expect(component.vm.getPointStyle(point).top).toEqual('80%');
-            expect(component.vm.getPointStyle(point).width).toEqual('0.52vh');
-            expect(component.vm.getPointStyle(point).height).toEqual('0.52vh');
+            expect(component.vm.getPointStyle(point).width.startsWith('0.58')).toBeTruthy();
+            expect(component.vm.getPointStyle(point).height.startsWith('0.58')).toBeTruthy();
 
             point.value = 10;
             expect(component.vm.getPointStyle(point).top).toEqual('20%');
-            expect(component.vm.getPointStyle(point).width).toEqual('0.9vh');
-            expect(component.vm.getPointStyle(point).height).toEqual('0.9vh');
+            expect(component.vm.getPointStyle(point).width.startsWith('0.82')).toBeTruthy();
+            expect(component.vm.getPointStyle(point).height.startsWith('0.82')).toBeTruthy();
         });
     });
 });

@@ -50,10 +50,10 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { DateRange } from '../../core/models/generic/date-range';
-import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
-import { StyleConfig } from '../../core/models/generic/style-config';
-import DisplayPanel from '../panels/display-panel/display-panel.vue';
+import { DateRange } from '../../../core/models/generic/date-range';
+import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
+import { StyleConfig } from '../../../core/models/generic/style-config';
+import DisplayPanel from '../../panels/display-panel/display-panel.vue';
 
 class ActivityHistoryProp {
     public dateRange = prop<DateRange>({ default: null });
@@ -80,17 +80,9 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     }
 
     public getFillerStyle(index: number): StyleConfig {
+        const previous = index ? this.getFocus(this.histories[index - 1]) : 0;
         const current = this.getFocus(this.histories[index]);
-
-        if (!index) {
-            const height = `${100 - current / 24 * 100}%`;
-
-            return { height, 'max-height': height };
-        }
-
-        const previous = this.getFocus(this.histories[index - 1]);
-        const difference = Math.max(0, previous - current);
-        const height = `${100 - (current - difference) / 24 * 100}%`;
+        const height = `${100 - Math.max(previous, current) / 24 * 100}%`;
 
         return { height, 'max-height': height };
     }
@@ -102,8 +94,7 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
 
         const previous = this.getFocus(this.histories[index - 1]);
         const current = this.getFocus(this.histories[index]);
-        const percentage = isGain ? current - previous : previous - current;
-        const height = Math.max(0, percentage / 24 * 100);
+        const height = Math.abs(current - previous) / 24 * 100;
 
         return {
             'margin-top': isGain && height ? '1px' : 0,
