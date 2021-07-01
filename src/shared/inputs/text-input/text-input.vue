@@ -36,6 +36,7 @@ class TextInputProp {
     },
     emits: ['update:modelValue']
 })
+/* istanbul ignore next */
 export default class TextInput extends Vue.with(TextInputProp) {
     public current = this.modelValue;
     public isEditMode = false;

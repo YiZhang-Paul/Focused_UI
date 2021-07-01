@@ -69,6 +69,7 @@ class WorkItemChecklistProp {
     },
     emits: ['update']
 })
+/* istanbul ignore next */
 export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
     public pendingEntry = '';
 

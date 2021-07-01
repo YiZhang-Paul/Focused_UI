@@ -37,6 +37,7 @@ class UserRatingsTrackerProp {
         DisplayPanel
     }
 })
+/* istanbul ignore next */
 export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp) {
     public readonly points: Point[] = [
         { x: 50, y: 4.5 },

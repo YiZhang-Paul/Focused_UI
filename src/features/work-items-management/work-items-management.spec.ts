@@ -105,12 +105,17 @@ describe('work items management unit test', () => {
 
     describe('onItemClose', () => {
         test('should close edited item', () => {
-            store.commit(`${workItemKey}/setEditedWorkItem`, new WorkItem());
+            const item: WorkItem = { ...new WorkItem(), id: '1' };
+            const meta: WorkItemDto = { ...new WorkItemDto(), id: '1' };
+            store.commit(`${workItemKey}/setWorkItems`, [meta]);
+            store.commit(`${workItemKey}/setEditedWorkItem`, item);
             expect(component.vm.editedItem).toBeTruthy();
+            expect(component.vm.editedItemMeta).toBeTruthy();
 
             component.vm.onItemClose();
 
             expect(component.vm.editedItem).toBeFalsy();
+            expect(component.vm.editedItemMeta).toBeFalsy();
         });
     });
 

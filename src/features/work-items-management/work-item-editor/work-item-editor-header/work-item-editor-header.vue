@@ -62,6 +62,7 @@ class WorkItemEditorHeaderProp {
     },
     emits: ['item:update']
 })
+/* istanbul ignore next */
 export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderProp) {
     public readonly types = [WorkItemType.Regular, WorkItemType.Recurring, WorkItemType.Interruption];
     public readonly estimationOptions = [0.2, 0.5, 1, 2, 3, 5, 8, 13, 21];
@@ -100,7 +101,7 @@ export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderP
             return {
                 icon: setting.content,
                 colorType: `activity-colors-${setting.name}`,
-                description: setting.name ?? '',
+                description: setting.name!,
                 value: _
             };
         });

@@ -33,6 +33,7 @@ class EstimationSelectorProp {
     },
     emits: ['update:modelValue']
 })
+/* istanbul ignore next */
 export default class EstimationSelector extends Vue.with(EstimationSelectorProp) {
     public showOptions = false;
 
@@ -41,6 +42,7 @@ export default class EstimationSelector extends Vue.with(EstimationSelectorProp)
     }
 
     public beforeUnmount(): void {
+        /* istanbul ignore next */
         document.removeEventListener('click', this.onClickOutside);
     }
 

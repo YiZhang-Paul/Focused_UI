@@ -63,6 +63,7 @@ class ActivityHistoryProp {
 @Options({
     components: { DisplayPanel }
 })
+/* istanbul ignore next */
 export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
     public readonly thresholds = [0, 8, 12, 24];
 

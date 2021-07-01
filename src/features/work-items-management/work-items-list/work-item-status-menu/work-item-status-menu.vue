@@ -39,6 +39,7 @@ class WorkItemStatusMenuProp {
         'stop'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp) {
     public options: { icon: any; status: WorkItemStatus }[] = [];
 

@@ -48,6 +48,16 @@ describe('text input unit test', () => {
             expect(component.emitted()['update:modelValue'].length).toEqual(1);
             expect(component.emitted()['update:modelValue'][0]).toEqual(['current_value']);
         });
+
+        test('should default to empty string when input value is missing', async() => {
+            await component.setProps({ isInstantUpdate: true, modelValue: null });
+            component.vm.current = null;
+
+            component.vm.onEdit();
+
+            expect(component.emitted()['update:modelValue'].length).toEqual(1);
+            expect(component.emitted()['update:modelValue'][0]).toEqual(['']);
+        });
     });
 
     describe('onEditEnd', () => {
@@ -103,6 +113,18 @@ describe('text input unit test', () => {
             expect(component.emitted()['update:modelValue'].length).toEqual(1);
             expect(component.emitted()['update:modelValue'][0]).toEqual(['current_value']);
             expect(component.vm.current).toEqual('current_value');
+            expect(component.vm.isEditMode).toBeFalsy();
+        });
+
+        test('should default to empty string when input value is missing', async() => {
+            await component.setProps({ isInstantUpdate: false, isEmptyAllowed: true, modelValue: null });
+            component.vm.current = null;
+
+            component.vm.onEditEnd();
+
+            expect(component.emitted()['update:modelValue'].length).toEqual(1);
+            expect(component.emitted()['update:modelValue'][0]).toEqual(['']);
+            expect(component.vm.current).toEqual('');
             expect(component.vm.isEditMode).toBeFalsy();
         });
     });

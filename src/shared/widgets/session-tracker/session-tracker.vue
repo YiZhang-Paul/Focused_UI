@@ -103,10 +103,10 @@ export default class SessionTracker extends Vue {
             return 'taking a break...';
         }
 
-        const items = this.focusSession!.workItems ?? [];
+        const items = this.focusSession!.workItems;
         const item = items.find(_ => _.status === WorkItemStatus.Ongoing);
 
-        return item?.name ? item?.name : 'N/A';
+        return item!.name ? item!.name : 'N/A';
     }
 
     get dropItemText(): string {

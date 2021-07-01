@@ -127,6 +127,24 @@ describe('work item store unit test', () => {
             expect(result).toBeFalsy();
         });
 
+        test('should return true on update success', async() => {
+            const edited: WorkItem = { ...new WorkItem(), id: '2', name: 'edited_name' };
+            const toUpdate: WorkItem = { ...new WorkItem(), id: '1', name: 'updated_name' };
+            const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };
+            workItemHttpStub.updateWorkItem.resolves(toUpdate);
+            workItemHttpStub.getWorkItemMeta.resolves(updated);
+            store.commit(`${workItemKey}/setWorkItems`, [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
+            store.commit(`${workItemKey}/setEditedWorkItem`, edited);
+
+            const result = await store.dispatch(`${workItemKey}/updateWorkItem`, toUpdate);
+
+            sinonExpect.calledOnce(workItemHttpStub.updateWorkItem);
+            sinonExpect.calledOnce(workItemHttpStub.getWorkItemMeta);
+            expect(store.getters[`${workItemKey}/workItems`][0]).toEqual(updated);
+            expect(store.getters[`${workItemKey}/editedWorkItem`]).toEqual(edited);
+            expect(result).toBeTruthy();
+        });
+
         test('should return true and reload work item content when applicable on update success', async() => {
             const toUpdate: WorkItem = { ...new WorkItem(), id: '1', name: 'updated_name' };
             const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };

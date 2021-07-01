@@ -22,7 +22,7 @@ describe('date selector unit test', () => {
         });
 
         test('should return selected month and date', async() => {
-            await component.setProps({ modelValue: new Date(2021, 2, 3) });
+            component = shallowMount(DateSelector, { props: { modelValue: new Date(2020, 2, 3) } });
 
             expect(component.vm.selectedMonthAndDate).toEqual('March 3');
         });
@@ -70,7 +70,12 @@ describe('date selector unit test', () => {
     });
 
     describe('getDayOptionClasses', () => {
-        test('should return correct classes', () => {
+        test('should return correct classes when no date is selected', () => {
+            expect(component.vm.selected).toBeNull();
+            expect(component.vm.getDayOptionClasses(1, 1)['selected-day']).toBeFalsy();
+        });
+
+        test('should return correct classes when date is selected', () => {
             component = shallowMount(DateSelector, { props: { modelValue: new Date(2021, 6, 1) } });
 
             const result = component.vm.getDayOptionClasses(1, 1);

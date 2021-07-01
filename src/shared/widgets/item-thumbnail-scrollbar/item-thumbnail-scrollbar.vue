@@ -29,10 +29,12 @@ class ItemThumbnailScrollbarProp {
 @Options({
     watch: {
         scrollContainer(): void {
+            /* istanbul ignore next */
             this.setScrollPosition();
         }
     }
 })
+/* istanbul ignore next */
 export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScrollbarProp) {
     public readonly workItemStatus = WorkItemStatus;
     public scrollTop = 0;
@@ -50,11 +52,12 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
 
     public created(): void {
         this.setScrollPosition();
+        /* istanbul ignore next */
         this.scrollContainer?.addEventListener('scroll', this.setScrollPosition);
         document.addEventListener('mouseup', this.onMouseup);
         document.addEventListener('mousemove', this.onMousemove);
     }
-
+    /* istanbul ignore next */
     public beforeUnmount(): void {
         this.scrollContainer?.removeEventListener('scroll', this.setScrollPosition);
         document.removeEventListener('mouseup', this.onMouseup);
@@ -70,14 +73,14 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
             'box-shadow': `0 0 4px ${color}`
         };
     }
-
+    /* istanbul ignore next */
     public onWheelScroll(event: WheelEvent): void {
         requestAnimationFrame(() => {
             const delta = event.deltaY > 0 ? 20 : -20;
             this.scrollContainer.scrollTop += delta;
         });
     }
-
+    /* istanbul ignore next */
     public moveThumb(event: MouseEvent): void {
         requestAnimationFrame(() => {
             const container = this.$refs.container as HTMLElement;
@@ -87,17 +90,17 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
             this.scrollContainer.scrollTop = thumbTop - top;
         });
     }
-
+    /* istanbul ignore next */
     private setScrollPosition(): void {
         this.scrollTop = this.scrollContainer?.scrollTop ?? 0;
         this.scrollHeight = this.scrollContainer?.scrollHeight ?? 0;
         this.clientHeight = this.scrollContainer?.clientHeight ?? 0;
     }
-
+    /* istanbul ignore next */
     private onMouseup(): void {
         this.isMouseHold = false;
     }
-
+    /* istanbul ignore next */
     private onMousemove(event: MouseEvent): void {
         if (this.isMouseHold) {
             this.moveThumb(event);

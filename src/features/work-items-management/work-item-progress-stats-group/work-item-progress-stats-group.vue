@@ -65,7 +65,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return this.$store.getters[`${performanceKey}/activityHistories`] ?? [];
+        return this.$store.getters[`${performanceKey}/activityHistories`];
     }
 
     get averageFocus(): string {

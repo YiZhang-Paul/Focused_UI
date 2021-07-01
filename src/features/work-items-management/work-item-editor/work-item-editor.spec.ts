@@ -2,6 +2,7 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { ChecklistEntry } from '../../../core/models/work-item/checklist-entry';
+import { WorkItemType } from '../../../core/enums/work-item-type.enum';
 
 import WorkItemEditor from './work-item-editor.vue';
 
@@ -14,6 +15,22 @@ describe('work item editor unit test', () => {
 
     test('should create component instance', () => {
         expect(component).toBeTruthy();
+    });
+
+    describe('isRecur', () => {
+        test('should return false for non-recurring items', async() => {
+            const item: WorkItem = { ...new WorkItem(), type: WorkItemType.Regular };
+            await component.setProps({ item });
+
+            expect(component.vm.isRecur).toBeFalsy();
+        });
+
+        test('should return true for recurring items', async() => {
+            const item: WorkItem = { ...new WorkItem(), type: WorkItemType.Recurring };
+            await component.setProps({ item });
+
+            expect(component.vm.isRecur).toBeTruthy();
+        });
     });
 
     describe('getTime', () => {

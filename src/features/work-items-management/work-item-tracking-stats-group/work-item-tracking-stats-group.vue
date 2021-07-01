@@ -102,7 +102,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get radarSeries(): RadarSeries[] {
-        const items: WorkItemDto[] = this.$store.getters[`${workItemKey}/workItems`] ?? [];
+        const items: WorkItemDto[] = this.$store.getters[`${workItemKey}/workItems`];
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,

@@ -45,6 +45,7 @@ class TextareaInputProp {
     },
     emits: ['update:modelValue']
 })
+/* istanbul ignore next */
 export default class TextareaInput extends Vue.with(TextareaInputProp) {
     public current = this.modelValue;
     public isEditMode = false;
@@ -52,7 +53,7 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
 
     public onEditStart(): void {
         this.isEditMode = true;
-
+        /* istanbul ignore next */
         setTimeout(() => {
             const element = this.$refs.textareaBox as HTMLTextAreaElement;
             element.focus();

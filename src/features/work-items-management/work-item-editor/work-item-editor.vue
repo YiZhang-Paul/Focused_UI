@@ -128,6 +128,7 @@ class WorkItemEditorProp {
         'item:delete'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);

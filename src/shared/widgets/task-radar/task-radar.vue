@@ -46,6 +46,7 @@ class TaskRadarProp {
         }
     }
 })
+/* istanbul ignore next */
 export default class TaskRadar extends Vue.with(TaskRadarProp) {
     public showScanWave = false;
 

@@ -19,7 +19,7 @@ import { GenericUtility } from '../../../core/utilities/generic-utility/generic-
 class ProgressBarProp {
     public series = prop<PercentageSeries[]>({ default: [] });
 }
-
+/* istanbul ignore next */
 export default class ProgressBar extends Vue.with(ProgressBarProp) {
     private readonly blocks = 27;
 

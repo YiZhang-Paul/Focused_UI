@@ -60,6 +60,7 @@ class TimeTrackingBreakdownProp {
         DisplayPanel
     }
 })
+/* istanbul ignore next */
 export default class TimeTrackingBreakdown extends Vue.with(TimeTrackingBreakdownProp) {
     public index = -1;
 

@@ -16,7 +16,7 @@ import { Vue, prop } from 'vue-class-component';
 class CountDownDisplayProp {
     public target = prop<Date>({ default: null });
 }
-
+/* istanbul ignore next */
 export default class CountDownDisplay extends Vue.with(CountDownDisplayProp) {
     private readonly second = 1000;
     private readonly minute = this.second * 60;

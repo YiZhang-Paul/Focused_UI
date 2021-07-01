@@ -72,6 +72,7 @@ class WorkItemsListProp {
         'item:stop'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
 

@@ -74,6 +74,7 @@ class DateSelectorProp {
     },
     emits: ['update:modelValue']
 })
+/* istanbul ignore next */
 export default class DateSelector extends Vue.with(DateSelectorProp) {
     public readonly letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     public days = [31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -116,6 +117,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     public beforeUnmount(): void {
+        /* istanbul ignore next */
         document.removeEventListener('click', this.onClickOutside);
     }
 
@@ -200,10 +202,8 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         this.rows = Math.floor((this.getPrefixSum(month + 1) - 1) / 7) - this.rowOffset + 1;
     }
 
-    private getPrefixSum(month: number, includeOffset = true): number {
-        const offset = includeOffset ? this.columnOffset : 0;
-
-        return GenericUtility.sum(this.days.slice(0, month), _ => _) + offset;
+    private getPrefixSum(month: number): number {
+        return GenericUtility.sum(this.days.slice(0, month), _ => _) + this.columnOffset;
     }
     /* istanbul ignore next */
     private onClickOutside(event: Event): void {

@@ -43,6 +43,7 @@ class IconValueSelectorProp {
     },
     emits: ['update:modelValue']
 })
+/* istanbul ignore next */
 export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
     public showOptions = false;
 
@@ -55,6 +56,7 @@ export default class IconValueSelector extends Vue.with(IconValueSelectorProp) {
     }
 
     public beforeUnmount(): void {
+        /* istanbul ignore next */
         document.removeEventListener('click', this.onClickOutside);
     }
 

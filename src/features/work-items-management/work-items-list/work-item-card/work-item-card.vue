@@ -67,6 +67,7 @@ class WorkItemCardProp {
         'edit:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     public readonly checklistIcon = markRaw(FormatListCheckbox);
     public isHovering = false;
@@ -89,19 +90,16 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
     }
 
     public mounted(): void {
-        if (!this.isEditMode) {
-            return;
-        }
-
+        /* istanbul ignore next */
         setTimeout(() => {
-            if (this.$refs.nameInput) {
+            if (this.isEditMode && this.$refs.nameInput) {
                 (this.$refs.nameInput as any).focus();
             }
         });
     }
 
     public onEditConfirm(): void {
-        const name = this.item.name.trim() ?? '';
+        const name = this.item.name.trim();
 
         if (name) {
             this.item.name = name;

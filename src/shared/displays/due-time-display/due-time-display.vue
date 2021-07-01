@@ -10,7 +10,7 @@ import { Vue, prop } from 'vue-class-component';
 class DueTimeDisplayProp {
     public date = prop<string>({ default: null });
 }
-
+/* istanbul ignore next */
 export default class DueTimeDisplay extends Vue.with(DueTimeDisplayProp) {
     public readonly oneHour = 60 * 60 * 1000;
 
