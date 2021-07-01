@@ -74,7 +74,7 @@ import SegmentedControl from '../../shared/inputs/segmented-control/segmented-co
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
-import SessionTracker from '../../shared/widgets/session-tracker.vue';
+import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
@@ -182,16 +182,12 @@ export default class WorkItemsManagement extends Vue {
         await this.$store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
-    public async onItemStart(id: string): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, id)) {
-            this.$emit('item:update');
-        }
+    public onItemStart(id: string): void {
+        this.$store.dispatch(`${workItemKey}/startWorkItem`, id);
     }
 
-    public async onItemStop(): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
-            this.$emit('item:update');
-        }
+    public onItemStop(): void {
+        this.$store.dispatch(`${workItemKey}/stopWorkItem`);
     }
 
     public onSearch(text: string): void {

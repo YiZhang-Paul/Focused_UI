@@ -47,7 +47,7 @@ import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
-import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar.vue';
+import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar/item-thumbnail-scrollbar.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';

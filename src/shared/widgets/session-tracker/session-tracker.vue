@@ -32,17 +32,17 @@
 import { Options, Vue } from 'vue-class-component';
 import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
-import { timeSessionKey } from '../../store/time-session/time-session.state';
-import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
-import { IconMeta } from '../../core/models/generic/icon-meta';
-import { StyleConfig } from '../../core/models/generic/style-config';
-import { BreakSession } from '../../core/models/time-session/break-session';
-import { PercentageSeries } from '../../core/models/progress-bar/percentage-series';
-import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
-import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
-import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import CountDownDisplay from '../displays/count-down-display/count-down-display.vue';
-import ProgressBar from '../displays/progress-bar/progress-bar.vue';
+import { timeSessionKey } from '../../../store/time-session/time-session.state';
+import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
+import { IconMeta } from '../../../core/models/generic/icon-meta';
+import { StyleConfig } from '../../../core/models/generic/style-config';
+import { BreakSession } from '../../../core/models/time-session/break-session';
+import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
+import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
+import { TimeSessionStatus } from '../../../core/enums/time-session-status.enum';
+import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
+import CountDownDisplay from '../../displays/count-down-display/count-down-display.vue';
+import ProgressBar from '../../displays/progress-bar/progress-bar.vue';
 
 @Options({
     components: {
@@ -103,9 +103,10 @@ export default class SessionTracker extends Vue {
             return 'taking a break...';
         }
 
-        const items = this.focusSession?.workItems ?? [];
+        const items = this.focusSession!.workItems ?? [];
+        const item = items.find(_ => _.status === WorkItemStatus.Ongoing);
 
-        return items.find(_ => _.status === WorkItemStatus.Ongoing)?.name ?? 'N/A';
+        return item?.name ? item?.name : 'N/A';
     }
 
     get dropItemText(): string {
@@ -118,13 +119,6 @@ export default class SessionTracker extends Vue {
 
     get progressSeries(): PercentageSeries[] {
         if (this.isIdle) {
-            return [];
-        }
-
-        const hasBreakSession = this.isResting && this.breakSession;
-        const hasFocusSession = !this.isResting && this.focusSession;
-
-        if (!hasBreakSession && !hasFocusSession) {
             return [];
         }
 
@@ -147,13 +141,6 @@ export default class SessionTracker extends Vue {
 
     get sessionEnd(): Date | null {
         if (this.isIdle) {
-            return null;
-        }
-
-        const hasBreakSession = this.isResting && this.breakSession;
-        const hasFocusSession = !this.isResting && this.focusSession;
-
-        if (!hasBreakSession && !hasFocusSession) {
             return null;
         }
 

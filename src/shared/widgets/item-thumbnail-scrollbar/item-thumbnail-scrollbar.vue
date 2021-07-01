@@ -1,5 +1,6 @@
 <template>
-    <div class="item-thumbnail-scrollbar-container"
+    <div v-if="scrollContainer"
+        class="item-thumbnail-scrollbar-container"
         ref="container"
         @wheel="onWheelScroll($event)"
         @mousedown="moveThumb($event)">
@@ -16,9 +17,9 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { WorkItemDto } from '../../core/dtos/work-item-dto';
-import { StyleConfig } from '../../core/models/generic/style-config';
-import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
+import { WorkItemDto } from '../../../core/dtos/work-item-dto';
+import { StyleConfig } from '../../../core/models/generic/style-config';
+import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 
 class ItemThumbnailScrollbarProp {
     public items = prop<WorkItemDto[]>({ default: [] });
@@ -49,13 +50,13 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
 
     public created(): void {
         this.setScrollPosition();
-        this.scrollContainer.addEventListener('scroll', this.setScrollPosition);
+        this.scrollContainer?.addEventListener('scroll', this.setScrollPosition);
         document.addEventListener('mouseup', this.onMouseup);
         document.addEventListener('mousemove', this.onMousemove);
     }
 
     public beforeUnmount(): void {
-        this.scrollContainer.removeEventListener('scroll', this.setScrollPosition);
+        this.scrollContainer?.removeEventListener('scroll', this.setScrollPosition);
         document.removeEventListener('mouseup', this.onMouseup);
         document.removeEventListener('mousemove', this.onMousemove);
     }
@@ -88,10 +89,9 @@ export default class ItemThumbnailScrollbar extends Vue.with(ItemThumbnailScroll
     }
 
     private setScrollPosition(): void {
-        const { scrollTop, scrollHeight, clientHeight } = this.scrollContainer;
-        this.scrollTop = scrollTop;
-        this.scrollHeight = scrollHeight;
-        this.clientHeight = clientHeight;
+        this.scrollTop = this.scrollContainer?.scrollTop ?? 0;
+        this.scrollHeight = this.scrollContainer?.scrollHeight ?? 0;
+        this.clientHeight = this.scrollContainer?.clientHeight ?? 0;
     }
 
     private onMouseup(): void {

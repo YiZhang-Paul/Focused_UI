@@ -95,7 +95,7 @@ import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
 import TextInput from '../../../shared/inputs/text-input/text-input.vue';
 import TextareaInput from '../../../shared/inputs/textarea-input/textarea-input.vue';
-import DateSelector from '../../../shared/inputs/date-selector.vue';
+import DateSelector from '../../../shared/inputs/date-selector/date-selector.vue';
 import DisplayPanel from '../../../shared/panels/display-panel/display-panel.vue';
 import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
 import ItemProgression from '../../../shared/displays/item-progression/item-progression.vue';
