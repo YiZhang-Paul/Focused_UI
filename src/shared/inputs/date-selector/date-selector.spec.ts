@@ -81,11 +81,11 @@ describe('date selector unit test', () => {
         });
     });
 
-    describe('moveMonth', () => {
+    describe('showPreviousMonth', () => {
         test('should do nothing when not allowed to move to previous month', () => {
             component.vm.panelDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
-            component.vm.moveMonth(false);
+            component.vm.showPreviousMonth();
 
             expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear());
             expect(component.vm.panelDate.getMonth()).toEqual(now.getMonth());
@@ -94,32 +94,34 @@ describe('date selector unit test', () => {
         test('should move to previous year when applicable', () => {
             component.vm.panelDate = new Date(now.getFullYear() + 1, 0, 1);
 
-            component.vm.moveMonth(false);
+            component.vm.showPreviousMonth();
 
             expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear());
-        });
-
-        test('should move to next year when applicable', () => {
-            component.vm.panelDate = new Date(now.getFullYear(), 11, 1);
-
-            component.vm.moveMonth(true);
-
-            expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear() + 1);
         });
 
         test('should move to previous month', () => {
             component.vm.panelDate = new Date(now.getFullYear() + 1, 11, 1);
 
-            component.vm.moveMonth(false);
+            component.vm.showPreviousMonth();
 
             expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear() + 1);
             expect(component.vm.panelDate.getMonth()).toEqual(10);
+        });
+    });
+
+    describe('showNextMonth', () => {
+        test('should move to next year when applicable', () => {
+            component.vm.panelDate = new Date(now.getFullYear(), 11, 1);
+
+            component.vm.showNextMonth();
+
+            expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear() + 1);
         });
 
         test('should move to next month', () => {
             component.vm.panelDate = new Date(now.getFullYear() + 1, 7, 1);
 
-            component.vm.moveMonth(true);
+            component.vm.showNextMonth();
 
             expect(component.vm.panelDate.getFullYear()).toEqual(now.getFullYear() + 1);
             expect(component.vm.panelDate.getMonth()).toEqual(8);

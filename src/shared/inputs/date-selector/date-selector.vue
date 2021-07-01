@@ -20,10 +20,10 @@
             <div class="month-selection">
                 <chevron-left class="page-arrow"
                     :class="{ 'disabled-arrow': !allowPreviousMonth }"
-                    @click="moveMonth(false)" />
+                    @click="showPreviousMonth()" />
 
                 <span>{{ panelMonthAndYear }}</span>
-                <chevron-right class="page-arrow" @click="moveMonth(true)" />
+                <chevron-right class="page-arrow" @click="showNextMonth()" />
             </div>
 
             <div class="day-headers">
@@ -129,22 +129,21 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         };
     }
 
-    public moveMonth(isNext: boolean): void {
-        if (!isNext && !this.allowPreviousMonth) {
-            return;
+    public showPreviousMonth(): void {
+        if (this.allowPreviousMonth) {
+            const isYearStart = !this.panelDate.getMonth();
+            const year = this.panelDate.getFullYear() - (isYearStart ? 1 : 0);
+            const month = isYearStart ? 11 : this.panelDate.getMonth() - 1;
+            this.panelDate = new Date(year, month);
+            this.setConstraints();
         }
+    }
 
-        if (isNext && this.panelDate.getMonth() === 11) {
-            this.panelDate = new Date(this.panelDate.getFullYear() + 1, 0);
-        }
-        else if (!isNext && !this.panelDate.getMonth()) {
-            this.panelDate = new Date(this.panelDate.getFullYear() - 1, 11);
-        }
-        else {
-            const month = this.panelDate.getMonth() + (isNext ? 1 : -1);
-            this.panelDate = new Date(this.panelDate.getFullYear(), month);
-        }
-
+    public showNextMonth(): void {
+        const isYearEnd = this.panelDate.getMonth() === 11;
+        const year = this.panelDate.getFullYear() + (isYearEnd ? 1 : 0);
+        const month = isYearEnd ? 0 : this.panelDate.getMonth() + 1;
+        this.panelDate = new Date(year, month);
         this.setConstraints();
     }
 
