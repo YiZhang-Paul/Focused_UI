@@ -182,12 +182,16 @@ export default class WorkItemsManagement extends Vue {
         await this.$store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
-    public onItemStart(id: string): void {
-        this.$store.dispatch(`${workItemKey}/startWorkItem`, id);
+    public async onItemStart(id: string): Promise<void> {
+        if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, id)) {
+            this.$emit('item:update');
+        }
     }
 
-    public onItemStop(): void {
-        this.$store.dispatch(`${workItemKey}/stopWorkItem`);
+    public async onItemStop(): Promise<void> {
+        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
+            this.$emit('item:update');
+        }
     }
 
     public onSearch(text: string): void {
