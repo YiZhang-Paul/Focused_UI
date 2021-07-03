@@ -2,10 +2,11 @@
     <display-panel class="activity-history-container" :lineLength="'1vh'">
         <div class="focus-breakdowns">
             <div class="breakdown" v-for="(history, index) of histories" :key="index">
-                <div :style="getFillerStyle(index)"></div>
+                <div :style="getTopFillerStyle(index)"></div>
                 <div class="focus-lose" :style="getFocusChangeStyle(index, false)"></div>
                 <div class="focus-level"></div>
                 <div class="focus-gain" :style="getFocusChangeStyle(index, true)"></div>
+                <div :style="getBottomFillerStyle(index)"></div>
             </div>
 
             <div class="guideline"
@@ -80,7 +81,7 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
         return date.toDateString().split(' ').slice(1, 3).join(' ');
     }
 
-    public getFillerStyle(index: number): StyleConfig {
+    public getTopFillerStyle(index: number): StyleConfig {
         const previous = index ? this.getFocus(this.histories[index - 1]) : 0;
         const current = this.getFocus(this.histories[index]);
         const height = `${100 - Math.max(previous, current) / 24 * 100}%`;
@@ -90,12 +91,13 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
 
     public getFocusChangeStyle(index: number, isGain: boolean): StyleConfig {
         if (!index) {
-            return { height: 0, 'max-height': 0 };
+            return { height: '0%', 'max-height': '0%' };
         }
 
         const previous = this.getFocus(this.histories[index - 1]);
         const current = this.getFocus(this.histories[index]);
-        const height = Math.abs(current - previous) / 24 * 100;
+        const percentage = isGain ? current - previous : previous - current;
+        const height = Math.max(0, percentage / 24 * 100);
 
         return {
             'margin-top': isGain && height ? '1px' : 0,
@@ -103,6 +105,18 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
             height: `${height}%`,
             'max-height': `${height}%`
         };
+    }
+
+    public getBottomFillerStyle(index: number): StyleConfig {
+        const otherHeight = [
+            this.getTopFillerStyle(index).height,
+            this.getFocusChangeStyle(index, false).height,
+            this.getFocusChangeStyle(index, true).height
+        ];
+
+        const height = `calc(100% - ${otherHeight.join(' - ')})`;
+
+        return { height, 'max-height': height };
     }
 
     public getBreakdownStyle(hours: number, breakdown: ActivityBreakdownDto): StyleConfig {
