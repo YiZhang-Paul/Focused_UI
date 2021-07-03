@@ -34,7 +34,7 @@ describe('activity history unit test', () => {
         });
     });
 
-    describe('getFillerStyle', () => {
+    describe('getTopFillerStyle', () => {
         beforeEach(async() => {
             const histories: ActivityBreakdownDto[] = [
                 { regular: 3, recurring: 1, interruption: 1, overlearning: 1 },
@@ -46,18 +46,18 @@ describe('activity history unit test', () => {
         });
 
         test('should return correct style for first entry', () => {
-            expect(component.vm.getFillerStyle(0).height).toEqual('75%');
-            expect(component.vm.getFillerStyle(0)['max-height']).toEqual('75%');
+            expect(component.vm.getTopFillerStyle(0).height).toEqual('75%');
+            expect(component.vm.getTopFillerStyle(0)['max-height']).toEqual('75%');
         });
 
         test('should return correct style when subsequent entry is smaller', () => {
-            expect(component.vm.getFillerStyle(1).height).toEqual('75%');
-            expect(component.vm.getFillerStyle(1)['max-height']).toEqual('75%');
+            expect(component.vm.getTopFillerStyle(1).height).toEqual('75%');
+            expect(component.vm.getTopFillerStyle(1)['max-height']).toEqual('75%');
         });
 
         test('should return correct style when subsequent entry is larger', () => {
-            expect(component.vm.getFillerStyle(2).height).toEqual('50%');
-            expect(component.vm.getFillerStyle(2)['max-height']).toEqual('50%');
+            expect(component.vm.getTopFillerStyle(2).height).toEqual('50%');
+            expect(component.vm.getTopFillerStyle(2)['max-height']).toEqual('50%');
         });
     });
 
@@ -73,8 +73,8 @@ describe('activity history unit test', () => {
         });
 
         test('should return correct style for first entry', () => {
-            expect(component.vm.getFocusChangeStyle(0, false).height).toEqual(0);
-            expect(component.vm.getFocusChangeStyle(0, false)['max-height']).toEqual(0);
+            expect(component.vm.getFocusChangeStyle(0, false).height).toEqual('0%');
+            expect(component.vm.getFocusChangeStyle(0, false)['max-height']).toEqual('0%');
             expect(component.vm.getFocusChangeStyle(0, false)['margin-top']).toBeFalsy();
             expect(component.vm.getFocusChangeStyle(0, false)['margin-bottom']).toBeFalsy();
         });

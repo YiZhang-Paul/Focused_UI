@@ -17,9 +17,9 @@
         <div class="filler"></div>
 
         <div class="time-progress">
-            <stop-circle class="icon stop-button" v-if="canStop" @click="$emit('session:stop')" />
+            <stop-circle class="icon stop-button" v-if="hasOngoingSession" @click="$emit('session:stop')" />
             <timer class="icon" />
-            <count-down-display class="time" :target="sessionEnd"></count-down-display>
+            <count-down-display class="time" :target="ongoingSessionEnd"></count-down-display>
         </div>
 
         <progress-bar class="progress-bar" :series="progressSeries"></progress-bar>
@@ -142,21 +142,6 @@ export default class SessionTracker extends Vue {
         ];
     }
 
-    get canStop(): boolean {
-        return (this.sessionEnd?.getTime() ?? 0) >= Date.now();
-    }
-
-    get sessionEnd(): Date | null {
-        if (this.isIdle) {
-            return null;
-        }
-
-        const start = this.isResting ? this.breakSession!.startTime : this.focusSession!.startTime;
-        const duration = this.isResting ? this.breakSession!.targetDuration : this.focusSession!.targetDuration;
-
-        return new Date(new Date(start).getTime() + duration * this.oneHour);
-    }
-
     get colorType(): string {
         if (this.isIdle) {
             return 'session-status-colors-idle';
@@ -179,6 +164,14 @@ export default class SessionTracker extends Vue {
 
     get isResting(): boolean {
         return this.sessionStatus === TimeSessionStatus.Resting;
+    }
+
+    get hasOngoingSession(): boolean {
+        return this.$store.getters[`${timeSessionKey}/hasOngoingTimeSession`];
+    }
+
+    get ongoingSessionEnd(): Date | null {
+        return this.$store.getters[`${timeSessionKey}/ongoingTimeSessionEnd`];
     }
 
     get sessionStatus(): TimeSessionStatus {

@@ -41,6 +41,25 @@ const getters = {
         return isOngoing ? TimeSessionStatus.Ongoing : TimeSessionStatus.Pending;
     },
     hasActiveFocusSession: (state: ITimeSessionState): boolean => Boolean(state.activeFocusSession),
+    hasOngoingTimeSession: (_: ITimeSessionState, getters: any): boolean => {
+        const timestamp = getters['ongoingTimeSessionEnd']?.getTime() ?? 0;
+
+        return timestamp >= Date.now();
+    },
+    ongoingTimeSessionEnd: (state: ITimeSessionState, getters: any): Date | null => {
+        const { activeBreakSession, activeFocusSession } = state;
+        const status = getters['timeSessionStatus'];
+
+        if (status === TimeSessionStatus.Idle) {
+            return null;
+        }
+
+        const isResting = status === TimeSessionStatus.Resting;
+        const start = isResting ? activeBreakSession!.startTime : activeFocusSession!.startTime;
+        const duration = isResting ? activeBreakSession!.targetDuration : activeFocusSession!.targetDuration;
+
+        return new Date(new Date(start).getTime() + duration * oneHour);
+    },
     activeFocusSession: (state: ITimeSessionState): FocusSessionDto | null => state.activeFocusSession,
     activeBreakSession: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession
 };

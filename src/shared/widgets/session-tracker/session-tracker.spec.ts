@@ -189,41 +189,6 @@ describe('session tracker unit test', () => {
         });
     });
 
-    describe('sessionEnd', () => {
-        test('should return correct session end for idle state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
-
-            expect(component.vm.sessionEnd).toBeNull();
-        });
-
-        test('should return correct session end for break session', () => {
-            const session: BreakSession = {
-                ...new BreakSession(),
-                startTime: new Date(2021, 2, 1, 5, 15).toISOString(),
-                targetDuration: 2.5
-            };
-
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, session);
-
-            expect(component.vm.sessionEnd).toEqual(new Date(2021, 2, 1, 7, 45));
-        });
-
-        test('should return correct session end for focus session', () => {
-            const session: FocusSessionDto = {
-                ...new FocusSessionDto(),
-                startTime: new Date(2022, 5, 2, 5, 15).toISOString(),
-                targetDuration: 2.5
-            };
-
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
-
-            expect(component.vm.sessionEnd).toEqual(new Date(2022, 5, 2, 7, 45));
-        });
-    });
-
     describe('colorType', () => {
         test('should return correct color type for idle state', () => {
             store.commit(focusSessionMutation, null);

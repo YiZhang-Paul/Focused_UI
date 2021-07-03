@@ -2,9 +2,11 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 'sinon';
 import { createStore, Store } from 'vuex';
 
+import { createStore as createTimeSessionStore, timeSessionKey } from '../../store/time-session/time-session.state';
 import { createStore as createWorkItemStore, workItemKey } from '../../store/work-item/work-item.state';
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
+import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -25,7 +27,13 @@ describe('work items management unit test', () => {
             .rebind<WorkItemHttpService>(types.WorkItemHttpService)
             .toConstantValue(workItemHttpStub as unknown as WorkItemHttpService);
 
-        store = createStore({ modules: { [workItemKey]: createWorkItemStore() } });
+        store = createStore({
+            modules: {
+                [timeSessionKey]: createTimeSessionStore(),
+                [workItemKey]: createWorkItemStore()
+            }
+        });
+
         component = shallowMount(WorkItemsManagement, { global: { mocks: { $store: store } } });
     });
 
@@ -156,7 +164,9 @@ describe('work items management unit test', () => {
     });
 
     describe('onItemStart', () => {
-        test('should start work item', async() => {
+        test('should start work item when active focus session exists', async() => {
+            store.commit(`${timeSessionKey}/setActiveFocusSession`, new FocusSessionDto());
+
             await component.vm.onItemStart('12345');
 
             sinonExpect.calledOnce(workItemHttpStub.startWorkItem);

@@ -55,6 +55,41 @@ describe('time session store unit test', () => {
         });
     });
 
+    describe('ongoingTimeSessionEnd', () => {
+        test('should return correct session end for idle state', () => {
+            store.commit('setActiveFocusSession', null);
+            store.commit('setActiveBreakSession', null);
+
+            expect(store.getters['ongoingTimeSessionEnd']).toBeNull();
+        });
+
+        test('should return correct session end for break session', () => {
+            const session: BreakSession = {
+                ...new BreakSession(),
+                startTime: new Date(2021, 2, 1, 5, 15).toISOString(),
+                targetDuration: 2.5
+            };
+
+            store.commit('setActiveFocusSession', null);
+            store.commit('setActiveBreakSession', session);
+
+            expect(store.getters['ongoingTimeSessionEnd']).toEqual(new Date(2021, 2, 1, 7, 45));
+        });
+
+        test('should return correct session end for focus session', () => {
+            const session: FocusSessionDto = {
+                ...new FocusSessionDto(),
+                startTime: new Date(2022, 5, 2, 5, 15).toISOString(),
+                targetDuration: 2.5
+            };
+
+            store.commit('setActiveFocusSession', session);
+            store.commit('setActiveBreakSession', null);
+
+            expect(store.getters['ongoingTimeSessionEnd']).toEqual(new Date(2022, 5, 2, 7, 45));
+        });
+    });
+
     describe('loadActiveTimeSession', () => {
         test('should load active time sessions', async() => {
             const focusSession: FocusSessionDto = { ...new FocusSessionDto(), id: '1' };
