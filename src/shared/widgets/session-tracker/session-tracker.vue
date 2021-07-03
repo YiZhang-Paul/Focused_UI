@@ -14,16 +14,19 @@
             <span>{{ title }}</span>
         </div>
 
+        <div class="filler"></div>
+
+        <div class="time-progress">
+            <stop-circle class="icon stop-button" v-if="canStop" @click="$emit('session:stop')" />
+            <timer class="icon" />
+            <count-down-display class="time" :target="sessionEnd"></count-down-display>
+        </div>
+
+        <progress-bar class="progress-bar" :series="progressSeries"></progress-bar>
+
         <div class="drop-text">
             <undo class="icon" />
             <span>{{ dropItemText }}</span>
-        </div>
-
-        <div class="progress">
-            <stop-circle class="icon stop-button" v-if="!isIdle" @click="$emit('session:stop')" />
-            <timer class="icon" />
-            <count-down-display class="time" :target="sessionEnd"></count-down-display>
-            <progress-bar class="progress-bar" :series="progressSeries"></progress-bar>
         </div>
     </div>
 </template>
@@ -139,6 +142,10 @@ export default class SessionTracker extends Vue {
         ];
     }
 
+    get canStop(): boolean {
+        return (this.sessionEnd?.getTime() ?? 0) >= Date.now();
+    }
+
     get sessionEnd(): Date | null {
         if (this.isIdle) {
             return null;
@@ -197,7 +204,8 @@ export default class SessionTracker extends Vue {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    padding: 0 1.5vh;
 
     .guard-left, .guard-right {
         position: absolute;
@@ -229,7 +237,7 @@ export default class SessionTracker extends Vue {
         bottom: -$guard-width;
     }
 
-    .name, .drop-text, .progress {
+    .name, .drop-text, .time-progress {
         display: flex;
         align-items: center;
 
@@ -238,16 +246,13 @@ export default class SessionTracker extends Vue {
         }
     }
 
-    .name {
-        position: absolute;
-        left: 1.5vh;
+    .filler {
+        flex: 1;
     }
 
-    .progress {
+    .time-progress {
         justify-content: space-between;
-        position: absolute;
-        right: 1.5vh;
-        width: 32.5%;
+        margin-right: 1.5vh;
         height: 40%;
 
         .icon {
@@ -267,14 +272,17 @@ export default class SessionTracker extends Vue {
 
         .time {
             margin-left: 0.35vh;
-            margin-right: 1.5vh;
             font-size: var(--font-sizes-300);
         }
+    }
 
-        .progress-bar {
-            width: calc(100% - 7.5vh);
-            height: 100%;
-        }
+    .progress-bar {
+        width: 25%;
+        height: 40%;
+    }
+
+    .drop-text {
+        position: absolute;
     }
 
     .icon {
