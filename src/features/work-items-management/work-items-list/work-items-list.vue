@@ -20,7 +20,7 @@
                         :activeOption="item.status"
                         :showOptions="activeIndex === index"
                         @select="onStatusSelected(item, $event)"
-                        @start="$emit('item:start', item.id)"
+                        @start="$emit('item:start', item)"
                         @stop="$emit('item:stop')">
                     </work-item-status-menu>
 

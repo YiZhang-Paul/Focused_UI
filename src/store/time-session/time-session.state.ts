@@ -39,6 +39,7 @@ const getters = {
 
         return isOngoing ? TimeSessionStatus.Ongoing : TimeSessionStatus.Pending;
     },
+    hasActiveFocusSession: (state: ITimeSessionState): boolean => Boolean(state.activeFocusSession),
     activeFocusSession: (state: ITimeSessionState): FocusSessionDto | null => state.activeFocusSession,
     activeBreakSession: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession
 };

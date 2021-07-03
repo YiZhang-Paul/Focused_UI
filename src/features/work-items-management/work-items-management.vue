@@ -1,5 +1,10 @@
 <template>
     <content-view-panel class="work-items-management-container">
+        <dialog-panel v-if="focusSessionOption"
+            :dialog="focusSessionStartDialog"
+            :data="focusSessionOption">
+        </dialog-panel>
+
         <template v-slot:actions>
             <div class="actions">
                 <creation-button @click="startCreate()"></creation-button>
@@ -60,11 +65,14 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { markRaw } from '@vue/reactivity';
 
 import { workItemKey } from '../../store/work-item/work-item.state';
+import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -72,8 +80,10 @@ import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
 import SearchBox from '../../shared/inputs/search-box/search-box.vue';
 import SegmentedControl from '../../shared/inputs/segmented-control/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
+import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
+import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
@@ -87,6 +97,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         SearchBox,
         SegmentedControl,
         CreationButton,
+        DialogPanel,
         DisplayPanel,
         ContentViewPanel,
         SessionTracker,
@@ -102,6 +113,8 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
     ]
 })
 export default class WorkItemsManagement extends Vue {
+    public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
+
     public readonly completionFilterOptions = [
         new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
         new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
@@ -121,6 +134,7 @@ export default class WorkItemsManagement extends Vue {
         new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Interruption))
     ];
 
+    public focusSessionOption: FocusSessionStartupOption | null = null;
     private query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
@@ -182,8 +196,11 @@ export default class WorkItemsManagement extends Vue {
         await this.$store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
     }
 
-    public async onItemStart(id: string): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, id)) {
+    public async onItemStart(item: WorkItemDto): Promise<void> {
+        if (!this.$store.getters[`${timeSessionKey}/hasActiveFocusSession`]) {
+            this.focusSessionOption = new FocusSessionStartupOption(item);
+        }
+        else if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, item.id)) {
             this.$emit('item:update');
         }
     }
