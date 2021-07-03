@@ -2,7 +2,14 @@
     <div class="dialog-panel-container">
         <div class="content-panel">
             <div class="content">
-                <component v-if="showDialog && dialog" class="dialog" :is="dialog" :data="data"></component>
+                <component v-if="showDialog && dialog"
+                    class="dialog"
+                    :is="dialog"
+                    :data="data"
+                    @dialog:cancel="$emit('dialog:cancel')"
+                    @dialog:confirm="$emit('dialog:confirm', $event)">
+                </component>
+
                 <panel-border-separator class="separator-right"></panel-border-separator>
                 <panel-border-separator class="separator-left"></panel-border-separator>
             </div>
@@ -23,7 +30,11 @@ class DialogPanelProp {
 @Options({
     components: {
         PanelBorderSeparator
-    }
+    },
+    emits: [
+        'dialog:cancel',
+        'dialog:confirm'
+    ]
 })
 export default class DialogPanel extends Vue.with(DialogPanelProp) {
     public showDialog = false;

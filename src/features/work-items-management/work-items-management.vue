@@ -2,7 +2,9 @@
     <content-view-panel class="work-items-management-container">
         <dialog-panel v-if="focusSessionOption"
             :dialog="focusSessionStartDialog"
-            :data="focusSessionOption">
+            :data="focusSessionOption"
+            @dialog:cancel="focusSessionOption = null"
+            @dialog:confirm="onFocusSessionStart(focusSessionOption)">
         </dialog-panel>
 
         <template v-slot:actions>
@@ -166,6 +168,14 @@ export default class WorkItemsManagement extends Vue {
 
         if (id) {
             await this.onItemSelect(id);
+            await this.loadWorkItems();
+        }
+    }
+
+    public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
+        this.focusSessionOption = null;
+
+        if (await this.$store.dispatch(`${timeSessionKey}/startFocusSession`, option)) {
             await this.loadWorkItems();
         }
     }

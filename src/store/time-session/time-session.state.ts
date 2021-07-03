@@ -4,6 +4,7 @@ import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
+import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
@@ -54,6 +55,15 @@ const mutations = {
 };
 
 const actions = {
+    async startFocusSession(context: ActionContext<ITimeSessionState, any>, payload: FocusSessionStartupOption): Promise<boolean> {
+        const isStarted = await timeSessionHttpService.startFocusSession(payload);
+
+        if (isStarted) {
+            await context.dispatch('loadActiveTimeSession');
+        }
+
+        return isStarted;
+    },
     async loadActiveTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
         context.commit('setActiveFocusSession', await timeSessionHttpService.getActiveFocusSessionMeta());
         context.commit('setActiveBreakSession', await timeSessionHttpService.getActiveBreakSession());
