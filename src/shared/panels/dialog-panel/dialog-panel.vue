@@ -2,7 +2,7 @@
     <div class="dialog-panel-container">
         <div class="content-panel">
             <div class="content">
-                <component v-if="dialog" :is="dialog" :data="data"></component>
+                <component v-if="showDialog && dialog" class="dialog" :is="dialog" :data="data"></component>
                 <panel-border-separator class="separator-right"></panel-border-separator>
                 <panel-border-separator class="separator-left"></panel-border-separator>
             </div>
@@ -25,7 +25,13 @@ class DialogPanelProp {
         PanelBorderSeparator
     }
 })
-export default class DialogPanel extends Vue.with(DialogPanelProp) {}
+export default class DialogPanel extends Vue.with(DialogPanelProp) {
+    public showDialog = false;
+
+    public mounted(): void {
+        setTimeout(() => this.showDialog = true, 500);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +64,11 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {}
             background-color: var(--primary-colors-8-08);
             backdrop-filter: blur(5px);
             animation: expand-width 0.2s ease 0.3s forwards;
+
+            .dialog {
+                width: 100%;
+                height: 100%;
+            }
 
             .separator-left, .separator-right {
                 position: absolute;

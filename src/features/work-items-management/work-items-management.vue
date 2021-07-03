@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
+import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { markRaw } from '@vue/reactivity';
 
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
