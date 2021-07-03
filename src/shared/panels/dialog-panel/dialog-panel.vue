@@ -2,7 +2,7 @@
     <div class="dialog-panel-container">
         <div class="content-panel">
             <div class="content">
-                <slot></slot>
+                <component v-if="dialog" :is="dialog" :data="data"></component>
                 <panel-border-separator class="separator-right"></panel-border-separator>
                 <panel-border-separator class="separator-left"></panel-border-separator>
             </div>
@@ -11,16 +11,21 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 import PanelBorderSeparator from '../../separators/panel-border-separator/panel-border-separator.vue';
+
+class DialogPanelProp {
+    public dialog = prop<any>({ default: null });
+    public data = prop<any>({ default: null });
+}
 
 @Options({
     components: {
         PanelBorderSeparator
     }
 })
-export default class DialogPanel extends Vue {}
+export default class DialogPanel extends Vue.with(DialogPanelProp) {}
 </script>
 
 <style lang="scss" scoped>
