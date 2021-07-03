@@ -30,6 +30,8 @@ export default class DialogPanel extends Vue {}
     align-items: center;
     justify-content: center;
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.01);
@@ -50,7 +52,7 @@ export default class DialogPanel extends Vue {}
             height: 100%;
             background-color: var(--primary-colors-8-08);
             backdrop-filter: blur(5px);
-            animation: expand-width 0.4s ease 0.6s forwards;
+            animation: expand-width 0.2s ease 0.3s forwards;
 
             .separator-left, .separator-right {
                 position: absolute;
@@ -62,16 +64,16 @@ export default class DialogPanel extends Vue {}
                 left: -27px;
                 transform: rotateX(180deg) rotateY(180deg);
                 opacity: 0;
-                animation: fade-in 0.4s ease forwards,
-                           move-separator-left 0.4s ease 0.2s forwards;
+                animation: fade-in 0.15s ease forwards,
+                           move-separator-left 0.2s ease 0.1s forwards;
             }
 
             .separator-right {
                 top: -30%;
                 right: -27px;
                 opacity: 0;
-                animation: fade-in 0.4s ease forwards,
-                           move-separator-right 0.4s ease 0.2s forwards;
+                animation: fade-in 0.15s ease forwards,
+                           move-separator-right 0.2s ease 0.1s forwards;
             }
 
             @keyframes move-separator-left {
