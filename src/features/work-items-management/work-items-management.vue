@@ -15,7 +15,7 @@
         </dialog-panel>
 
         <dialog-panel v-if="staleFocusSession"
-            :dialog="focusSessionEndDialog"
+            :dialog="focusSessionStopDialog"
             :data="staleFocusSession"
             @dialog:confirm="onFocusSessionEnd($event)">
         </dialog-panel>
@@ -97,7 +97,6 @@ import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
 import FocusSessionStopDialog from '../../shared/dialogs/focus-session-stop-dialog/focus-session-stop-dialog.vue';
-import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
 import BreakSessionStopDialog from '../../shared/dialogs/break-session-stop-dialog/break-session-stop-dialog.vue';
 import BreakSessionEndDialog from '../../shared/dialogs/break-session-end-dialog/break-session-end-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
@@ -131,7 +130,6 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
 export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
     public readonly focusSessionStopDialog = markRaw(FocusSessionStopDialog);
-    public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
     public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
     public focusSessionOption: FocusSessionStartupOption | null = null;

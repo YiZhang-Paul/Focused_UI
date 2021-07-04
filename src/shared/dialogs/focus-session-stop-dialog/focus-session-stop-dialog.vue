@@ -2,7 +2,7 @@
     <div class="focus-session-stop-dialog-container">
         <div class="header">
             <alert class="icon" />
-            <span>Stop Session?</span>
+            <span>{{ isStale ? 'Focus Session Ended' : 'Stop Session?' }}</span>
         </div>
 
         <div class="focus-change">
@@ -20,7 +20,14 @@
             </div>
         </div>
 
-        <detail-display-panel class="actions">
+        <detail-display-panel v-if="isStale" class="confirm-actions">
+            <action-button :text="'ok'"
+                :type="buttonType.Confirm"
+                @click="$emit('dialog:confirm', stopOption)">
+            </action-button>
+        </detail-display-panel>
+
+        <detail-display-panel v-if="!isStale" class="stop-actions">
             <action-button :text="'cancel'" @click="$emit('dialog:cancel')"></action-button>
 
             <action-button class="stop-button"
@@ -33,9 +40,8 @@
 </template>
 
 <script lang="ts">
-import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
-import { Alert, FormatListCheckbox } from 'mdue';
+import { Alert } from 'mdue';
 
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
 import { FocusSessionStopOption } from '../../../core/models/time-session/focus-session-stop-option';
@@ -63,12 +69,20 @@ class FocusSessionStopDialogProp {
     ]
 })
 export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDialogProp) {
+    public readonly oneMinute = 1000 * 60;
+    public readonly oneHour = this.oneMinute * 60;
     public readonly breakEligibleDuration = 15;
     public readonly buttonType = ActionButtonType;
-    public readonly checklistIcon = markRaw(FormatListCheckbox);
 
     get stopOption(): FocusSessionStopOption {
         return new FocusSessionStopOption(this.data.id, this.breakDuration);
+    }
+
+    get isStale(): boolean {
+        const { startTime, targetDuration } = this.data;
+        const start = new Date(startTime).getTime();
+
+        return start + targetDuration * this.oneHour <= Date.now();
     }
 
     get focusChange(): string {
@@ -83,9 +97,8 @@ export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDia
     }
 
     get breakDuration(): number {
-        const oneMinute = 1000 * 60;
         const start = new Date(this.data.startTime).getTime();
-        const elapsed = (Date.now() - start) / oneMinute;
+        const elapsed = (Date.now() - start) / this.oneMinute;
 
         return elapsed >= this.breakEligibleDuration ? Math.round(elapsed / 5) : 0;
     }
@@ -102,7 +115,7 @@ export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDia
     padding-top: 1vh;
     padding-bottom: 2.5vh;
 
-    .header, .focus-change, .break-notice, .actions {
+    .header, .focus-change, .break-notice, .confirm-actions, .stop-actions {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -150,13 +163,18 @@ export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDia
         }
     }
 
-    .actions {
+    .stop-actions {
         width: 35%;
         height: 13.5%;
 
         .stop-button {
             margin-left: 1vh;
         }
+    }
+
+    .confirm-actions {
+        width: 20%;
+        height: 13.5%;
     }
 }
 </style>
