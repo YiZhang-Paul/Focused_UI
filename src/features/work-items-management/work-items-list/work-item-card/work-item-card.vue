@@ -45,10 +45,10 @@ import { IconMeta } from '../../../../core/models/generic/icon-meta';
 import { StyleConfig } from '../../../../core/models/generic/style-config';
 import { WorkItemStatus } from '../../../../core/enums/work-item-status.enum';
 import { IconUtility } from '../../../../core/utilities/icon-utility/icon-utility';
-import DisplayPanel from '../../../../shared/panels/display-panel.vue';
-import DueTimeDisplay from '../../../../shared/displays/due-time-display.vue';
-import ItemProgression from '../../../../shared/displays/item-progression.vue';
-import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress.vue';
+import DisplayPanel from '../../../../shared/panels/display-panel/display-panel.vue';
+import DueTimeDisplay from '../../../../shared/displays/due-time-display/due-time-display.vue';
+import ItemProgression from '../../../../shared/displays/item-progression/item-progression.vue';
+import ItemCompletionProgress from '../../../../shared/widgets/item-completion-progress/item-completion-progress.vue';
 
 class WorkItemCardProp {
     public item = prop<WorkItemDto>({ default: null });
@@ -67,7 +67,9 @@ class WorkItemCardProp {
         'edit:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
+    public readonly checklistIcon = markRaw(FormatListCheckbox);
     public isHovering = false;
     public workItemStatus = WorkItemStatus;
 
@@ -87,24 +89,17 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         return IconUtility.getWorkItemIcon(this.item.type);
     }
 
-    get checklistIcon(): any {
-        return markRaw(FormatListCheckbox);
-    }
-
     public mounted(): void {
-        if (!this.isEditMode) {
-            return;
-        }
-
+        /* istanbul ignore next */
         setTimeout(() => {
-            if (this.$refs.nameInput) {
+            if (this.isEditMode && this.$refs.nameInput) {
                 (this.$refs.nameInput as any).focus();
             }
         });
     }
 
     public onEditConfirm(): void {
-        const name = this.item?.name?.trim() ?? '';
+        const name = this.item.name.trim();
 
         if (name) {
             this.item.name = name;

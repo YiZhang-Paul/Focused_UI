@@ -16,6 +16,10 @@ export class GenericUtility {
         return [...elements.slice(0, index), ...elements.slice(index + 1)];
     }
 
+    public static sum<T>(elements: T[], func: (_: T) => number): number {
+        return elements.reduce((total, _) => total + func(_), 0);
+    }
+
     public static roundTo(value: number, decimal = 0): number {
         const modifier = Math.pow(10, decimal);
 

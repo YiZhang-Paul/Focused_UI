@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { injectable } from 'inversify';
 
 import { ActivityBreakdownDto } from '../../../dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
@@ -6,6 +7,7 @@ import { DueDateBreakdownDto } from '../../../dtos/due-date-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../dtos/time-tracking-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
 
+@injectable()
 export class PerformanceHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/performance`;
 
@@ -38,9 +40,8 @@ export class PerformanceHttpService {
     public async getActivityBreakdownByDateRange(start?: Date, end?: Date): Promise<ActivityBreakdownDto> {
         try {
             const endpoint = `${this._api}/activity-breakdown`;
-            const query = this.getDateQueryString(start, end);
 
-            return (await axios.get([endpoint, query].join('?'))).data;
+            return (await axios.get(this.appendDateQueryString(endpoint, start, end))).data;
         }
         catch {
             return new ActivityBreakdownDto();
@@ -62,9 +63,8 @@ export class PerformanceHttpService {
     public async getEstimationBreakdown(start?: Date, end?: Date): Promise<EstimationBreakdownDto> {
         try {
             const endpoint = `${this._api}/estimation-breakdown`;
-            const query = this.getDateQueryString(start, end);
 
-            return (await axios.get([endpoint, query].join('?'))).data;
+            return (await axios.get(this.appendDateQueryString(endpoint, start, end))).data;
         }
         catch {
             return new EstimationBreakdownDto();
@@ -74,19 +74,19 @@ export class PerformanceHttpService {
     public async getDueDateBreakdown(start?: Date, end?: Date): Promise<DueDateBreakdownDto> {
         try {
             const endpoint = `${this._api}/due-date-breakdown`;
-            const query = this.getDateQueryString(start, end);
 
-            return (await axios.get([endpoint, query].join('?'))).data;
+            return (await axios.get(this.appendDateQueryString(endpoint, start, end))).data;
         }
         catch {
             return new DueDateBreakdownDto();
         }
     }
 
-    private getDateQueryString(start?: Date, end?: Date): string {
+    private appendDateQueryString(endpoint: string, start?: Date, end?: Date): string {
         const startQuery = start ? `start=${start.toISOString()}` : '';
         const endQuery = end ? `end=${end.toISOString()}` : '';
+        const query = [startQuery, endQuery].filter(Boolean).join('&');
 
-        return [startQuery, endQuery].filter(Boolean).join('&');
+        return query ? [endpoint, query].join('?') : endpoint;
     }
 }

@@ -26,7 +26,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../../store';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
@@ -36,9 +35,9 @@ import { DateRange } from '../../../core/models/generic/date-range';
 import { RadarSeries } from '../../../core/models/generic/radar-series';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
-import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
-import TaskRadar from '../../../shared/widgets/task-radar.vue';
-import ActivityHistory from '../../../shared/widgets/activity-history.vue';
+import StatsBreakdown from '../../../shared/widgets/stats-breakdown/stats-breakdown.vue';
+import TaskRadar from '../../../shared/widgets/task-radar/task-radar.vue';
+import ActivityHistory from '../../../shared/widgets/activity-history/activity-history.vue';
 
 @Options({
     components: {
@@ -50,15 +49,15 @@ import ActivityHistory from '../../../shared/widgets/activity-history.vue';
 export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
-        return store.getters[`${performanceKey}/dateRange`];
+        return this.$store.getters[`${performanceKey}/dateRange`];
     }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
-        return store.getters[`${performanceKey}/activityBreakdown`];
+        return this.$store.getters[`${performanceKey}/activityBreakdown`];
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.getters[`${performanceKey}/activityHistories`];
+        return this.$store.getters[`${performanceKey}/activityHistories`];
     }
 
     get timeTracked(): string {
@@ -73,15 +72,15 @@ export default class WorkItemTrackingStatsGroup extends Vue {
         const total = regular + recurring + interruption + overlearning;
 
         return [
-            { percent: interruption / total * 100, colorType: 'activity-colors-interruption' },
-            { percent: regular / total * 100, colorType: 'activity-colors-regular' },
-            { percent: overlearning / total * 100, colorType: 'activity-colors-overlearning' },
-            { percent: recurring / total * 100, colorType: 'activity-colors-recurring' }
+            new PercentageSeries(interruption / total * 100, 'activity-colors-interruption'),
+            new PercentageSeries(regular / total * 100, 'activity-colors-regular'),
+            new PercentageSeries(overlearning / total * 100, 'activity-colors-overlearning'),
+            new PercentageSeries(recurring / total * 100, 'activity-colors-recurring')
         ];
     }
 
     get estimationBreakdown(): EstimationBreakdownDto | null {
-        return store.getters[`${performanceKey}/estimationBreakdown`];
+        return this.$store.getters[`${performanceKey}/estimationBreakdown`];
     }
 
     get inaccurateEstimate(): string {
@@ -96,14 +95,14 @@ export default class WorkItemTrackingStatsGroup extends Vue {
         const total = normal + overestimate + underestimate;
 
         return [
-            { percent: underestimate / total * 100, colorType: 'progress-colors-underestimate' },
-            { percent: overestimate / total * 100, colorType: 'progress-colors-overestimate' },
-            { percent: normal / total * 100, colorType: 'progress-colors-normal' }
+            new PercentageSeries(underestimate / total * 100, 'progress-colors-underestimate'),
+            new PercentageSeries(overestimate / total * 100, 'progress-colors-overestimate'),
+            new PercentageSeries(normal / total * 100, 'progress-colors-normal')
         ];
     }
 
     get radarSeries(): RadarSeries[] {
-        const items: WorkItemDto[] = store.getters[`${workItemKey}/workItems`] ?? [];
+        const items: WorkItemDto[] = this.$store.getters[`${workItemKey}/workItems`];
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,

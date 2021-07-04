@@ -5,7 +5,9 @@ import { WorkItemStatus } from '../enums/work-item-status.enum';
 
 export class WorkItemDto {
     public id!: string;
+    public userId!: string;
     public name = '';
+    public description = '';
     public type = WorkItemType.Regular;
     public priority = WorkItemPriority.NotUrgentNotImportant;
     public status = WorkItemStatus.Idle;

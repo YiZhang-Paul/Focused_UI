@@ -1,20 +1,25 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
+import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
-const workItemHttpService = new WorkItemHttpService();
+let workItemHttpService: WorkItemHttpService;
 
 export interface IWorkItemState {
+    lastQuery: WorkItemQuery | null;
     pendingWorkItem: WorkItemDto | null;
     editedWorkItem: WorkItem | null;
     workItems: WorkItemDto[];
 }
 
 const state = (): IWorkItemState => ({
+    lastQuery: null,
     pendingWorkItem: null,
     editedWorkItem: null,
     workItems: []
@@ -40,6 +45,9 @@ const getters = {
 };
 
 const mutations = {
+    setLastQuery(state: IWorkItemState, query: WorkItemQuery | null): void {
+        state.lastQuery = query;
+    },
     setPendingWorkItem(state: IWorkItemState, item: WorkItemDto | null): void {
         state.pendingWorkItem = item;
     },
@@ -111,6 +119,28 @@ const actions = {
 
         return true;
     },
+    async startWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<boolean> {
+        const { state, dispatch } = context;
+        const isStarted = await workItemHttpService.startWorkItem(id);
+
+        if (isStarted) {
+            dispatch('loadWorkItems', state.lastQuery);
+            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+        }
+
+        return isStarted;
+    },
+    async stopWorkItem(context: ActionContext<IWorkItemState, any>): Promise<boolean> {
+        const { state, dispatch } = context;
+        const isStopped = await workItemHttpService.stopWorkItem();
+
+        if (isStopped) {
+            dispatch('loadWorkItems', state.lastQuery);
+            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+        }
+
+        return isStopped;
+    },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
@@ -125,16 +155,23 @@ const actions = {
     },
     async loadWorkItems(context: ActionContext<IWorkItemState, any>, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();
+        context.commit('setLastQuery', query);
         context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));
     }
 };
 
 export const workItemKey = 'workItem';
 
-export const workItem = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+export const createStore = () => {
+    workItemHttpService = container.get<WorkItemHttpService>(types.WorkItemHttpService);
+
+    return {
+        namespaced: true,
+        state,
+        getters,
+        mutations,
+        actions
+    };
 };
+
+export const workItem = createStore();

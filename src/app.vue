@@ -16,14 +16,14 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from './store';
 import { userKey } from './store/user/user.state';
+import { timeSessionKey } from './store/time-session/time-session.state';
 import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
-import LightsourcePanel from './shared/panels/lightsource-panel.vue';
-import UserWidget from './shared/widgets/user-widget.vue';
-import CurrentDateTime from './shared/widgets/current-date-time.vue';
-import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue';
+import LightsourcePanel from './shared/panels/lightsource-panel/lightsource-panel.vue';
+import UserWidget from './shared/widgets/user-widget/user-widget.vue';
+import CurrentDateTime from './shared/widgets/current-date-time/current-date-time.vue';
+import DailyFocusProgression from './shared/widgets/daily-focus-progression/daily-focus-progression.vue';
 
 @Options({
     components: {
@@ -37,17 +37,19 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression.vue'
 export default class App extends Vue {
 
     public created(): void {
-        store.dispatch(`${userKey}/loadProfile`);
+        this.$store.dispatch(`${userKey}/loadProfile`);
+        this.$store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
+        this.$store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);
         this.loadPerformanceBreakdowns();
     }
 
     public loadPerformanceBreakdowns(): void {
-        store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
-        store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
-        store.dispatch(`${performanceKey}/loadActivityBreakdown`);
-        store.dispatch(`${performanceKey}/loadActivityHistories`);
-        store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
-        store.dispatch(`${performanceKey}/loadDueDateBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
+        this.$store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
+        this.$store.dispatch(`${performanceKey}/loadActivityBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadActivityHistories`);
+        this.$store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
+        this.$store.dispatch(`${performanceKey}/loadDueDateBreakdown`);
     }
 }
 </script>

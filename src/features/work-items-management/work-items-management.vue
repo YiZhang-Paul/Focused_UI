@@ -1,5 +1,19 @@
 <template>
     <content-view-panel class="work-items-management-container">
+        <dialog-panel v-if="focusSessionOption"
+            :dialog="focusSessionStartDialog"
+            :data="focusSessionOption"
+            @dialog:cancel="focusSessionOption = null"
+            @dialog:confirm="onFocusSessionStart($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="showStopSessionDialog"
+            :dialog="focusSessionEndDialog"
+            :data="activeFocusSession"
+            @dialog:cancel="showStopSessionDialog = false"
+            @dialog:confirm="onFocusSessionEnd($event)">
+        </dialog-panel>
+
         <template v-slot:actions>
             <div class="actions">
                 <creation-button @click="startCreate()"></creation-button>
@@ -7,20 +21,20 @@
 
                 <segmented-control class="filter-group"
                     :title="'completed'"
-                    :options="genericFilterOptions"
-                    @select="onCompletionFilter($event.name)">
+                    :options="completionFilterOptions"
+                    @select="onCompletionFilter()">
                 </segmented-control>
 
                 <segmented-control class="filter-group"
                     :title="'highlighted'"
-                    :options="genericFilterOptions"
-                    @select="onHighlightFilter($event.name)">
+                    :options="highlightFilterOptions"
+                    @select="onHighlightFilter()">
                 </segmented-control>
 
                 <segmented-control class="filter-group"
                     :title="'work item type'"
                     :options="typeFilterOptions"
-                    @select="onTypeFilter($event.name)">
+                    @select="onTypeFilter()">
                 </segmented-control>
             </div>
         </template>
@@ -28,17 +42,32 @@
         <div class="content">
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
-            <work-items-list class="work-items-list"
-                :pendingItem="pendingItem"
-                :editedItem="editedItem"
-                @create:cancel="cancelCreate()"
-                @create:confirm="confirmCreate()"
-                @update:meta="onItemMetaUpdate($event)"
-                @item:close="onItemClose()"
-                @item:update="onItemUpdate($event)"
-                @item:delete="onItemDelete($event.id)"
-                @item:select="onItemSelect($event.id)">
-            </work-items-list>
+            <display-panel class="core-content" :lineLength="'1.25vh'">
+                <session-tracker class="session-tracker"
+                    @session:stop="showStopSessionDialog = true">
+                </session-tracker>
+
+                <work-item-editor v-if="editedItemMeta && editedItem"
+                    class="work-item-editor"
+                    :meta="editedItemMeta"
+                    :item="editedItem"
+                    @item:close="onItemClose()"
+                    @item:update="onItemUpdate(editedItem)"
+                    @item:delete="onItemDelete(editedItem.id)">
+                </work-item-editor>
+
+                <work-items-list v-if="!editedItem"
+                    class="work-items-list"
+                    :pendingItem="pendingItem"
+                    :editedItem="editedItem"
+                    @create:cancel="cancelCreate()"
+                    @create:confirm="confirmCreate()"
+                    @update:meta="onItemMetaUpdate($event)"
+                    @item:select="onItemSelect($event.id)"
+                    @item:start="onItemStart($event)"
+                    @item:stop="onItemStop()">
+                </work-items-list>
+            </display-panel>
 
             <work-item-progress-stats-group class="stats-group"></work-item-progress-stats-group>
         </div>
@@ -46,24 +75,35 @@
 </template>
 
 <script lang="ts">
+import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../store';
 import { workItemKey } from '../../store/work-item/work-item.state';
+import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
+import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
+import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import SearchBox from '../../shared/inputs/search-box.vue';
-import SegmentedControl from '../../shared/inputs/segmented-control.vue';
-import CreationButton from '../../shared/buttons/creation-button.vue';
-import ContentViewPanel from '../../shared/panels/content-view-panel.vue';
-import StatsBreakdown from '../../shared/widgets/stats-breakdown.vue';
+import SearchBox from '../../shared/inputs/search-box/search-box.vue';
+import SegmentedControl from '../../shared/inputs/segmented-control/segmented-control.vue';
+import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
+import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
+import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
+import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
+import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
+import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
+import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
+import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';
+import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
@@ -71,10 +111,14 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         SearchBox,
         SegmentedControl,
         CreationButton,
+        DialogPanel,
+        DisplayPanel,
         ContentViewPanel,
+        SessionTracker,
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
         WorkItemProgressStatsGroup,
+        WorkItemEditor,
         WorkItemsList
     },
     emits: [
@@ -83,27 +127,46 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
     ]
 })
 export default class WorkItemsManagement extends Vue {
-    public readonly genericFilterOptions = [
-        IconUtility.getGenericFilterIcon(GenericFilterType.All),
-        IconUtility.getGenericFilterIcon(GenericFilterType.Yes),
-        IconUtility.getGenericFilterIcon(GenericFilterType.No)
+    public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
+    public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
+
+    public readonly completionFilterOptions = [
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
+    ];
+
+    public readonly highlightFilterOptions = [
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
     ];
 
     public readonly typeFilterOptions = [
-        IconUtility.getGenericFilterIcon(GenericFilterType.All),
-        IconUtility.getWorkItemIcon(WorkItemType.Regular),
-        IconUtility.getWorkItemIcon(WorkItemType.Recurring),
-        IconUtility.getWorkItemIcon(WorkItemType.Interruption)
+        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Regular)),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Recurring)),
+        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Interruption))
     ];
 
+    public focusSessionOption: FocusSessionStartupOption | null = null;
+    public showStopSessionDialog = false;
     private query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
-        return store.getters[`${workItemKey}/pendingWorkItem`];
+        return this.$store.getters[`${workItemKey}/pendingWorkItem`];
+    }
+
+    get editedItemMeta(): WorkItemDto | null {
+        return this.$store.getters[`${workItemKey}/editedWorkItemMeta`];
     }
 
     get editedItem(): WorkItem | null {
-        return store.getters[`${workItemKey}/editedWorkItem`];
+        return this.$store.getters[`${workItemKey}/editedWorkItem`];
+    }
+
+    get activeFocusSession(): FocusSessionDto | null {
+        return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
     }
 
     public created(): void {
@@ -111,15 +174,15 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public startCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
+        this.$store.commit(`${workItemKey}/setPendingWorkItem`, new WorkItemDto());
     }
 
     public cancelCreate(): void {
-        store.commit(`${workItemKey}/setPendingWorkItem`, null);
+        this.$store.commit(`${workItemKey}/setPendingWorkItem`, null);
     }
 
     public async confirmCreate(): Promise<void> {
-        const id = await store.dispatch(`${workItemKey}/createWorkItem`);
+        const id = await this.$store.dispatch(`${workItemKey}/createWorkItem`);
 
         if (id) {
             await this.onItemSelect(id);
@@ -127,30 +190,65 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
+    public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
+        this.focusSessionOption = null;
+
+        if (await this.$store.dispatch(`${timeSessionKey}/startFocusSession`, option)) {
+            await this.loadWorkItems();
+        }
+    }
+
+    public async onFocusSessionEnd(option: BreakSessionStartupOption): Promise<void> {
+        this.showStopSessionDialog = false;
+
+        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`)) {
+            this.showStopSessionDialog = true;
+        }
+
+        if (!option || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, option)) {
+            await this.loadWorkItems();
+        }
+    }
+
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/updateWorkItemMeta`, item)) {
+        if (await this.$store.dispatch(`${workItemKey}/updateWorkItemMeta`, item)) {
             this.$emit('item:update');
         }
     }
 
     public onItemClose(): void {
-        store.commit(`${workItemKey}/setEditedWorkItem`, null);
+        this.$store.commit(`${workItemKey}/setEditedWorkItem`, null);
     }
 
     public async onItemUpdate(item: WorkItem): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/updateWorkItem`, item)) {
+        if (await this.$store.dispatch(`${workItemKey}/updateWorkItem`, item)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemDelete(id: string): Promise<void> {
-        if (await store.dispatch(`${workItemKey}/deleteWorkItem`, id)) {
+        if (await this.$store.dispatch(`${workItemKey}/deleteWorkItem`, id)) {
             this.$emit('item:delete');
         }
     }
 
     public async onItemSelect(id: string): Promise<void> {
-        await store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+        await this.$store.dispatch(`${workItemKey}/loadEditedWorkItem`, id);
+    }
+
+    public async onItemStart(item: WorkItemDto): Promise<void> {
+        if (!this.$store.getters[`${timeSessionKey}/hasActiveFocusSession`]) {
+            this.focusSessionOption = new FocusSessionStartupOption(item);
+        }
+        else if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, item.id)) {
+            this.$emit('item:update');
+        }
+    }
+
+    public async onItemStop(): Promise<void> {
+        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
+            this.$emit('item:update');
+        }
     }
 
     public onSearch(text: string): void {
@@ -158,29 +256,31 @@ export default class WorkItemsManagement extends Vue {
         this.loadWorkItems();
     }
 
-    public onCompletionFilter(name: string): void {
-        if (name === this.genericFilterOptions[0].name) {
-            this.query.isCompleted = undefined;
+    public onCompletionFilter(): void {
+        if (this.completionFilterOptions[1].isActive) {
+            this.query.isCompleted = true;
+            this.resetHighlightFilter();
         }
         else {
-            this.query.isCompleted = name === this.genericFilterOptions[1].name;
+            this.query.isCompleted = this.completionFilterOptions[0].isActive ? undefined : false;
         }
 
         this.loadWorkItems();
     }
 
-    public onHighlightFilter(name: string): void {
-        if (name === this.genericFilterOptions[0].name) {
-            this.query.isHighlighted = undefined;
+    public onHighlightFilter(): void {
+        if (this.highlightFilterOptions[1].isActive) {
+            this.query.isHighlighted = true;
+            this.resetCompletionFilter();
         }
         else {
-            this.query.isHighlighted = name === this.genericFilterOptions[1].name;
+            this.query.isHighlighted = this.highlightFilterOptions[0].isActive ? undefined : false;
         }
 
         this.loadWorkItems();
     }
 
-    public onTypeFilter(name: string): void {
+    public onTypeFilter(): void {
         const types = [
             undefined,
             WorkItemType.Regular,
@@ -188,13 +288,23 @@ export default class WorkItemsManagement extends Vue {
             WorkItemType.Interruption
         ];
 
-        const index = this.typeFilterOptions.findIndex(_ => name === _.name);
+        const index = this.typeFilterOptions.findIndex(_ => _.isActive);
         this.query.type = types[index];
         this.loadWorkItems();
     }
 
+    private resetCompletionFilter(): void {
+        this.query.isCompleted = undefined;
+        this.completionFilterOptions.forEach((_, index) => _.isActive = !index);
+    }
+
+    private resetHighlightFilter(): void {
+        this.query.isHighlighted = undefined;
+        this.highlightFilterOptions.forEach((_, index) => _.isActive = !index);
+    }
+
     private async loadWorkItems(): Promise<void> {
-        await store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+        await this.$store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }
 </script>
@@ -226,13 +336,13 @@ export default class WorkItemsManagement extends Vue {
 
     .content {
         $gap: 5%;
-        $list-width: 63.5%;
+        $core-content-width: 63.5%;
 
         display: flex;
         align-items: center;
         justify-content: space-evenly;
 
-        .stats-group, .work-items-list {
+        .stats-group, .core-content {
             height: 95%;
         }
 
@@ -240,11 +350,37 @@ export default class WorkItemsManagement extends Vue {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            width: calc((100% - #{$gap} - #{$list-width}) / 2);
+            width: calc((100% - #{$gap} - #{$core-content-width}) / 2);
         }
 
-        .work-items-list {
-            width: $list-width;
+        .core-content {
+            $tracker-height: 5.5vh;
+
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2.5vh 3.5vh;
+            width: $core-content-width;
+            background-color: var(--primary-colors-8-01);
+
+            .session-tracker {
+                width: 100%;
+                height: $tracker-height;
+            }
+
+            .work-item-editor, .work-items-list {
+                height: calc(100% - 1.5vh - #{$tracker-height});
+            }
+
+            .work-item-editor {
+                width: 92.5%;
+            }
+
+            .work-items-list {
+                width: 100%;
+            }
         }
     }
 }

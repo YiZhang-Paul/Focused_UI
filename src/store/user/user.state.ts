@@ -1,9 +1,11 @@
 import { ActionContext } from 'vuex';
 
+import { types } from '../../core/ioc/types';
+import { container } from '../../core/ioc/container';
 import { UserProfile } from '../../core/models/user/user-profile';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 
-const userProfileHttpService = new UserProfileHttpService();
+let userProfileHttpService: UserProfileHttpService;
 
 export interface IUserState {
     profile: UserProfile | null;
@@ -32,10 +34,16 @@ const actions = {
 
 export const userKey = 'user';
 
-export const user = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+export const createStore = () => {
+    userProfileHttpService = container.get<UserProfileHttpService>(types.UserProfileHttpService);
+
+    return {
+        namespaced: true,
+        state,
+        getters,
+        mutations,
+        actions
+    };
 };
+
+export const user = createStore();

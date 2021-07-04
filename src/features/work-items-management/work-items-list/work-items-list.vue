@@ -1,5 +1,5 @@
 <template>
-    <display-panel class="work-items-list-container" :lineLength="'1.25vh'">
+    <div class="work-items-list-container">
         <work-item-card v-if="pendingItem"
             class="pending-item-card"
             :item="pendingItem"
@@ -8,23 +8,7 @@
             @edit:confirm="$emit('create:confirm')">
         </work-item-card>
 
-        <div class="editor-wrapper" v-if="editedItem && editedWorkItemMeta">
-            <work-item-editor-header class="editor-header"
-                :meta="editedWorkItemMeta"
-                :item="editedItem"
-                @item:update="$emit('item:update', editedItem)">
-            </work-item-editor-header>
-
-            <work-item-editor class="item-editor"
-                :meta="editedWorkItemMeta"
-                :item="editedItem"
-                @item:close="$emit('item:close')"
-                @item:update="$emit('item:update', editedItem)"
-                @item:delete="$emit('item:delete', editedItem)">
-            </work-item-editor>
-        </div>
-
-        <div v-if="!editedItem" class="item-cards">
+        <div class="item-cards">
             <div class="cards-wrapper" ref="cardWrappers">
                 <div class="card-wrapper"
                     v-for="(item, index) of workItems"
@@ -35,7 +19,9 @@
                     <work-item-status-menu class="status-menu"
                         :activeOption="item.status"
                         :showOptions="activeIndex === index"
-                        @select="onStatusSelected(item, $event)">
+                        @select="onStatusSelected(item, $event)"
+                        @start="$emit('item:start', item)"
+                        @stop="$emit('item:stop')">
                     </work-item-status-menu>
 
                     <work-item-card class="item-card"
@@ -51,24 +37,20 @@
                 :scrollContainer="$refs.cardWrappers">
             </item-thumbnail-scrollbar>
         </div>
-    </display-panel>
+    </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import store from '../../../store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
-import DisplayPanel from '../../../shared/panels/display-panel.vue';
-import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar.vue';
+import ItemThumbnailScrollbar from '../../../shared/widgets/item-thumbnail-scrollbar/item-thumbnail-scrollbar.vue';
 
 import WorkItemStatusMenu from './work-item-status-menu/work-item-status-menu.vue';
 import WorkItemCard from './work-item-card/work-item-card.vue';
-import WorkItemEditorHeader from './work-item-editor-header/work-item-editor-header.vue';
-import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 
 class WorkItemsListProp {
     public pendingItem = prop<WorkItemDto>({ default: null });
@@ -77,32 +59,25 @@ class WorkItemsListProp {
 
 @Options({
     components: {
-        DisplayPanel,
         ItemThumbnailScrollbar,
         WorkItemStatusMenu,
-        WorkItemCard,
-        WorkItemEditorHeader,
-        WorkItemEditor
+        WorkItemCard
     },
     emits: [
         'create:cancel',
         'create:confirm',
         'update:meta',
-        'item:close',
-        'item:update',
-        'item:delete',
-        'item:select'
+        'item:select',
+        'item:start',
+        'item:stop'
     ]
 })
+/* istanbul ignore next */
 export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
 
-    get editedWorkItemMeta(): WorkItemDto | null {
-        return store.getters[`${workItemKey}/editedWorkItemMeta`];
-    }
-
     get workItems(): WorkItemDto[] {
-        return store.getters[`${workItemKey}/workItems`];
+        return this.$store.getters[`${workItemKey}/workItems`];
     }
 
     public onStatusSelected(item: WorkItemDto, status: WorkItemStatus): void {
@@ -113,41 +88,16 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
 
 <style lang="scss" scoped>
 .work-items-list-container {
-    $content-width: 92.5%;
-    $card-height: 5vh;
     $card-gap: 1.25vh;
 
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5vh 3.5vh;
-    background-color: var(--primary-colors-8-01);
-
-    .pending-item-card, .card-wrapper, .editor-wrapper {
-        width: $content-width;
-    }
 
     .pending-item-card, .card-wrapper {
-        height: $card-height;
-    }
-
-    .editor-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        height: 100%;
-
-        .editor-header {
-            width: 100%;
-            height: $card-height;
-        }
-
-        .item-editor {
-            width: 99%;
-            height: calc(100% - #{$card-height} - 10px);
-        }
+        width: 92.5%;
+        height: 5vh;
     }
 
     .item-cards {
@@ -194,7 +144,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
         .items-thumbnail {
             position: absolute;
             top: 0;
-            right: 0;
+            right: 1vh;
         }
     }
 }

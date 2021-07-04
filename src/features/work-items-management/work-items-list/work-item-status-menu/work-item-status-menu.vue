@@ -33,8 +33,13 @@ class WorkItemStatusMenuProp {
             this.initializeOptions();
         }
     },
-    emits: ['select']
+    emits: [
+        'select',
+        'start',
+        'stop'
+    ]
 })
+/* istanbul ignore next */
 export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp) {
     public options: { icon: any; status: WorkItemStatus }[] = [];
 
@@ -45,13 +50,22 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
     public getClasses(status: WorkItemStatus): ClassConfig {
         return {
             icon: true,
+            ongoing: status === WorkItemStatus.Ongoing,
             'invisible-option': !this.showOptions,
             'active-option': this.activeOption === status
         };
     }
 
     public onSelect(status: WorkItemStatus): void {
-        this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
+        if (this.activeOption === WorkItemStatus.Ongoing) {
+            this.$emit('stop');
+        }
+        else if (status === WorkItemStatus.Ongoing) {
+            this.$emit('start');
+        }
+        else {
+            this.$emit('select', status === this.activeOption ? WorkItemStatus.Idle : status);
+        }
     }
 
     private initializeOptions(): void {
@@ -96,6 +110,10 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
 
         &.active-option {
             color: var(--font-colors-1-00);
+        }
+
+        &.active-option.ongoing {
+            color: var(--context-colors-alert-00);
         }
     }
 }

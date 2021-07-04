@@ -1,12 +1,28 @@
 import { markRaw } from 'vue';
-import { Check, Close, Flash, RecordCircleOutline, Repeat, Selection, WeatherNight, WeatherSunset, WhiteBalanceSunny } from 'mdue';
+
+import {
+    Check,
+    Close,
+    Flash,
+    LightbulbOn,
+    PalmTree,
+    ProgressQuestion,
+    RecordCircleOutline,
+    Repeat,
+    Selection,
+    Tag,
+    WeatherNight,
+    WeatherSunset,
+    WhiteBalanceSunny
+} from 'mdue';
 
 import { IconMeta } from '../../models/generic/icon-meta';
 import { GenericFilterType } from '../../enums/generic-filter-type.enum';
+import { TimeSessionStatus } from '../../enums/time-session-status.enum';
 import { WorkItemType } from '../../enums/work-item-type.enum';
 
 export class IconUtility {
-
+    /* istanbul ignore next */
     public static getGenericFilterIcon(type: GenericFilterType): IconMeta {
         if (type === GenericFilterType.All) {
             return {
@@ -24,7 +40,35 @@ export class IconUtility {
             color: isYes ? 'rgb(15, 255, 39)' : 'rgb(255, 0, 0)'
         };
     }
+    /* istanbul ignore next */
+    public static getTimeSessionIcon(status: TimeSessionStatus): IconMeta {
+        if (status === TimeSessionStatus.Idle) {
+            return {
+                content: markRaw(ProgressQuestion),
+                color: 'var(--session-status-colors-idle-03)'
+            };
+        }
 
+        if (status === TimeSessionStatus.Ongoing) {
+            return {
+                content: markRaw(LightbulbOn),
+                color: 'var(--session-status-colors-ongoing-icon)'
+            };
+        }
+
+        if (status === TimeSessionStatus.Pending) {
+            return {
+                content: markRaw(Tag),
+                color: 'var(--session-status-colors-pending-00)'
+            };
+        }
+
+        return {
+            content: markRaw(PalmTree),
+            color: 'var(--session-status-colors-resting-00)'
+        };
+    }
+    /* istanbul ignore next */
     public static getWorkItemIcon(type: WorkItemType): IconMeta {
         if (type === WorkItemType.Interruption) {
             return {

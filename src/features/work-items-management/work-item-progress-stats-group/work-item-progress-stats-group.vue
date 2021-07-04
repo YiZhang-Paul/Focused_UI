@@ -22,7 +22,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../../store';
 import { userKey } from '../../../store/user/user.state';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
@@ -32,9 +31,9 @@ import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
-import StatsBreakdown from '../../../shared/widgets/stats-breakdown.vue';
-import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown.vue';
-import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker.vue';
+import StatsBreakdown from '../../../shared/widgets/stats-breakdown/stats-breakdown.vue';
+import TimeTrackingBreakdown from '../../../shared/widgets/time-tracking-breakdown/time-tracking-breakdown.vue';
+import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker/user-ratings-tracker.vue';
 
 @Options({
     components: {
@@ -46,7 +45,7 @@ import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker.vue
 export default class WorkItemProgressStatsGroup extends Vue {
 
     get dueDateBreakdown(): DueDateBreakdownDto | null {
-        return store.getters[`${performanceKey}/dueDateBreakdown`];
+        return this.$store.getters[`${performanceKey}/dueDateBreakdown`];
     }
 
     get pastDueAndLooming(): string {
@@ -60,17 +59,17 @@ export default class WorkItemProgressStatsGroup extends Vue {
         const total = pastDue + looming;
 
         return [
-            { percent: pastDue / total * 100, colorType: 'context-colors-warning' },
-            { percent: looming / total * 100, colorType: 'context-colors-alert' }
+            new PercentageSeries(pastDue / total * 100, 'context-colors-warning'),
+            new PercentageSeries(looming / total * 100, 'context-colors-alert')
         ];
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.getters[`${performanceKey}/activityHistories`] ?? [];
+        return this.$store.getters[`${performanceKey}/activityHistories`];
     }
 
     get averageFocus(): string {
-        const hours = this.activityHistories.reduce((total, _) => total + _.regular + _.recurring + _.overlearning, 0);
+        const hours = GenericUtility.sum(this.activityHistories, _ => _.regular + _.recurring + _.overlearning);
         const average = GenericUtility.roundTo(hours / this.activityHistories.length, 1);
 
         return `${average} hour${average > 1 ? 's' : ''}`;
@@ -95,18 +94,18 @@ export default class WorkItemProgressStatsGroup extends Vue {
         }, aggregate);
 
         return [
-            { percent: overdoing / total * 100, colorType: 'focus-progress-colors-overdoing' },
-            { percent: insufficient / total * 100, colorType: 'focus-progress-colors-insufficient' },
-            { percent: sufficient / total * 100, colorType: 'focus-progress-colors-sufficient' }
+            new PercentageSeries(overdoing / total * 100, 'focus-progress-colors-overdoing'),
+            new PercentageSeries(insufficient / total * 100, 'focus-progress-colors-insufficient'),
+            new PercentageSeries(sufficient / total * 100, 'focus-progress-colors-sufficient')
         ];
     }
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
-        return store.getters[`${performanceKey}/currentDayTimeTracking`];
+        return this.$store.getters[`${performanceKey}/currentDayTimeTracking`];
     }
 
     get ratings(): PerformanceRating {
-        const user = store.getters[`${userKey}/profile`] as UserProfile;
+        const user = this.$store.getters[`${userKey}/profile`] as UserProfile;
 
         return user?.ratings ?? new PerformanceRating();
     }
