@@ -19,12 +19,16 @@ let timeSessionHttpService: TimeSessionHttpService;
 
 export interface ITimeSessionState {
     activeFocusSession: FocusSessionDto | null;
+    staleFocusSession: FocusSessionDto | null;
     activeBreakSession: BreakSession | null;
+    staleBreakSession: BreakSession | null;
 }
 
 const state = (): ITimeSessionState => ({
     activeFocusSession: null,
-    activeBreakSession: null
+    staleFocusSession: null,
+    activeBreakSession: null,
+    staleBreakSession: null
 });
 
 const getters = {
@@ -64,15 +68,23 @@ const getters = {
         return new Date(new Date(start).getTime() + duration * oneHour);
     },
     activeFocusSession: (state: ITimeSessionState): FocusSessionDto | null => state.activeFocusSession,
-    activeBreakSession: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession
+    staleFocusSession: (state: ITimeSessionState): FocusSessionDto | null => state.staleFocusSession,
+    activeBreakSession: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession,
+    staleBreakSession: (state: ITimeSessionState): BreakSession | null => state.staleBreakSession
 };
 
 const mutations = {
     setActiveFocusSession(state: ITimeSessionState, session: FocusSessionDto | null): void {
         state.activeFocusSession = session;
     },
+    setStaleFocusSession(state: ITimeSessionState, session: FocusSessionDto | null): void {
+        state.staleFocusSession = session;
+    },
     setActiveBreakSession(state: ITimeSessionState, session: BreakSession | null): void {
         state.activeBreakSession = session;
+    },
+    setStaleBreakSession(state: ITimeSessionState, session: BreakSession | null): void {
+        state.staleBreakSession = session;
     }
 };
 
@@ -116,6 +128,10 @@ const actions = {
     async loadActiveTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
         context.commit('setActiveFocusSession', await timeSessionHttpService.getActiveFocusSessionMeta());
         context.commit('setActiveBreakSession', await timeSessionHttpService.getActiveBreakSession());
+    },
+    async loadStaleTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
+        context.commit('setStaleFocusSession', await timeSessionHttpService.getStaleFocusSessionMeta());
+        context.commit('setStaleBreakSession', await timeSessionHttpService.getStaleBreakSession());
     },
     syncActiveTimeSession(context: ActionContext<ITimeSessionState, any>): void {
         const { getters, commit } = context;

@@ -19,6 +19,15 @@ export class TimeSessionHttpService {
         }
     }
 
+    public async getStaleFocusSessionMeta(): Promise<FocusSessionDto | null> {
+        try {
+            return (await axios.get(`${this._api}/stale-focus-session/meta`)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
     public async startFocusSession(option: FocusSessionStartupOption): Promise<boolean> {
         try {
             return (await axios.post(`${this._api}/focus-session/start`, option)).data;
@@ -40,6 +49,15 @@ export class TimeSessionHttpService {
     public async getActiveBreakSession(): Promise<BreakSession | null> {
         try {
             return (await axios.get(`${this._api}/active-break-session`)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
+    public async getStaleBreakSession(): Promise<BreakSession | null> {
+        try {
+            return (await axios.get(`${this._api}/stale-break-session`)).data;
         }
         catch {
             return null;
