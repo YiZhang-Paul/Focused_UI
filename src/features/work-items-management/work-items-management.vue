@@ -7,11 +7,18 @@
             @dialog:confirm="onFocusSessionStart($event)">
         </dialog-panel>
 
-        <dialog-panel v-if="showStopSessionDialog"
+        <dialog-panel v-if="showStopFocusSessionDialog"
             :dialog="focusSessionEndDialog"
             :data="activeFocusSession"
-            @dialog:cancel="showStopSessionDialog = false"
+            @dialog:cancel="showStopFocusSessionDialog = false"
             @dialog:confirm="onFocusSessionEnd($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="showStopBreakSessionDialog"
+            :dialog="breakSessionEndDialog"
+            :data="activeBreakSession"
+            @dialog:cancel="showStopBreakSessionDialog = false"
+            @dialog:confirm="onBreakSessionEnd($event)">
         </dialog-panel>
 
         <template v-slot:actions>
@@ -43,9 +50,7 @@
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
             <display-panel class="core-content" :lineLength="'1.25vh'">
-                <session-tracker class="session-tracker"
-                    @session:stop="showStopSessionDialog = true">
-                </session-tracker>
+                <session-tracker class="session-tracker" @session:stop="showSessionEndDialog()"></session-tracker>
 
                 <work-item-editor v-if="editedItemMeta && editedItem"
                     class="work-item-editor"
@@ -82,11 +87,13 @@ import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
+import { BreakSessionStopOption } from '../../core/models/time-session/break-session-stop-option';
 import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -99,6 +106,7 @@ import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
 import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
+import BreakSessionEndDialog from '../../shared/dialogs/break-session-end-dialog/break-session-end-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
@@ -130,6 +138,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
 export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
     public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
+    public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
 
     public readonly completionFilterOptions = [
         new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
@@ -151,7 +160,8 @@ export default class WorkItemsManagement extends Vue {
     ];
 
     public focusSessionOption: FocusSessionStartupOption | null = null;
-    public showStopSessionDialog = false;
+    public showStopFocusSessionDialog = false;
+    public showStopBreakSessionDialog = false;
     private query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
@@ -168,6 +178,10 @@ export default class WorkItemsManagement extends Vue {
 
     get activeFocusSession(): FocusSessionDto | null {
         return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
+    }
+
+    get activeBreakSession(): BreakSession | null {
+        return this.$store.getters[`${timeSessionKey}/activeBreakSession`];
     }
 
     public created(): void {
@@ -191,6 +205,11 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
+    public showSessionEndDialog(): void {
+        this.showStopFocusSessionDialog = Boolean(this.activeFocusSession);
+        this.showStopBreakSessionDialog = Boolean(this.activeBreakSession);
+    }
+
     public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
         this.focusSessionOption = null;
 
@@ -201,14 +220,26 @@ export default class WorkItemsManagement extends Vue {
 
     public async onFocusSessionEnd(option: FocusSessionStopOption): Promise<void> {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
-        this.showStopSessionDialog = false;
+        this.showStopFocusSessionDialog = false;
 
         if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option)) {
-            this.showStopSessionDialog = true;
+            this.showStopFocusSessionDialog = true;
         }
 
         if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
             await this.loadWorkItems();
+        }
+    }
+
+    public async onBreakSessionEnd(option: BreakSessionStopOption): Promise<void> {
+        this.showStopBreakSessionDialog = false;
+        const isStopped = await this.$store.dispatch(`${timeSessionKey}/stopBreakSession`, option);
+
+        if (isStopped) {
+            await this.loadWorkItems();
+        }
+        else {
+            this.showStopBreakSessionDialog = true;
         }
     }
 

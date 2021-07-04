@@ -7,6 +7,7 @@ import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
+import { BreakSessionStopOption } from '../../core/models/time-session/break-session-stop-option';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
@@ -102,6 +103,15 @@ const actions = {
         }
 
         return isStarted;
+    },
+    async stopBreakSession(context: ActionContext<ITimeSessionState, any>, payload: BreakSessionStopOption): Promise<boolean> {
+        const isStopped = await timeSessionHttpService.stopBreakSession(payload.breakSessionId);
+
+        if (isStopped && payload.isReloadRequired) {
+            await context.dispatch('loadActiveTimeSession');
+        }
+
+        return isStopped;
     },
     async loadActiveTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
         context.commit('setActiveFocusSession', await timeSessionHttpService.getActiveFocusSessionMeta());

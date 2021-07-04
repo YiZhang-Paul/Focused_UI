@@ -54,4 +54,13 @@ export class TimeSessionHttpService {
             return false;
         }
     }
+
+    public async stopBreakSession(id: string): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/break-session/${id}/stop`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
 }
