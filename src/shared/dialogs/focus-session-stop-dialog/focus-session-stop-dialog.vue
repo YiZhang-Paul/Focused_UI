@@ -24,8 +24,8 @@
             <action-button :text="'cancel'" @click="$emit('dialog:cancel')"></action-button>
 
             <action-button class="stop-button"
-                :text="'ok'"
-                :type="buttonType.Confirm"
+                :text="'stop'"
+                :type="buttonType.Warning"
                 @click="$emit('dialog:confirm', stopOption)">
             </action-button>
         </detail-display-panel>
