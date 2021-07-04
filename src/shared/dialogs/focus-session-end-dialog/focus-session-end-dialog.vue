@@ -5,6 +5,11 @@
             <span>End of Session</span>
         </div>
 
+        <div class="focus-change">
+            <span>Today's Focus</span>
+            <span class="change-value">{{ focusChange }}</span>
+        </div>
+
         <div class="break-notice">
             <span v-if="breakDuration">break session will start:</span>
             <span v-if="!breakDuration">no breaks for session under {{ breakEligibleDuration }} minutes:</span>
@@ -36,6 +41,7 @@ import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { TimeSessionStatus } from '../../../core/enums/time-session-status.enum';
+import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
 import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
 import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
@@ -59,6 +65,13 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
     public readonly breakEligibleDuration = 15;
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);
+
+    get focusChange(): string {
+        const { regular, recurring, overlearning } = this.data.activities;
+        const total = regular + recurring + overlearning;
+
+        return `+${GenericUtility.roundTo(total / 8 * 100, 1)}%`;
+    }
 
     get breakIcon(): IconMeta {
         return IconUtility.getTimeSessionIcon(TimeSessionStatus.Resting);
@@ -84,7 +97,7 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
     padding-top: 1vh;
     padding-bottom: 2.5vh;
 
-    .header, .break-notice, .actions {
+    .header, .focus-change, .break-notice, .actions {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -99,6 +112,16 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
 
         .icon {
             margin-right: 1.5vh;
+        }
+    }
+
+    .focus-change {
+        color: var(--context-colors-confirm-00);
+        font-size: var(--font-sizes-500);
+
+        .change-value {
+            margin-left: 1.25vh;
+            font-size: var(--font-sizes-800);
         }
     }
 
