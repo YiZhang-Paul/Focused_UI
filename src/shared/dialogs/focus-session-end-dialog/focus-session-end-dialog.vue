@@ -6,11 +6,12 @@
         </div>
 
         <div class="break-notice">
-            <span>break session will start:</span>
+            <span v-if="breakDuration">break session will start:</span>
+            <span v-if="!breakDuration">no breaks for session under {{ breakEligibleDuration }} minutes:</span>
 
             <div class="break-duration">
                 <component class="icon" :is="breakIcon.content"></component>
-                <span>5 Minutes</span>
+                <span>{{ breakDuration }} Minute{{ breakDuration ? 's' : '' }}</span>
             </div>
         </div>
 
@@ -55,11 +56,20 @@ class FocusSessionEndDialogProp {
     ]
 })
 export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialogProp) {
+    public readonly breakEligibleDuration = 15;
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);
 
     get breakIcon(): IconMeta {
         return IconUtility.getTimeSessionIcon(TimeSessionStatus.Resting);
+    }
+
+    get breakDuration(): number {
+        const oneMinute = 1000 * 60;
+        const start = new Date(this.data.startTime).getTime();
+        const elapsed = (Date.now() - start) / oneMinute;
+
+        return elapsed >= this.breakEligibleDuration ? Math.round(elapsed / 5) : 0;
     }
 }
 </script>
