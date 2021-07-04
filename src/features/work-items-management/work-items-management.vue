@@ -17,6 +17,8 @@
         <dialog-panel v-if="showStopBreakSessionDialog"
             :dialog="breakSessionEndDialog"
             :data="activeBreakSession"
+            :width="'30vw'"
+            :height="'35vh'"
             @dialog:cancel="showStopBreakSessionDialog = false"
             @dialog:confirm="onBreakSessionEnd($event)">
         </dialog-panel>

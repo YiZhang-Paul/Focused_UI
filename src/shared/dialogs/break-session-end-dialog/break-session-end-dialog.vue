@@ -58,8 +58,6 @@ export default class BreakSessionEndDialog extends Vue.with(BreakSessionEndDialo
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    padding-top: 1vh;
-    padding-bottom: 2.5vh;
 
     .header, .actions {
         display: flex;
@@ -80,8 +78,8 @@ export default class BreakSessionEndDialog extends Vue.with(BreakSessionEndDialo
     }
 
     .actions {
-        width: 35%;
-        height: 13.5%;
+        width: 40%;
+        height: 22.5%;
 
         .stop-button {
             margin-left: 1vh;
