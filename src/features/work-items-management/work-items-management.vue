@@ -24,25 +24,7 @@
         <template v-slot:actions>
             <div class="actions">
                 <creation-button @click="startCreate()"></creation-button>
-                <search-box class="search-box" @search="onSearch($event)"></search-box>
-
-                <segmented-control class="filter-group"
-                    :title="'completed'"
-                    :options="completionFilterOptions"
-                    @select="onCompletionFilter()">
-                </segmented-control>
-
-                <segmented-control class="filter-group"
-                    :title="'highlighted'"
-                    :options="highlightFilterOptions"
-                    @select="onHighlightFilter()">
-                </segmented-control>
-
-                <segmented-control class="filter-group"
-                    :title="'work item type'"
-                    :options="typeFilterOptions"
-                    @select="onTypeFilter()">
-                </segmented-control>
+                <work-item-filter class="item-filter" :query="query" @item:filter="loadWorkItems()"></work-item-filter>
             </div>
         </template>
 
@@ -94,12 +76,6 @@ import { FocusSessionStartupOption } from '../../core/models/time-session/focus-
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { BreakSessionStopOption } from '../../core/models/time-session/break-session-stop-option';
-import { ControlButtonOption } from '../../core/models/generic/control-button-option';
-import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
-import { WorkItemType } from '../../core/enums/work-item-type.enum';
-import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import SearchBox from '../../shared/inputs/search-box/search-box.vue';
-import SegmentedControl from '../../shared/inputs/segmented-control/segmented-control.vue';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
@@ -112,13 +88,12 @@ import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';
+import WorkItemFilter from './work-item-filter/work-item-filter.vue';
 import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
     components: {
-        SearchBox,
-        SegmentedControl,
         CreationButton,
         DialogPanel,
         DisplayPanel,
@@ -127,6 +102,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
         WorkItemProgressStatsGroup,
+        WorkItemFilter,
         WorkItemEditor,
         WorkItemsList
     },
@@ -139,30 +115,10 @@ export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
     public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
-
-    public readonly completionFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
-    ];
-
-    public readonly highlightFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
-    ];
-
-    public readonly typeFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Regular)),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Recurring)),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Interruption))
-    ];
-
     public focusSessionOption: FocusSessionStartupOption | null = null;
     public showStopFocusSessionDialog = false;
     public showStopBreakSessionDialog = false;
-    private query = new WorkItemQuery();
+    public query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
         return this.$store.getters[`${workItemKey}/pendingWorkItem`];
@@ -284,59 +240,7 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public onSearch(text: string): void {
-        this.query.searchText = text;
-        this.loadWorkItems();
-    }
-
-    public onCompletionFilter(): void {
-        if (this.completionFilterOptions[1].isActive) {
-            this.query.isCompleted = true;
-            this.resetHighlightFilter();
-        }
-        else {
-            this.query.isCompleted = this.completionFilterOptions[0].isActive ? undefined : false;
-        }
-
-        this.loadWorkItems();
-    }
-
-    public onHighlightFilter(): void {
-        if (this.highlightFilterOptions[1].isActive) {
-            this.query.isHighlighted = true;
-            this.resetCompletionFilter();
-        }
-        else {
-            this.query.isHighlighted = this.highlightFilterOptions[0].isActive ? undefined : false;
-        }
-
-        this.loadWorkItems();
-    }
-
-    public onTypeFilter(): void {
-        const types = [
-            undefined,
-            WorkItemType.Regular,
-            WorkItemType.Recurring,
-            WorkItemType.Interruption
-        ];
-
-        const index = this.typeFilterOptions.findIndex(_ => _.isActive);
-        this.query.type = types[index];
-        this.loadWorkItems();
-    }
-
-    private resetCompletionFilter(): void {
-        this.query.isCompleted = undefined;
-        this.completionFilterOptions.forEach((_, index) => _.isActive = !index);
-    }
-
-    private resetHighlightFilter(): void {
-        this.query.isHighlighted = undefined;
-        this.highlightFilterOptions.forEach((_, index) => _.isActive = !index);
-    }
-
-    private async loadWorkItems(): Promise<void> {
+    public async loadWorkItems(): Promise<void> {
         await this.$store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
     }
 }
@@ -357,12 +261,9 @@ export default class WorkItemsManagement extends Vue {
         align-items: center;
         padding: 0 7.5vh 0 2.5vh;
 
-        .search-box {
-            width: 35%;
-            height: 80%;
-        }
-
-        .filter-group {
+        .item-filter {
+            margin-left: 1.75vh;
+            width: 100%;
             height: 80%;
         }
     }
