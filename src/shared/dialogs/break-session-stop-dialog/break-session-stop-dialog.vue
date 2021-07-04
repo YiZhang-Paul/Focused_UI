@@ -1,13 +1,16 @@
 <template>
-    <div class="break-session-end-dialog-container">
+    <div class="break-session-stop-dialog-container">
         <div class="header">
             <alert class="icon" />
-            <span>Break Session Ended</span>
+            <span>Stop Session?</span>
         </div>
 
         <detail-display-panel class="actions">
-            <action-button :text="'ok'"
-                :type="buttonType.Confirm"
+            <action-button :text="'cancel'" @click="$emit('dialog:cancel')"></action-button>
+
+            <action-button class="stop-button"
+                :text="'stop'"
+                :type="buttonType.Warning"
                 @click="$emit('dialog:confirm', data.id)">
             </action-button>
         </detail-display-panel>
@@ -23,7 +26,7 @@ import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import ActionButton from '../../buttons/action-button/action-button.vue';
 import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
 
-class BreakSessionEndDialogProp {
+class BreakSessionStopDialogProp {
     public data = prop<BreakSession>({ default: null });
 }
 
@@ -33,15 +36,18 @@ class BreakSessionEndDialogProp {
         ActionButton,
         DetailDisplayPanel
     },
-    emits: ['dialog:confirm']
+    emits: [
+        'dialog:cancel',
+        'dialog:confirm'
+    ]
 })
-export default class BreakSessionEndDialog extends Vue.with(BreakSessionEndDialogProp) {
+export default class BreakSessionStopDialog extends Vue.with(BreakSessionStopDialogProp) {
     public readonly buttonType = ActionButtonType;
 }
 </script>
 
 <style lang="scss" scoped>
-.break-session-end-dialog-container {
+.break-session-stop-dialog-container {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -67,8 +73,12 @@ export default class BreakSessionEndDialog extends Vue.with(BreakSessionEndDialo
     }
 
     .actions {
-        width: 20%;
+        width: 40%;
         height: 22.5%;
+
+        .stop-button {
+            margin-left: 1vh;
+        }
     }
 }
 </style>

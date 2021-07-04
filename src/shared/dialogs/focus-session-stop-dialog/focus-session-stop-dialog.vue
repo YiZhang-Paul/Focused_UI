@@ -1,8 +1,8 @@
 <template>
-    <div class="focus-session-end-dialog-container">
+    <div class="focus-session-stop-dialog-container">
         <div class="header">
             <alert class="icon" />
-            <span>End of Session</span>
+            <span>Stop Session?</span>
         </div>
 
         <div class="focus-change">
@@ -44,10 +44,10 @@ import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { TimeSessionStatus } from '../../../core/enums/time-session-status.enum';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
-import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
-import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
+import ActionButton from '../../buttons/action-button/action-button.vue';
+import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
 
-class FocusSessionEndDialogProp {
+class FocusSessionStopDialogProp {
     public data = prop<FocusSessionDto>({ default: null });
 }
 
@@ -62,7 +62,7 @@ class FocusSessionEndDialogProp {
         'dialog:confirm'
     ]
 })
-export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialogProp) {
+export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDialogProp) {
     public readonly breakEligibleDuration = 15;
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);
@@ -93,7 +93,7 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
 </script>
 
 <style lang="scss" scoped>
-.focus-session-end-dialog-container {
+.focus-session-stop-dialog-container {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
