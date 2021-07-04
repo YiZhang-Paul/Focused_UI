@@ -133,12 +133,17 @@ const actions = {
         context.commit('setStaleFocusSession', await timeSessionHttpService.getStaleFocusSessionMeta());
         context.commit('setStaleBreakSession', await timeSessionHttpService.getStaleBreakSession());
     },
-    syncActiveTimeSession(context: ActionContext<ITimeSessionState, any>): void {
-        const { getters, commit } = context;
+    async syncActiveTimeSession(context: ActionContext<ITimeSessionState, any>): Promise<void> {
+        const { getters, commit, dispatch } = context;
         const focusSession = getters['activeFocusSession'] as FocusSessionDto;
         const breakSession = getters['activeBreakSession'] as BreakSession;
+        const hasSession = focusSession || breakSession;
 
-        if (focusSession) {
+        if (hasSession && !getters['hasOngoingTimeSession']) {
+            await dispatch('loadStaleTimeSession');
+            await dispatch('loadActiveTimeSession');
+        }
+        else if (focusSession) {
             const delta = oneSecond / oneHour;
             const { workItems, activities } = focusSession;
             const ongoing = workItems.find(_ => _.status === WorkItemStatus.Ongoing);
