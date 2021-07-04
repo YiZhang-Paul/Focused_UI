@@ -85,6 +85,7 @@ import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
+import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
@@ -198,14 +199,15 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public async onFocusSessionEnd(option: BreakSessionStartupOption): Promise<void> {
+    public async onFocusSessionEnd(option: FocusSessionStopOption): Promise<void> {
+        const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopSessionDialog = false;
 
-        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`)) {
+        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option)) {
             this.showStopSessionDialog = true;
         }
 
-        if (!option || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, option)) {
+        if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
             await this.loadWorkItems();
         }
     }

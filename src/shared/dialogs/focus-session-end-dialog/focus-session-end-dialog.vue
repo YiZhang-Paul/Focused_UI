@@ -26,7 +26,7 @@
             <action-button class="stop-button"
                 :text="'ok'"
                 :type="buttonType.Confirm"
-                @click="$emit('dialog:confirm', startupOption)">
+                @click="$emit('dialog:confirm', stopOption)">
             </action-button>
         </detail-display-panel>
     </div>
@@ -38,7 +38,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { Alert, FormatListCheckbox } from 'mdue';
 
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
-import { BreakSessionStartupOption } from '../../../core/models/time-session/break-session-startup-option';
+import { FocusSessionStopOption } from '../../../core/models/time-session/focus-session-stop-option';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { TimeSessionStatus } from '../../../core/enums/time-session-status.enum';
@@ -67,15 +67,8 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);
 
-    get startupOption(): BreakSessionStartupOption | null {
-        if (!this.breakDuration) {
-            return null;
-        }
-
-        return {
-            focusSessionId: this.data.id,
-            totalMinutes: this.breakDuration
-        };
+    get stopOption(): FocusSessionStopOption {
+        return new FocusSessionStopOption(this.data.id, this.breakDuration);
     }
 
     get focusChange(): string {

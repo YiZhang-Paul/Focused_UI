@@ -28,9 +28,9 @@ export class TimeSessionHttpService {
         }
     }
 
-    public async stopFocusSession(): Promise<boolean> {
+    public async stopFocusSession(id: string): Promise<boolean> {
         try {
-            return (await axios.post(`${this._api}/focus-session/stop`)).data;
+            return (await axios.post(`${this._api}/focus-session/${id}/stop`)).data;
         }
         catch {
             return false;
