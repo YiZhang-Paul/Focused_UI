@@ -4,7 +4,14 @@
             :dialog="focusSessionStartDialog"
             :data="focusSessionOption"
             @dialog:cancel="focusSessionOption = null"
-            @dialog:confirm="onFocusSessionStart(focusSessionOption)">
+            @dialog:confirm="onFocusSessionStart($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="showStopSessionDialog"
+            :dialog="focusSessionEndDialog"
+            :data="activeFocusSession"
+            @dialog:cancel="showStopSessionDialog = false"
+            @dialog:confirm="onFocusSessionEnd($event)">
         </dialog-panel>
 
         <template v-slot:actions>
@@ -36,7 +43,9 @@
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
             <display-panel class="core-content" :lineLength="'1.25vh'">
-                <session-tracker class="session-tracker"></session-tracker>
+                <session-tracker class="session-tracker"
+                    @session:stop="showStopSessionDialog = true">
+                </session-tracker>
 
                 <work-item-editor v-if="editedItemMeta && editedItem"
                     class="work-item-editor"
@@ -71,10 +80,12 @@ import { Options, Vue } from 'vue-class-component';
 
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
+import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { ControlButtonOption } from '../../core/models/generic/control-button-option';
 import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
@@ -86,6 +97,7 @@ import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
+import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
@@ -116,6 +128,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
 })
 export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
+    public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
 
     public readonly completionFilterOptions = [
         new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
@@ -137,6 +150,7 @@ export default class WorkItemsManagement extends Vue {
     ];
 
     public focusSessionOption: FocusSessionStartupOption | null = null;
+    public showStopSessionDialog = false;
     private query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
@@ -149,6 +163,10 @@ export default class WorkItemsManagement extends Vue {
 
     get editedItem(): WorkItem | null {
         return this.$store.getters[`${workItemKey}/editedWorkItem`];
+    }
+
+    get activeFocusSession(): FocusSessionDto | null {
+        return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
     }
 
     public created(): void {
@@ -176,6 +194,18 @@ export default class WorkItemsManagement extends Vue {
         this.focusSessionOption = null;
 
         if (await this.$store.dispatch(`${timeSessionKey}/startFocusSession`, option)) {
+            await this.loadWorkItems();
+        }
+    }
+
+    public async onFocusSessionEnd(option: BreakSessionStartupOption): Promise<void> {
+        this.showStopSessionDialog = false;
+
+        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`)) {
+            this.showStopSessionDialog = true;
+        }
+
+        if (!option || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, option)) {
             await this.loadWorkItems();
         }
     }

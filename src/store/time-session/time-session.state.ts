@@ -5,6 +5,7 @@ import { container } from '../../core/ioc/container';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
+import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
@@ -76,6 +77,24 @@ const mutations = {
 const actions = {
     async startFocusSession(context: ActionContext<ITimeSessionState, any>, payload: FocusSessionStartupOption): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startFocusSession(payload);
+
+        if (isStarted) {
+            await context.dispatch('loadActiveTimeSession');
+        }
+
+        return isStarted;
+    },
+    async stopFocusSession(context: ActionContext<ITimeSessionState, any>, shouldReload = true): Promise<boolean> {
+        const isStopped = await timeSessionHttpService.stopFocusSession();
+
+        if (isStopped && shouldReload) {
+            await context.dispatch('loadActiveTimeSession');
+        }
+
+        return isStopped;
+    },
+    async startBreakSession(context: ActionContext<ITimeSessionState, any>, payload: BreakSessionStartupOption): Promise<boolean> {
+        const isStarted = await timeSessionHttpService.startBreakSession(payload);
 
         if (isStarted) {
             await context.dispatch('loadActiveTimeSession');

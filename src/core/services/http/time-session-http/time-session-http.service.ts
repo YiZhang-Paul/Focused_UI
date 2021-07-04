@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 import { FocusSessionDto } from '../../../dtos/focus-session-dto';
 import { BreakSession } from '../../../models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../../models/time-session/focus-session-startup-option';
+import { BreakSessionStartupOption } from '../../../models/time-session/break-session-startup-option';
 
 @injectable()
 export class TimeSessionHttpService {
@@ -20,7 +21,16 @@ export class TimeSessionHttpService {
 
     public async startFocusSession(option: FocusSessionStartupOption): Promise<boolean> {
         try {
-            return (await axios.post(`${this._api}/focus-session`, option)).data;
+            return (await axios.post(`${this._api}/focus-session/start`, option)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public async stopFocusSession(): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/focus-session/stop`)).data;
         }
         catch {
             return false;
@@ -33,6 +43,15 @@ export class TimeSessionHttpService {
         }
         catch {
             return null;
+        }
+    }
+
+    public async startBreakSession(option: BreakSessionStartupOption): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/break-session/start`, option)).data;
+        }
+        catch {
+            return false;
         }
     }
 }
