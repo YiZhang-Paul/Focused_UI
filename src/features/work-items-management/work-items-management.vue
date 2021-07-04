@@ -14,6 +14,12 @@
             @dialog:confirm="onFocusSessionEnd($event)">
         </dialog-panel>
 
+        <dialog-panel v-if="staleFocusSession"
+            :dialog="focusSessionEndDialog"
+            :data="staleFocusSession"
+            @dialog:confirm="onFocusSessionEnd($event)">
+        </dialog-panel>
+
         <dialog-panel v-if="showStopBreakSessionDialog"
             :dialog="breakSessionStopDialog"
             :data="activeBreakSession"
@@ -91,6 +97,7 @@ import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
 import FocusSessionStopDialog from '../../shared/dialogs/focus-session-stop-dialog/focus-session-stop-dialog.vue';
+import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
 import BreakSessionStopDialog from '../../shared/dialogs/break-session-stop-dialog/break-session-stop-dialog.vue';
 import BreakSessionEndDialog from '../../shared/dialogs/break-session-end-dialog/break-session-end-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
@@ -124,6 +131,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
 export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
     public readonly focusSessionStopDialog = markRaw(FocusSessionStopDialog);
+    public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
     public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
     public focusSessionOption: FocusSessionStartupOption | null = null;
@@ -145,6 +153,10 @@ export default class WorkItemsManagement extends Vue {
 
     get activeFocusSession(): FocusSessionDto | null {
         return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
+    }
+
+    get staleFocusSession(): FocusSessionDto | null {
+        return this.$store.getters[`${timeSessionKey}/staleFocusSession`];
     }
 
     get activeBreakSession(): BreakSession | null {
@@ -193,7 +205,7 @@ export default class WorkItemsManagement extends Vue {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopFocusSessionDialog = false;
 
-        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option)) {
+        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
             this.showStopFocusSessionDialog = true;
         }
 

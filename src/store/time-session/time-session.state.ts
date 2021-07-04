@@ -5,7 +5,6 @@ import { container } from '../../core/ioc/container';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
-import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
@@ -97,11 +96,12 @@ const actions = {
 
         return isStarted;
     },
-    async stopFocusSession(context: ActionContext<ITimeSessionState, any>, payload: FocusSessionStopOption): Promise<boolean> {
-        const isStopped = await timeSessionHttpService.stopFocusSession(payload.focusSessionId);
+    async stopFocusSession(context: ActionContext<ITimeSessionState, any>, id: string): Promise<boolean> {
+        const isStopped = await timeSessionHttpService.stopFocusSession(id);
 
-        if (isStopped && payload.isReloadRequired) {
+        if (isStopped) {
             await context.dispatch('loadActiveTimeSession');
+            await context.dispatch('loadStaleTimeSession');
         }
 
         return isStopped;
