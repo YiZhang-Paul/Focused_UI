@@ -43,7 +43,7 @@ export default class DailyFocusProgression extends Vue {
             type = 'alert';
         }
         else if (current < 12) {
-            type = 'positive';
+            type = 'regular';
         }
 
         return {

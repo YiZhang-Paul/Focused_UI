@@ -197,8 +197,8 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
             }
 
             &.guideline-1 {
-                color: var(--context-colors-positive-05);
-                background-color: var(--context-colors-positive-05);
+                color: var(--context-colors-regular-06);
+                background-color: var(--context-colors-regular-06);
             }
 
             &.guideline-2 {
