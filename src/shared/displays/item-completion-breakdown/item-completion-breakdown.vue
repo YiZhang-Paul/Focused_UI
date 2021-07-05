@@ -16,11 +16,7 @@
 
                     <span class="name">{{ item.name }}</span>
                     <div class="filler"></div>
-
-                    <div class="progressions">
-                        <item-progression class="subtask-progression" :progress="item.subtaskProgress"></item-progression>
-                        <item-progression :icon="checklistIcon" :progress="item.checklistProgress"></item-progression>
-                    </div>
+                    <span class="elapsed-time">{{ getElapsedTime(item) }}</span>
                 </div>
             </template>
         </template>
@@ -36,7 +32,6 @@ import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { WorkItemType } from '../../../core/enums/work-item-type.enum';
 import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
-import ItemProgression from '../../displays/item-progression/item-progression.vue';
 
 class ItemCompletionBreakdownProp {
     public items = prop<WorkItemDto[]>({ default: [] });
@@ -45,8 +40,7 @@ class ItemCompletionBreakdownProp {
 @Options({
     components: {
         CheckboxMarkedOutline,
-        ProgressClock,
-        ItemProgression
+        ProgressClock
     }
 })
 export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBreakdownProp) {
@@ -64,6 +58,12 @@ export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBrea
 
     public getTypeIcon(type: WorkItemType): IconMeta {
         return IconUtility.getWorkItemIcon(type);
+    }
+
+    public getElapsedTime(item: WorkItemDto): string {
+        const minutes = Math.round(item.itemProgress.current * 60);
+
+        return minutes < 1 ? '< 1 minute' : `${minutes} minute${minutes > 1 ? 's' : ''}`;
     }
 }
 </script>
@@ -122,13 +122,8 @@ export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBrea
             flex: 1;
         }
 
-        .progressions {
-            display: flex;
-            align-items: center;
-
-            .subtask-progression {
-                margin-right: 1vh;
-            }
+        .elapsed-time {
+            color: var(--font-colors-2-00);
         }
     }
 }
