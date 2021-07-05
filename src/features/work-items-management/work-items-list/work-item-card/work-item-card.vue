@@ -8,9 +8,9 @@
         <div class="priority" :style="priorityStyle"></div>
 
         <display-panel class="core-information">
-            <component :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
+            <component class="type" :is="typeIcon.content" :style="{ color: typeIcon.color }"></component>
             <div class="separator"></div>
-            <span>{{ item.itemProgress.target }}</span>
+            <span class="estimation">{{ item.itemProgress.target }}</span>
         </display-panel>
 
         <span v-if="!isEditMode" class="name">{{ item.name }}</span>
@@ -147,6 +147,11 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         margin-right: 1%;
         width: 7.75%;
         height: 65%;
+
+        .type, .estimation {
+            width: 50%;
+            text-align: center;
+        }
 
         .separator {
             width: 1px;
