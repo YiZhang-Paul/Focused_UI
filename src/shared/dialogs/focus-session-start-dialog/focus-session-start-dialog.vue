@@ -61,9 +61,9 @@ import { FocusSessionStartupOption } from '../../../core/models/time-session/foc
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
-import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
-import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
-import ItemProgression from '../../../shared/displays/item-progression/item-progression.vue';
+import ActionButton from '../../buttons/action-button/action-button.vue';
+import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
+import ItemProgression from '../../displays/item-progression/item-progression.vue';
 
 class FocusSessionStartDialogProp {
     public data = prop<FocusSessionStartupOption>({ default: null });
