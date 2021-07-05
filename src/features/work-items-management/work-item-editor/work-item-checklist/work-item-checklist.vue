@@ -180,7 +180,7 @@ export default class WorkItemChecklist extends Vue.with(WorkItemChecklistProp) {
                 }
 
                 .check-button {
-                    color: var(--context-colors-confirm-00);
+                    color: var(--context-colors-positive-00);
                 }
 
                 .uncheck-button {

@@ -124,10 +124,10 @@ export default class TextareaInput extends Vue.with(TextareaInputProp) {
             }
 
             .save-button {
-                color: var(--context-colors-confirm-05);
+                color: var(--context-colors-positive-05);
 
                 &:hover {
-                    color: var(--context-colors-confirm-00);
+                    color: var(--context-colors-positive-00);
                 }
             }
 

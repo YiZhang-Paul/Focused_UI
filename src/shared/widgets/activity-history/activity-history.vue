@@ -165,8 +165,8 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
         height: 40%;
 
         .focus-lose {
-            background-color: var(--context-colors-decrease-00);
-            box-shadow: 0 0 8px var(--context-colors-decrease-04);
+            background-color: var(--context-colors-warning-00);
+            box-shadow: 0 0 8px var(--context-colors-warning-04);
         }
 
         .focus-level {
@@ -177,8 +177,8 @@ export default class ActivityHistory extends Vue.with(ActivityHistoryProp) {
         }
 
         .focus-gain {
-            background-color: var(--context-colors-increase-00);
-            box-shadow: 0 0 8px var(--context-colors-increase-04);
+            background-color: var(--context-colors-positive-00);
+            box-shadow: 0 0 8px var(--context-colors-positive-04);
         }
 
         .guideline {

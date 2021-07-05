@@ -134,7 +134,7 @@ export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDia
     }
 
     .focus-change {
-        color: var(--context-colors-confirm-00);
+        color: var(--context-colors-positive-00);
         font-size: var(--font-sizes-500);
 
         .change-value {
