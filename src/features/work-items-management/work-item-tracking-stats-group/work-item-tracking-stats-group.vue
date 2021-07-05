@@ -95,9 +95,9 @@ export default class WorkItemTrackingStatsGroup extends Vue {
         const total = normal + overestimate + underestimate;
 
         return [
-            new PercentageSeries(underestimate / total * 100, 'progress-colors-underestimate'),
-            new PercentageSeries(overestimate / total * 100, 'progress-colors-overestimate'),
-            new PercentageSeries(normal / total * 100, 'progress-colors-normal')
+            new PercentageSeries(underestimate / total * 100, 'context-colors-warning'),
+            new PercentageSeries(overestimate / total * 100, 'context-colors-alert'),
+            new PercentageSeries(normal / total * 100, 'context-colors-regular')
         ];
     }
 

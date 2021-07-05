@@ -38,6 +38,8 @@
     --font-colors-9-00: rgb(35, 35, 35);
     // context colors
     --context-colors-info-00: rgb(81, 224, 255);
+    --context-colors-regular-00: rgb(255, 255, 255);
+    --context-colors-regular-04: rgba(255, 255, 255, 0.4);
     --context-colors-positive-00: rgb(105, 255, 92);
     --context-colors-positive-04: rgba(105, 255, 92, 0.4);
     --context-colors-positive-05: rgba(105, 255, 92, 0.5);
@@ -76,15 +78,6 @@
     --activity-colors-interruption-04: rgba(250, 0, 255, 0.4);
     --activity-colors-overlearning-00: rgb(98, 236, 255);
     --activity-colors-overlearning-04: rgba(98, 236, 255, 0.4);
-    // progress colors
-    --progress-colors-normal-00: rgb(255, 255, 255);
-    --progress-colors-normal-04: rgba(255, 255, 255, 0.4);
-    --progress-colors-faster-00: rgb(98, 255, 142);
-    --progress-colors-faster-04: rgba(98, 255, 142, 0.4);
-    --progress-colors-overestimate-00: rgb(255, 203, 69);
-    --progress-colors-overestimate-04: rgba(255, 203, 69, 0.4);
-    --progress-colors-underestimate-00: rgb(255, 100, 100);
-    --progress-colors-underestimate-04: rgba(255, 100, 100, 0.4);
     // priority colors
     --priority-colors-0-00: rgb(255, 26, 26);
     --priority-colors-0-04: rgba(255, 26, 26, 0.4);
