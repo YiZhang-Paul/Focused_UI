@@ -58,7 +58,7 @@ export default class WorkItemStatusMenu extends Vue.with(WorkItemStatusMenuProp)
 
     public onSelect(status: WorkItemStatus): void {
         if (this.activeOption === WorkItemStatus.Ongoing) {
-            this.$emit('stop');
+            this.$emit('stop', status === WorkItemStatus.Ongoing ? WorkItemStatus.Idle : status);
         }
         else if (status === WorkItemStatus.Ongoing) {
             this.$emit('start');

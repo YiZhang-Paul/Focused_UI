@@ -68,7 +68,7 @@
                     @update:meta="onItemMetaUpdate($event)"
                     @item:select="onItemSelect($event.id)"
                     @item:start="onItemStart($event)"
-                    @item:stop="onItemStop()">
+                    @item:stop="onItemStop($event)">
                 </work-items-list>
             </display-panel>
 
@@ -91,6 +91,7 @@ import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
+import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
@@ -259,8 +260,8 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public async onItemStop(): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
+    public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
+        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`, targetStatus)) {
             this.$emit('item:update');
         }
     }

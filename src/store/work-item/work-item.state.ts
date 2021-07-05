@@ -6,6 +6,7 @@ import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
@@ -130,9 +131,9 @@ const actions = {
 
         return isStarted;
     },
-    async stopWorkItem(context: ActionContext<IWorkItemState, any>): Promise<boolean> {
+    async stopWorkItem(context: ActionContext<IWorkItemState, any>, targetStatus: WorkItemStatus): Promise<boolean> {
         const { state, dispatch } = context;
-        const isStopped = await workItemHttpService.stopWorkItem();
+        const isStopped = await workItemHttpService.stopWorkItem(targetStatus);
 
         if (isStopped) {
             dispatch('loadWorkItems', state.lastQuery);

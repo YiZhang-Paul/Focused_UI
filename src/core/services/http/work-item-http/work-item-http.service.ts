@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 import { WorkItemDto } from '../../../dtos/work-item-dto';
 import { WorkItem } from '../../../models/work-item/work-item';
 import { WorkItemQuery } from '../../../models/work-item/work-item-query';
+import { WorkItemStatus } from '../../../enums/work-item-status.enum';
 
 @injectable()
 export class WorkItemHttpService {
@@ -54,9 +55,9 @@ export class WorkItemHttpService {
         }
     }
 
-    public async stopWorkItem(): Promise<boolean> {
+    public async stopWorkItem(targetStatus = WorkItemStatus.Highlighted): Promise<boolean> {
         try {
-            return (await axios.post(`${this._api}/stop`)).data;
+            return (await axios.post(`${this._api}/stop?status=${targetStatus}`)).data;
         }
         catch {
             return false;
