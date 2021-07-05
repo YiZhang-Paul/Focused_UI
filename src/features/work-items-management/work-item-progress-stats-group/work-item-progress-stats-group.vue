@@ -94,9 +94,9 @@ export default class WorkItemProgressStatsGroup extends Vue {
         }, aggregate);
 
         return [
-            new PercentageSeries(overdoing / total * 100, 'focus-progress-colors-overdoing'),
-            new PercentageSeries(insufficient / total * 100, 'focus-progress-colors-insufficient'),
-            new PercentageSeries(sufficient / total * 100, 'focus-progress-colors-sufficient')
+            new PercentageSeries(overdoing / total * 100, 'context-colors-warning'),
+            new PercentageSeries(insufficient / total * 100, 'context-colors-alert'),
+            new PercentageSeries(sufficient / total * 100, 'context-colors-positive')
         ];
     }
 
