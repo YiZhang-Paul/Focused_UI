@@ -61,6 +61,33 @@ describe('activity history unit test', () => {
         });
     });
 
+    describe('getBottomFillerStyle', () => {
+        beforeEach(async() => {
+            const histories: ActivityBreakdownDto[] = [
+                { regular: 3, recurring: 1, interruption: 1, overlearning: 1 },
+                { regular: 2, recurring: 0, interruption: 0, overlearning: 1 },
+                { regular: 7, recurring: 3, interruption: 1, overlearning: 1 }
+            ];
+
+            await component.setProps({ histories });
+        });
+
+        test('should return correct style for first entry', () => {
+            expect(component.vm.getBottomFillerStyle(0).height).toEqual('calc(100% - 75% - 0% - 0%)');
+            expect(component.vm.getBottomFillerStyle(0)['max-height']).toEqual('calc(100% - 75% - 0% - 0%)');
+        });
+
+        test('should return correct style when subsequent entry is smaller', () => {
+            expect(component.vm.getBottomFillerStyle(1).height).toEqual('calc(100% - 75% - 12.5% - 0%)');
+            expect(component.vm.getBottomFillerStyle(1)['max-height']).toEqual('calc(100% - 75% - 12.5% - 0%)');
+        });
+
+        test('should return correct style when subsequent entry is larger', () => {
+            expect(component.vm.getBottomFillerStyle(2).height).toEqual('calc(100% - 50% - 0% - 37.5%)');
+            expect(component.vm.getBottomFillerStyle(2)['max-height']).toEqual('calc(100% - 50% - 0% - 37.5%)');
+        });
+    });
+
     describe('getFocusChangeStyle', () => {
         beforeEach(async() => {
             const histories: ActivityBreakdownDto[] = [

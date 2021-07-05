@@ -1,5 +1,5 @@
 <template>
-    <div class="focus-session-start-dialog-container">
+    <div v-if="data" class="focus-session-start-dialog-container">
         <div class="header">
             <alert class="icon" />
             <span>Start Session?</span>
@@ -83,6 +83,7 @@ class FocusSessionStartDialogProp {
         'dialog:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class FocusSessionStartDialog extends Vue.with(FocusSessionStartDialogProp) {
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);

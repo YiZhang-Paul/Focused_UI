@@ -207,8 +207,7 @@ export default class WorkItemsManagement extends Vue {
         if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
             this.showStopFocusSessionDialog = true;
         }
-
-        if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
+        else if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
             await this.loadWorkItems();
         }
     }

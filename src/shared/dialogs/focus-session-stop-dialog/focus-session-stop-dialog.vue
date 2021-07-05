@@ -1,5 +1,5 @@
 <template>
-    <div class="focus-session-stop-dialog-container">
+    <div v-if="data" class="focus-session-stop-dialog-container">
         <div class="header">
             <alert class="icon" />
             <span>{{ isStale ? 'Focus Session Ended' : 'Stop Session?' }}</span>
@@ -78,6 +78,7 @@ class FocusSessionStopDialogProp {
         'dialog:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDialogProp) {
     public readonly oneMinute = 1000 * 60;
     public readonly oneHour = this.oneMinute * 60;

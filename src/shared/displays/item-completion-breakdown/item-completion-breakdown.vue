@@ -43,6 +43,7 @@ class ItemCompletionBreakdownProp {
         ProgressClock
     }
 })
+/* istanbul ignore next */
 export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBreakdownProp) {
     public readonly checklistIcon = markRaw(FormatListCheckbox);
 

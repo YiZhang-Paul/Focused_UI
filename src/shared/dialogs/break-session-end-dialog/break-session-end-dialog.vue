@@ -35,6 +35,7 @@ class BreakSessionEndDialogProp {
     },
     emits: ['dialog:confirm']
 })
+/* istanbul ignore next */
 export default class BreakSessionEndDialog extends Vue.with(BreakSessionEndDialogProp) {
     public readonly buttonType = ActionButtonType;
 }

@@ -44,6 +44,7 @@ class WorkItemFilterProp {
     },
     emits: ['item:filter']
 })
+/* istanbul ignore next */
 export default class WorkItemFilter extends Vue.with(WorkItemFilterProp) {
     public readonly completionFilterOptions = [
         new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),

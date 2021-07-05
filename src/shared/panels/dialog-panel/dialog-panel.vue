@@ -38,6 +38,7 @@ class DialogPanelProp {
         'dialog:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class DialogPanel extends Vue.with(DialogPanelProp) {
     public showDialog = false;
 
