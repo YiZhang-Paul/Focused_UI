@@ -119,8 +119,9 @@ describe('time session store unit test', () => {
 
         test('should sync focus session time', () => {
             const oneHour = 60 * 60 * 1000;
+            const startTime = new Date().toISOString();
             const workItem: WorkItemDto = { ...new WorkItemDto(), status: WorkItemStatus.Ongoing, type: WorkItemType.Regular };
-            const session: FocusSessionDto = { ...new FocusSessionDto(), workItems: [workItem] };
+            const session: FocusSessionDto = { ...new FocusSessionDto(), workItems: [workItem], startTime, targetDuration: 2 };
             const { regular, recurring, interruption, overlearning } = session.activities;
 
             store.dispatch('syncActiveTimeSession');

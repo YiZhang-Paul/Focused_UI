@@ -76,8 +76,7 @@ describe('work item tracking stats group unit test', () => {
         test('should return inaccurate estimation percentages', () => {
             const expected: PercentageSeries[] = [
                 { percent: 30, colorType: 'context-colors-warning' },
-                { percent: 20, colorType: 'context-colors-alert' },
-                { percent: 50, colorType: 'context-colors-regular' }
+                { percent: 20, colorType: 'context-colors-alert' }
             ];
 
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 4, underestimate: 6 };

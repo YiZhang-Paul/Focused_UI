@@ -62,10 +62,10 @@ describe('daily focus progression unit test', () => {
             expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-alert-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 6 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-positive-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-regular-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 11 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-positive-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-regular-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 12 });
             expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-warning-00)');

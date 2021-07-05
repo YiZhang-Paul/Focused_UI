@@ -113,7 +113,7 @@ describe('work item http service unit test', () => {
         test('should call correct endpoint', async() => {
             await service.stopWorkItem();
 
-            sinonExpect.calledOnceWithExactly(postStub, 'api/v1/work-items/stop');
+            sinonExpect.calledOnceWithExactly(postStub, 'api/v1/work-items/stop?status=1');
         });
 
         test('should return false on error', async() => {

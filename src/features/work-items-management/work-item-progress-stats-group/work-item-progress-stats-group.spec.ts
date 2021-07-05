@@ -84,8 +84,7 @@ describe('work item progress stats group unit test', () => {
         test('should return correct daily focus breakdown', () => {
             const expected: PercentageSeries[] = [
                 { percent: 25, colorType: 'context-colors-warning' },
-                { percent: 25, colorType: 'context-colors-alert' },
-                { percent: 50, colorType: 'context-colors-positive' }
+                { percent: 25, colorType: 'context-colors-alert' }
             ];
 
             const histories: ActivityBreakdownDto[] = [
