@@ -6,7 +6,9 @@
         </div>
 
         <detail-display-panel class="item-breakdown">
-            <item-completion-breakdown class="items" :items="data.workItems"></item-completion-breakdown>
+            <overlay-scroll-panel class="items">
+                <item-completion-breakdown :items="data.workItems"></item-completion-breakdown>
+            </overlay-scroll-panel>
         </detail-display-panel>
 
         <div class="focus-change">
@@ -57,6 +59,7 @@ import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
 import ActionButton from '../../buttons/action-button/action-button.vue';
 import ItemCompletionBreakdown from '../../displays/item-completion-breakdown/item-completion-breakdown.vue';
 import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
+import OverlayScrollPanel from '../../panels/overlay-scroll-panel/overlay-scroll-panel.vue';
 
 class FocusSessionStopDialogProp {
     public data = prop<FocusSessionDto>({ default: null });
@@ -67,7 +70,8 @@ class FocusSessionStopDialogProp {
         Alert,
         ActionButton,
         ItemCompletionBreakdown,
-        DetailDisplayPanel
+        DetailDisplayPanel,
+        OverlayScrollPanel
     },
     emits: [
         'dialog:cancel',
@@ -147,7 +151,12 @@ export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDia
         box-sizing: border-box;
         padding: 0.5vh 0.75vh;
         width: 85%;
-        height: 30%;
+        height: 35%;
+
+        .items {
+            width: 100%;
+            height: 100%;
+        }
     }
 
     .focus-change {

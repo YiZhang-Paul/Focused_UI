@@ -14,7 +14,7 @@
                         :style="{ color: getTypeIcon(item.type).color }">
                     </component>
 
-                    <span>{{ item.name }}</span>
+                    <span class="name">{{ item.name }}</span>
                     <div class="filler"></div>
 
                     <div class="progressions">
@@ -79,7 +79,7 @@ export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBrea
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 0.5vh 0;
+        margin-top: 0.25vh;
 
         & > div {
             width: 43.5%;
@@ -104,10 +104,18 @@ export default class ItemCompletionBreakdown extends Vue.with(ItemCompletionBrea
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-top: 0.75vh;
 
         .icon {
-            margin-right: 0.25vh;
+            margin-right: 0.5vh;
             font-size: var(--font-sizes-500);
+        }
+
+        .name {
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .filler {
