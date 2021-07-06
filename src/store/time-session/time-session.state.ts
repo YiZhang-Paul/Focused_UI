@@ -6,7 +6,6 @@ import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
-import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
@@ -144,13 +143,6 @@ const actions = {
             await dispatch('loadActiveTimeSession');
         }
         else if (focusSession) {
-            const delta = oneSecond / oneHour;
-            const { workItems, activities } = focusSession;
-            const ongoing = workItems.find(_ => _.status === WorkItemStatus.Ongoing);
-            activities.regular += ongoing?.type === WorkItemType.Regular ? delta : 0;
-            activities.recurring += ongoing?.type === WorkItemType.Recurring ? delta : 0;
-            activities.interruption += ongoing?.type === WorkItemType.Interruption ? delta : 0;
-            activities.overlearning += ongoing ? 0 : delta;
             commit('setActiveFocusSession', { ...focusSession });
         }
         else if (breakSession) {
