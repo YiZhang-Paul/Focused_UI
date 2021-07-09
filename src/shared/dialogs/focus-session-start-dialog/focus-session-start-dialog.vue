@@ -12,21 +12,21 @@
                     :style="{ color: typeIcon.color }">
                 </component>
 
-                <span>{{ data.startingItem.name }}</span>
+                <span>{{ data.item.name }}</span>
             </div>
 
             <div class="description">
                 <notebook-edit-outline class="icon" />
-                <span>{{ data.startingItem.description }}</span>
+                <span>{{ data.item.description }}</span>
             </div>
 
             <div class="progressions">
                 <item-progression class="subtask-progression"
-                    :progress="data.startingItem.subtaskProgress">
+                    :progress="data.item.subtaskProgress">
                 </item-progression>
 
                 <item-progression :icon="checklistIcon"
-                    :progress="data.startingItem.checklistProgress">
+                    :progress="data.item.checklistProgress">
                 </item-progression>
             </div>
         </detail-display-panel>
@@ -36,7 +36,7 @@
 
             <div class="duration-value">
                 <lightbulb-on class="icon" />
-                <span>{{ data.totalMinutes }} Minutes</span>
+                <span>{{ data.duration }} Minutes</span>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
             <action-button class="start-button"
                 :text="'start'"
                 :type="buttonType.Confirm"
-                @click="$emit('dialog:confirm', data)">
+                @click="$emit('dialog:confirm', startOption)">
             </action-button>
         </detail-display-panel>
     </div>
@@ -57,6 +57,7 @@ import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
 import { Alert, FormatListCheckbox, LightbulbOn, NotebookEditOutline } from 'mdue';
 
+import { FocusSessionStartDialogOption } from '../../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../../core/models/time-session/focus-session-startup-option';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
@@ -66,7 +67,7 @@ import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display
 import ItemProgression from '../../displays/item-progression/item-progression.vue';
 
 class FocusSessionStartDialogProp {
-    public data = prop<FocusSessionStartupOption>({ default: null });
+    public data = prop<FocusSessionStartDialogOption>({ default: null });
 }
 
 @Options({
@@ -88,8 +89,12 @@ export default class FocusSessionStartDialog extends Vue.with(FocusSessionStartD
     public readonly buttonType = ActionButtonType;
     public readonly checklistIcon = markRaw(FormatListCheckbox);
 
+    get startOption(): FocusSessionStartupOption {
+        return new FocusSessionStartupOption(this.data.item.id, this.data.duration);
+    }
+
     get typeIcon(): IconMeta {
-        return IconUtility.getWorkItemIcon(this.data.startingItem.type);
+        return IconUtility.getWorkItemIcon(this.data.item.type);
     }
 }
 </script>

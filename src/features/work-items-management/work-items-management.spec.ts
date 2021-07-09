@@ -137,7 +137,7 @@ describe('work items management unit test', () => {
 
     describe('onFocusSessionStart', () => {
         test('should not load work items when failed to start focus session', async() => {
-            const option = new FocusSessionStartupOption(new WorkItemDto());
+            const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(false);
             component.vm.focusSessionOption = option;
 
@@ -149,7 +149,7 @@ describe('work items management unit test', () => {
         });
 
         test('should load work items when successfully started focus session', async() => {
-            const option = new FocusSessionStartupOption(new WorkItemDto());
+            const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(true);
             component.vm.focusSessionOption = option;
 
@@ -320,8 +320,8 @@ describe('work items management unit test', () => {
             await component.vm.onItemStart(item);
 
             sinonExpect.notCalled(workItemHttpStub.startWorkItem);
-            expect(component.vm.focusSessionOption.startingItem).toEqual(item);
-            expect(component.vm.focusSessionOption.totalMinutes).toEqual(25);
+            expect(component.vm.focusSessionOption.item).toEqual(item);
+            expect(component.vm.focusSessionOption.duration).toEqual(25);
         });
 
         test('should not emit anything when failed to start work item', async() => {

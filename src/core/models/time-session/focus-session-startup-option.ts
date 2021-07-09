@@ -1,10 +1,9 @@
-import { WorkItemDto } from '../../dtos/work-item-dto';
-
 export class FocusSessionStartupOption {
-    public totalMinutes = 25;
-    public startingItem: WorkItemDto;
+    public workItemId: string;
+    public totalMinutes: number;
 
-    constructor(startingItem: WorkItemDto) {
-        this.startingItem = startingItem;
+    constructor(workItemId: string, totalMinutes: number) {
+        this.workItemId = workItemId;
+        this.totalMinutes = totalMinutes;
     }
 }

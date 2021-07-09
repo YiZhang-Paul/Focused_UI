@@ -88,6 +88,7 @@ import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { FocusSessionStartDialogOption } from '../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
@@ -133,7 +134,7 @@ export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStopDialog = markRaw(FocusSessionStopDialog);
     public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
-    public focusSessionOption: FocusSessionStartupOption | null = null;
+    public focusSessionOption: FocusSessionStartDialogOption | null = null;
     public showStopFocusSessionDialog = false;
     public showStopBreakSessionDialog = false;
     public query = new WorkItemQuery();
@@ -252,7 +253,7 @@ export default class WorkItemsManagement extends Vue {
 
     public async onItemStart(item: WorkItemDto): Promise<void> {
         if (!this.$store.getters[`${timeSessionKey}/hasActiveFocusSession`]) {
-            this.focusSessionOption = new FocusSessionStartupOption(item);
+            this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
         else if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, item.id)) {
             this.$emit('item:update');
