@@ -35,7 +35,7 @@
                 </work-item-checklist>
 
                 <div class="additional-information">
-                    <div class="due-date" v-if="!isRecur">
+                    <div class="due-date" v-if="hasDueDate">
                         <span>Due</span>
                         <date-selector v-model="item.dueDate" @update:modelValue="onUpdate()"></date-selector>
                     </div>
@@ -136,8 +136,8 @@ export default class WorkItemEditor extends Vue.with(WorkItemEditorProp) {
     // eslint-disable-next-line no-undef
     private debounceTimer: NodeJS.Timeout | null = null;
 
-    get isRecur(): boolean {
-        return this.item.type === WorkItemType.Recurring;
+    get hasDueDate(): boolean {
+        return this.item.type === WorkItemType.Regular;
     }
 
     public getTime(time: string): string {

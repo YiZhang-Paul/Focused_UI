@@ -12,7 +12,7 @@
             <icon-value-selector class="type"
                 v-model="item.type"
                 :options="typeOptions"
-                @update:modelValue="$emit('item:update')">
+                @update:modelValue="onTypeChange()">
             </icon-value-selector>
 
             <div class="separator"></div>
@@ -105,6 +105,14 @@ export default class WorkItemEditorHeader extends Vue.with(WorkItemEditorHeaderP
                 value: _
             };
         });
+    }
+
+    public onTypeChange(): void {
+        if (this.item.type !== WorkItemType.Regular) {
+            this.item.dueDate = undefined;
+        }
+
+        this.$emit('item:update');
     }
 }
 </script>
