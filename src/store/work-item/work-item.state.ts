@@ -2,11 +2,9 @@ import { ActionContext } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
-import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
-import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
@@ -119,16 +117,6 @@ const actions = {
         }
 
         return true;
-    },
-    async stopWorkItem(context: ActionContext<IWorkItemState, any>, targetStatus: WorkItemStatus): Promise<boolean> {
-        const isStopped = await workItemHttpService.stopWorkItem(targetStatus);
-
-        if (isStopped) {
-            context.dispatch('reloadWorkItems');
-            context.dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
-        }
-
-        return isStopped;
     },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);

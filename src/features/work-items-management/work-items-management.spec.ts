@@ -348,21 +348,21 @@ describe('work items management unit test', () => {
     });
 
     describe('onItemStop', () => {
-        test('should not emit anything when failed to stop work item', async() => {
-            workItemHttpStub.stopWorkItem.resolves(false);
+        test('should not emit anything when failed to start overlearning', async() => {
+            timeSessionHttpStub.startOverlearning.resolves(false);
 
             await component.vm.onItemStop(WorkItemStatus.Completed);
 
-            sinonExpect.calledOnce(workItemHttpStub.stopWorkItem);
+            sinonExpect.calledOnce(timeSessionHttpStub.startOverlearning);
             expect(component.emitted()['item:update']).toBeFalsy();
         });
 
-        test('should stop work item and emit event', async() => {
-            workItemHttpStub.stopWorkItem.resolves(true);
+        test('should start overlearning and emit event', async() => {
+            timeSessionHttpStub.startOverlearning.resolves(true);
 
             await component.vm.onItemStop(WorkItemStatus.Completed);
 
-            sinonExpect.calledOnce(workItemHttpStub.stopWorkItem);
+            sinonExpect.calledOnce(timeSessionHttpStub.startOverlearning);
             expect(component.emitted()['item:update'].length).toEqual(1);
         });
     });

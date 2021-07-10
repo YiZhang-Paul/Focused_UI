@@ -95,20 +95,6 @@ describe('work item http service unit test', () => {
         });
     });
 
-    describe('stopWorkItem', () => {
-        test('should call correct endpoint', async() => {
-            await service.stopWorkItem();
-
-            sinonExpect.calledOnceWithExactly(postStub, 'api/v1/work-items/stop?status=1');
-        });
-
-        test('should return false on error', async() => {
-            getStub.throws(new Error());
-
-            expect(await service.stopWorkItem()).toBeFalsy();
-        });
-    });
-
     describe('getWorkItemMeta', () => {
         test('should call correct endpoint', async() => {
             await service.getWorkItemMeta('12345');
