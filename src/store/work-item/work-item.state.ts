@@ -120,24 +120,12 @@ const actions = {
 
         return true;
     },
-    async startWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<boolean> {
-        const { state, dispatch } = context;
-        const isStarted = await workItemHttpService.startWorkItem(id);
-
-        if (isStarted) {
-            dispatch('loadWorkItems', state.lastQuery);
-            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
-        }
-
-        return isStarted;
-    },
     async stopWorkItem(context: ActionContext<IWorkItemState, any>, targetStatus: WorkItemStatus): Promise<boolean> {
-        const { state, dispatch } = context;
         const isStopped = await workItemHttpService.stopWorkItem(targetStatus);
 
         if (isStopped) {
-            dispatch('loadWorkItems', state.lastQuery);
-            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
+            context.dispatch('reloadWorkItems');
+            context.dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
         }
 
         return isStopped;

@@ -319,30 +319,30 @@ describe('work items management unit test', () => {
 
             await component.vm.onItemStart(item);
 
-            sinonExpect.notCalled(workItemHttpStub.startWorkItem);
+            sinonExpect.notCalled(timeSessionHttpStub.switchWorkItem);
             expect(component.vm.focusSessionOption.item).toEqual(item);
             expect(component.vm.focusSessionOption.duration).toEqual(25);
         });
 
         test('should not emit anything when failed to start work item', async() => {
             const item: WorkItemDto = { ...new WorkItemDto(), id: '12345' };
-            workItemHttpStub.startWorkItem.resolves(false);
+            timeSessionHttpStub.switchWorkItem.resolves(false);
             store.commit(`${timeSessionKey}/setActiveFocusSession`, new FocusSessionDto());
 
             await component.vm.onItemStart(item);
 
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
+            sinonExpect.calledOnce(timeSessionHttpStub.switchWorkItem);
             expect(component.emitted()['item:update']).toBeFalsy();
         });
 
         test('should start work item and emit event when active focus session exists', async() => {
             const item: WorkItemDto = { ...new WorkItemDto(), id: '12345' };
-            workItemHttpStub.startWorkItem.resolves(true);
+            timeSessionHttpStub.switchWorkItem.resolves(true);
             store.commit(`${timeSessionKey}/setActiveFocusSession`, new FocusSessionDto());
 
             await component.vm.onItemStart(item);
 
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
+            sinonExpect.calledOnce(timeSessionHttpStub.switchWorkItem);
             expect(component.emitted()['item:update'].length).toEqual(1);
         });
     });

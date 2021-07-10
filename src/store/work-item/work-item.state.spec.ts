@@ -205,26 +205,6 @@ describe('work item store unit test', () => {
         });
     });
 
-    describe('startWorkItem', () => {
-        test('should do nothing when failed to start work item', async() => {
-            workItemHttpStub.startWorkItem.resolves(false);
-
-            await store.dispatch(`${workItemKey}/startWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
-            sinonExpect.notCalled(workItemHttpStub.getWorkItems);
-        });
-
-        test('should reload work items when successfully started work item', async() => {
-            workItemHttpStub.startWorkItem.resolves(true);
-
-            await store.dispatch(`${workItemKey}/startWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
-            sinonExpect.calledOnce(workItemHttpStub.getWorkItems);
-        });
-    });
-
     describe('stopWorkItem', () => {
         test('should do nothing when failed to stop work item', async() => {
             workItemHttpStub.stopWorkItem.resolves(false);
