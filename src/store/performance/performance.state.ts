@@ -100,8 +100,8 @@ const actions = {
         context.commit('setEstimationBreakdown', breakdown);
     },
     async loadDueDateBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const { start, end } = context.state.dateRange;
-        const breakdown = await performanceHttpService.getDueDateBreakdown(start, end);
+        const { end } = context.state.dateRange;
+        const breakdown = await performanceHttpService.getDueDateBreakdown(undefined, end);
         context.commit('setDueDateBreakdown', breakdown);
     }
 };
