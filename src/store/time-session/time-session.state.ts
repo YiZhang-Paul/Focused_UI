@@ -2,6 +2,7 @@ import { ActionContext } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
+import { workItemKey } from '../work-item/work-item.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
@@ -104,6 +105,16 @@ const actions = {
         }
 
         return isStopped;
+    },
+    async switchWorkItem(context: ActionContext<ITimeSessionState, any>, id: string): Promise<boolean> {
+        const isStarted = await timeSessionHttpService.switchWorkItem(id);
+
+        if (isStarted) {
+            context.dispatch(`${workItemKey}/reloadWorkItems`, null, { root: true });
+            context.dispatch('loadActiveTimeSession');
+        }
+
+        return isStarted;
     },
     async startBreakSession(context: ActionContext<ITimeSessionState, any>, payload: BreakSessionStartupOption): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startBreakSession(payload);

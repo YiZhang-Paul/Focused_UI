@@ -255,7 +255,7 @@ export default class WorkItemsManagement extends Vue {
         if (!this.$store.getters[`${timeSessionKey}/hasActiveFocusSession`]) {
             this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
-        else if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, item.id)) {
+        else if (await this.$store.dispatch(`${timeSessionKey}/switchWorkItem`, item.id)) {
             this.$emit('item:update');
         }
     }

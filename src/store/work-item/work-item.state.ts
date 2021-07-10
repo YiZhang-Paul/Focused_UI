@@ -158,6 +158,9 @@ const actions = {
         const query = payload ?? new WorkItemQuery();
         context.commit('setLastQuery', query);
         context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));
+    },
+    async reloadWorkItems(context: ActionContext<IWorkItemState, any>): Promise<void> {
+        context.dispatch('loadWorkItems', context.state.lastQuery);
     }
 };
 

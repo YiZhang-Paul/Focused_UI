@@ -46,6 +46,15 @@ export class TimeSessionHttpService {
         }
     }
 
+    public async switchWorkItem(id: string): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/focus-session/work-items/${id}/start`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
     public async getActiveBreakSession(): Promise<BreakSession | null> {
         try {
             return (await axios.get(`${this._api}/active-break-session`)).data;
