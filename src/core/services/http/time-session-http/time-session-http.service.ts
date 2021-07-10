@@ -5,6 +5,7 @@ import { FocusSessionDto } from '../../../dtos/focus-session-dto';
 import { BreakSession } from '../../../models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../../models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../../models/time-session/break-session-startup-option';
+import { WorkItemStatus } from '../../../enums/work-item-status.enum';
 
 @injectable()
 export class TimeSessionHttpService {
@@ -46,9 +47,9 @@ export class TimeSessionHttpService {
         }
     }
 
-    public async startOverlearning(): Promise<boolean> {
+    public async startOverlearning(targetStatus = WorkItemStatus.Highlighted): Promise<boolean> {
         try {
-            return (await axios.post(`${this._api}/focus-session/overlearning/start`)).data;
+            return (await axios.post(`${this._api}/focus-session/overlearning/start?status=${targetStatus}`)).data;
         }
         catch {
             return false;

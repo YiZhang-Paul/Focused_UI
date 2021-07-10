@@ -106,8 +106,8 @@ const actions = {
 
         return isStopped;
     },
-    async startOverlearning(context: ActionContext<ITimeSessionState, any>): Promise<boolean> {
-        const isStarted = await timeSessionHttpService.startOverlearning();
+    async startOverlearning(context: ActionContext<ITimeSessionState, any>, targetStatus: WorkItemStatus): Promise<boolean> {
+        const isStarted = await timeSessionHttpService.startOverlearning(targetStatus);
 
         if (isStarted) {
             context.dispatch(`${workItemKey}/reloadWorkItems`, null, { root: true });
