@@ -25,7 +25,8 @@
             @blur="$emit('edit:cancel')"
             maxlength="80" />
 
-        <due-time-display class="due-time" :date="item.dueDate"></due-time-display>
+        <div v-if="item.itemProgress.isCompleted" class="filler"></div>
+        <due-time-display v-if="!item.itemProgress.isCompleted" class="due-time" :date="item.dueDate"></due-time-display>
 
         <div class="other-information">
             <item-progression :progress="item.subtaskProgress"></item-progression>
@@ -180,7 +181,7 @@ export default class WorkItemCard extends Vue.with(WorkItemCardProp) {
         font-size: var(--font-sizes-400);
     }
 
-    .due-time {
+    .filler, .due-time {
         margin-left: 2.5%;
         width: 12.5%;
     }
