@@ -106,8 +106,8 @@ const actions = {
 
         return isStopped;
     },
-    async switchWorkItem(context: ActionContext<ITimeSessionState, any>, id: string): Promise<boolean> {
-        const isStarted = await timeSessionHttpService.switchWorkItem(id);
+    async startOverlearning(context: ActionContext<ITimeSessionState, any>): Promise<boolean> {
+        const isStarted = await timeSessionHttpService.startOverlearning();
 
         if (isStarted) {
             context.dispatch(`${workItemKey}/reloadWorkItems`, null, { root: true });
@@ -115,6 +115,16 @@ const actions = {
         }
 
         return isStarted;
+    },
+    async switchWorkItem(context: ActionContext<ITimeSessionState, any>, id: string): Promise<boolean> {
+        const isSwitched = await timeSessionHttpService.switchWorkItem(id);
+
+        if (isSwitched) {
+            context.dispatch(`${workItemKey}/reloadWorkItems`, null, { root: true });
+            context.dispatch('loadActiveTimeSession');
+        }
+
+        return isSwitched;
     },
     async startBreakSession(context: ActionContext<ITimeSessionState, any>, payload: BreakSessionStartupOption): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startBreakSession(payload);

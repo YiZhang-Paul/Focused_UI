@@ -46,6 +46,15 @@ export class TimeSessionHttpService {
         }
     }
 
+    public async startOverlearning(): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/focus-session/overlearning/start`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
     public async switchWorkItem(id: string): Promise<boolean> {
         try {
             return (await axios.post(`${this._api}/focus-session/work-items/${id}/start`)).data;

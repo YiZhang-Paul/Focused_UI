@@ -261,7 +261,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`, targetStatus)) {
+        if (await this.$store.dispatch(`${timeSessionKey}/startOverlearning`, targetStatus)) {
             this.$emit('item:update');
         }
     }
