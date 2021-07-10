@@ -125,6 +125,7 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         WorkItemsList
     },
     emits: [
+        'session:stop',
         'item:update',
         'item:delete'
     ]
@@ -210,6 +211,7 @@ export default class WorkItemsManagement extends Vue {
         }
         else if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
             await this.loadWorkItems();
+            this.$emit('session:stop');
         }
     }
 

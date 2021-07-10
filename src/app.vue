@@ -8,6 +8,7 @@
     </div>
 
     <work-items-management class="work-items-management"
+        @session:stop="loadPerformanceBreakdowns()"
         @item:update="loadPerformanceBreakdowns()"
         @item:delete="loadPerformanceBreakdowns()">
     </work-items-management>
