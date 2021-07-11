@@ -29,6 +29,8 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { ShieldStar } from 'mdue';
 
+import { ValueChange } from '../../../core/models/generic/value-change';
+import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { UserRating } from '../../../core/enums/user-rating.enum';
@@ -38,7 +40,7 @@ import ActionButton from '../../buttons/action-button/action-button.vue';
 import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
 
 class RatingsChangeDialogProp {
-    public data = prop<PerformanceRating>({ default: null });
+    public data = prop<ValueChange<PerformanceRating>>({ default: null });
 }
 
 @Options({
@@ -53,28 +55,32 @@ class RatingsChangeDialogProp {
 export default class RatingsChangeDialog extends Vue.with(RatingsChangeDialogProp) {
     public readonly buttonType = ActionButtonType;
 
-    public readonly changes = [
-        {
-            value: GenericUtility.roundTo(this.data.determination, 1),
-            icon: IconUtility.getUserRatingIcon(UserRating.Determination)
-        },
-        {
-            value: GenericUtility.roundTo(this.data.estimation, 1),
-            icon: IconUtility.getUserRatingIcon(UserRating.Estimation)
-        },
-        {
-            value: GenericUtility.roundTo(this.data.planning, 1),
-            icon: IconUtility.getUserRatingIcon(UserRating.Planning)
-        },
-        {
-            value: GenericUtility.roundTo(this.data.adaptability, 1),
-            icon: IconUtility.getUserRatingIcon(UserRating.Adaptability)
-        },
-        {
-            value: GenericUtility.roundTo(this.data.sustainability, 1),
-            icon: IconUtility.getUserRatingIcon(UserRating.Sustainability)
-        }
-    ];
+    get changes(): { value: number; icon: IconMeta }[] {
+        const { previous, current } = this.data;
+
+        return [
+            {
+                value: GenericUtility.roundTo(current.determination - previous.determination, 1),
+                icon: IconUtility.getUserRatingIcon(UserRating.Determination)
+            },
+            {
+                value: GenericUtility.roundTo(current.estimation - previous.estimation, 1),
+                icon: IconUtility.getUserRatingIcon(UserRating.Estimation)
+            },
+            {
+                value: GenericUtility.roundTo(current.planning - previous.planning, 1),
+                icon: IconUtility.getUserRatingIcon(UserRating.Planning)
+            },
+            {
+                value: GenericUtility.roundTo(current.adaptability - previous.adaptability, 1),
+                icon: IconUtility.getUserRatingIcon(UserRating.Adaptability)
+            },
+            {
+                value: GenericUtility.roundTo(current.sustainability - previous.sustainability, 1),
+                icon: IconUtility.getUserRatingIcon(UserRating.Sustainability)
+            }
+        ];
+    }
 }
 </script>
 
