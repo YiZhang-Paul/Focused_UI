@@ -83,9 +83,9 @@ export class PerformanceHttpService {
         }
     }
 
-    public async getUserRating(start?: Date, end?: Date): Promise<PerformanceRating> {
+    public async getPerformanceRating(start?: Date, end?: Date): Promise<PerformanceRating> {
         try {
-            const endpoint = `${this._api}/user-rating`;
+            const endpoint = `${this._api}/ratings`;
 
             return (await axios.get(this.appendDateQueryString(endpoint, start, end))).data;
         }

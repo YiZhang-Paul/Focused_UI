@@ -2,14 +2,12 @@ import { ActionContext } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
-import { userKey } from '../../store/user/user.state';
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { DateRange } from '../../core/models/generic/date-range';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
-import { UserProfile } from '../../core/models/user/user-profile';
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
@@ -107,18 +105,10 @@ const actions = {
         const breakdown = await performanceHttpService.getDueDateBreakdown(undefined, end);
         context.commit('setDueDateBreakdown', breakdown);
     },
-    async getUserRatingChange(context: ActionContext<IPerformanceState, any>): Promise<PerformanceRating> {
+    async getPerformanceRating(context: ActionContext<IPerformanceState, any>): Promise<PerformanceRating | null> {
         const { start, end } = context.state.dateRange;
-        const ratings = await performanceHttpService.getUserRating(start, end);
-        const user: UserProfile = context.rootGetters[`${userKey}/profile`] ?? new PerformanceRating();
 
-        return {
-            determination: ratings.determination - user.ratings.determination,
-            estimation: ratings.estimation - user.ratings.estimation,
-            planning: ratings.planning - user.ratings.planning,
-            adaptability: ratings.adaptability - user.ratings.adaptability,
-            sustainability: ratings.sustainability - user.ratings.sustainability
-        };
+        return await performanceHttpService.getPerformanceRating(start, end);
     }
 };
 
