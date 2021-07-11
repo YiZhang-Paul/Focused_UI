@@ -68,9 +68,8 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
         const ratings = [determination, planning, sustainability, adaptability, estimation];
 
         const points = this.points.map((_, i) => {
-            const percentage = ratings[i] / 100;
-            const deltaX = Math.abs(50 - _.x) * percentage;
-            const deltaY = Math.abs(50 - _.y) * percentage;
+            const deltaX = Math.abs(50 - _.x) * ratings[i];
+            const deltaY = Math.abs(50 - _.y) * ratings[i];
 
             return {
                 x: 50 + deltaX * (_.x > 50 ? 1 : -1),

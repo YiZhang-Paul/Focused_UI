@@ -29,6 +29,7 @@ import { AccountReactivate, Logout } from 'mdue';
 import { userKey } from '../../../store/user/user.state';
 import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
+import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 
 @Options({
     components: {
@@ -49,8 +50,9 @@ export default class UserWidget extends Vue {
     get rating(): number {
         const profile = this.profile?.ratings ?? new PerformanceRating();
         const { determination, estimation, planning, adaptability, sustainability } = profile;
+        const percent = (determination + estimation + planning + adaptability + sustainability) / 5;
 
-        return (determination + estimation + planning + adaptability + sustainability) / 5;
+        return GenericUtility.roundTo(percent * 100, 1);
     }
 }
 </script>

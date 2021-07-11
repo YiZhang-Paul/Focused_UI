@@ -60,23 +60,23 @@ export default class RatingsChangeDialog extends Vue.with(RatingsChangeDialogPro
 
         return [
             {
-                value: GenericUtility.roundTo(current.determination - previous.determination, 1),
+                value: GenericUtility.roundTo((current.determination - previous.determination) * 100, 1),
                 icon: IconUtility.getUserRatingIcon(UserRating.Determination)
             },
             {
-                value: GenericUtility.roundTo(current.estimation - previous.estimation, 1),
+                value: GenericUtility.roundTo((current.estimation - previous.estimation) * 100, 1),
                 icon: IconUtility.getUserRatingIcon(UserRating.Estimation)
             },
             {
-                value: GenericUtility.roundTo(current.planning - previous.planning, 1),
+                value: GenericUtility.roundTo((current.planning - previous.planning) * 100, 1),
                 icon: IconUtility.getUserRatingIcon(UserRating.Planning)
             },
             {
-                value: GenericUtility.roundTo(current.adaptability - previous.adaptability, 1),
+                value: GenericUtility.roundTo((current.adaptability - previous.adaptability) * 100, 1),
                 icon: IconUtility.getUserRatingIcon(UserRating.Adaptability)
             },
             {
-                value: GenericUtility.roundTo(current.sustainability - previous.sustainability, 1),
+                value: GenericUtility.roundTo((current.sustainability - previous.sustainability) * 100, 1),
                 icon: IconUtility.getUserRatingIcon(UserRating.Sustainability)
             }
         ];
