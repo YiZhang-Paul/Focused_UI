@@ -127,6 +127,10 @@ const actions = {
         return isSwitched;
     },
     async startBreakSession(context: ActionContext<ITimeSessionState, any>, payload: BreakSessionStartupOption): Promise<boolean> {
+        if (!payload.totalMinutes) {
+            return true;
+        }
+
         const isStarted = await timeSessionHttpService.startBreakSession(payload);
 
         if (isStarted) {

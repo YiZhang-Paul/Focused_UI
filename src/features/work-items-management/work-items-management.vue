@@ -83,11 +83,13 @@ import { Options, Vue } from 'vue-class-component';
 
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { performanceKey } from '../../store/performance/performance.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { FocusSessionStartDialogOption } from '../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
@@ -136,6 +138,7 @@ export default class WorkItemsManagement extends Vue {
     public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
     public focusSessionOption: FocusSessionStartDialogOption | null = null;
+    public ratingsChangeOption: PerformanceRating | null = null;
     public showStopFocusSessionDialog = false;
     public showStopBreakSessionDialog = false;
     public query = new WorkItemQuery();
@@ -209,9 +212,13 @@ export default class WorkItemsManagement extends Vue {
         if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
             this.showStopFocusSessionDialog = true;
         }
-        else if (!breakOption.totalMinutes || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
-            await this.loadWorkItems();
+        else if (!await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
+            this.showStopFocusSessionDialog = true;
+        }
+        else {
             this.$emit('session:stop');
+            this.ratingsChangeOption = await this.$store.dispatch(`${performanceKey}/getUserRatingChange`);
+            await this.loadWorkItems();
         }
     }
 
