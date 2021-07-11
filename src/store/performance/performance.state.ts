@@ -113,11 +113,11 @@ const actions = {
         const user: UserProfile = context.rootGetters[`${userKey}/profile`] ?? new PerformanceRating();
 
         return {
-            determination: user.ratings.determination - ratings.determination,
-            estimation: user.ratings.estimation - ratings.estimation,
-            planning: user.ratings.planning - ratings.planning,
-            adaptability: user.ratings.adaptability - ratings.adaptability,
-            sustainability: user.ratings.sustainability - ratings.sustainability
+            determination: ratings.determination - user.ratings.determination,
+            estimation: ratings.estimation - user.ratings.estimation,
+            planning: ratings.planning - user.ratings.planning,
+            adaptability: ratings.adaptability - user.ratings.adaptability,
+            sustainability: ratings.sustainability - user.ratings.sustainability
         };
     }
 };
