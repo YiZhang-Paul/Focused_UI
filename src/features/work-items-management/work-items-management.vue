@@ -95,13 +95,15 @@ import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { performanceKey } from '../../store/performance/performance.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
-import { BreakSession } from '../../core/models/time-session/break-session';
+import { ValueChange } from '../../core/models/generic/value-change';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { UserProfile } from '../../core/models/user/user-profile';
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { FocusSessionStartDialogOption } from '../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
+import { BreakSession } from '../../core/models/time-session/break-session';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
@@ -149,7 +151,7 @@ export default class WorkItemsManagement extends Vue {
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
     public readonly ratingsChangeDialog = markRaw(RatingsChangeDialog);
     public focusSessionOption: FocusSessionStartDialogOption | null = null;
-    public ratingsChangeOption: PerformanceRating | null = null;
+    public ratingsChangeOption: ValueChange<PerformanceRating> | null = null;
     public showStopFocusSessionDialog = false;
     public showStopBreakSessionDialog = false;
     public query = new WorkItemQuery();
@@ -228,7 +230,9 @@ export default class WorkItemsManagement extends Vue {
         }
         else {
             this.$emit('session:stop');
-            this.ratingsChangeOption = await this.$store.dispatch(`${performanceKey}/getUserRatingChange`);
+            const user: UserProfile = this.$store.getters[`${userKey}/profile`];
+            const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
+            this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
             await this.loadWorkItems();
         }
     }
@@ -245,9 +249,9 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public async onRatingsUpdate(): Promise<void> {
+    public onRatingsUpdate(): void {
+        this.$store.dispatch(`${userKey}/updateUserRatings`, this.ratingsChangeOption!.current);
         this.ratingsChangeOption = null;
-        await this.$store.dispatch(`${userKey}/updateUserRatings`);
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
