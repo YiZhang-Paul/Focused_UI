@@ -37,6 +37,14 @@
             @dialog:confirm="onBreakSessionEnd($event)">
         </dialog-panel>
 
+        <dialog-panel v-if="ratingsChangeOption"
+            :dialog="ratingsChangeDialog"
+            :data="ratingsChangeOption"
+            :width="'35vw'"
+            :height="'37.5vh'"
+            @dialog:confirm="onRatingsUpdate()">
+        </dialog-panel>
+
         <template v-slot:actions>
             <div class="actions">
                 <creation-button @click="startCreate()"></creation-button>
@@ -81,6 +89,7 @@
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 
+import { userKey } from '../../store/user/user.state';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { performanceKey } from '../../store/performance/performance.state';
@@ -103,6 +112,7 @@ import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-di
 import FocusSessionStopDialog from '../../shared/dialogs/focus-session-stop-dialog/focus-session-stop-dialog.vue';
 import BreakSessionStopDialog from '../../shared/dialogs/break-session-stop-dialog/break-session-stop-dialog.vue';
 import BreakSessionEndDialog from '../../shared/dialogs/break-session-end-dialog/break-session-end-dialog.vue';
+import RatingsChangeDialog from '../../shared/dialogs/ratings-change-dialog/ratings-change-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
@@ -137,6 +147,7 @@ export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStopDialog = markRaw(FocusSessionStopDialog);
     public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
     public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
+    public readonly ratingsChangeDialog = markRaw(RatingsChangeDialog);
     public focusSessionOption: FocusSessionStartDialogOption | null = null;
     public ratingsChangeOption: PerformanceRating | null = null;
     public showStopFocusSessionDialog = false;
@@ -232,6 +243,11 @@ export default class WorkItemsManagement extends Vue {
         else {
             this.showStopBreakSessionDialog = true;
         }
+    }
+
+    public async onRatingsUpdate(): Promise<void> {
+        this.ratingsChangeOption = null;
+        await this.$store.dispatch(`${userKey}/updateUserRatings`);
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {

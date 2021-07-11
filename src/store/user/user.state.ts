@@ -29,6 +29,16 @@ const actions = {
     async loadProfile(context: ActionContext<IUserState, any>): Promise<void> {
         const user = await userProfileHttpService.getUserProfile('60cd1862629e063c384f3ea1');
         context.commit('setProfile', user);
+    },
+    async updateUserRatings(context: ActionContext<IUserState, any>): Promise<boolean> {
+        const ratings = await userProfileHttpService.updateUserRatings('60cd1862629e063c384f3ea1');
+
+        if (ratings) {
+            const user: UserProfile = { ...context.state.profile!, ratings };
+            context.commit('setProfile', user);
+        }
+
+        return Boolean(ratings);
     }
 };
 
