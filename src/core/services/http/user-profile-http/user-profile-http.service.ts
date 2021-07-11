@@ -17,9 +17,9 @@ export class UserProfileHttpService {
         }
     }
 
-    public async updateUserRatings(id: string): Promise<PerformanceRating | null> {
+    public async updateUserRatings(id: string, ratings: PerformanceRating): Promise<PerformanceRating | null> {
         try {
-            return (await axios.put(`${this._api}/${id}/ratings`)).data;
+            return (await axios.put(`${this._api}/${id}/ratings`, ratings)).data;
         }
         catch {
             return null;
