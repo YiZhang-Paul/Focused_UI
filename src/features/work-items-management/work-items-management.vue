@@ -222,18 +222,14 @@ export default class WorkItemsManagement extends Vue {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopFocusSessionDialog = false;
 
-        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
-            this.showStopFocusSessionDialog = true;
-        }
-        else if (!await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption)) {
-            this.showStopFocusSessionDialog = true;
+        if (await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
+            this.showRatingsChange();
+            this.loadWorkItems();
+            this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption);
+            this.$emit('session:stop');
         }
         else {
-            this.$emit('session:stop');
-            const user: UserProfile = this.$store.getters[`${userKey}/profile`];
-            const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
-            this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
-            await this.loadWorkItems();
+            this.showStopFocusSessionDialog = true;
         }
     }
 
@@ -297,6 +293,12 @@ export default class WorkItemsManagement extends Vue {
 
     public async loadWorkItems(): Promise<void> {
         await this.$store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+    }
+
+    private async showRatingsChange(): Promise<void> {
+        const user: UserProfile = this.$store.getters[`${userKey}/profile`];
+        const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
+        this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
     }
 }
 </script>
