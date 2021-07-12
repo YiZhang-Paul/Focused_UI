@@ -83,9 +83,8 @@ describe('work item progress stats group unit test', () => {
     describe('dailyFocusSeries', () => {
         test('should return correct daily focus breakdown', () => {
             const expected: PercentageSeries[] = [
-                { percent: 25, colorType: 'focus-progress-colors-overdoing' },
-                { percent: 25, colorType: 'focus-progress-colors-insufficient' },
-                { percent: 50, colorType: 'focus-progress-colors-sufficient' }
+                { percent: 25, colorType: 'context-colors-warning' },
+                { percent: 25, colorType: 'context-colors-alert' }
             ];
 
             const histories: ActivityBreakdownDto[] = [

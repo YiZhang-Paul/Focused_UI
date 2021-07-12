@@ -7,11 +7,12 @@
             <path class="ratings-area" :d="ratingsPath" />
         </svg>
 
-        <calendar-check class="icon planning" />
-        <clock-time-three class="icon estimation" />
-        <head-alert class="icon determination" />
-        <shield class="icon sustainability" />
-        <yoga class="icon adaptability" />
+        <component v-for="icon of icons"
+            :class="['icon', icon.name]"
+            :style="{ color: icon.color }"
+            :key="icon.name"
+            :is="icon.content">
+        </component>
     </display-panel>
 </template>
 
@@ -20,7 +21,10 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { CalendarCheck, ClockTimeThree, HeadAlert, Shield, Yoga } from 'mdue';
 import { Point } from 'electron';
 
+import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
+import { UserRating } from '../../../core/enums/user-rating.enum';
+import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
 import DisplayPanel from '../../panels/display-panel/display-panel.vue';
 
 class UserRatingsTrackerProp {
@@ -47,6 +51,14 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
         { x: 2.5, y: 39 }
     ];
 
+    public readonly icons: IconMeta[] = [
+        IconUtility.getUserRatingIcon(UserRating.Planning),
+        IconUtility.getUserRatingIcon(UserRating.Estimation),
+        IconUtility.getUserRatingIcon(UserRating.Determination),
+        IconUtility.getUserRatingIcon(UserRating.Sustainability),
+        IconUtility.getUserRatingIcon(UserRating.Adaptability)
+    ];
+
     get gridLinePaths(): string[] {
         return this.points.map(_ => `M50 50 L${_.x} ${_.y}`);
     }
@@ -56,9 +68,8 @@ export default class UserRatingsTracker extends Vue.with(UserRatingsTrackerProp)
         const ratings = [determination, planning, sustainability, adaptability, estimation];
 
         const points = this.points.map((_, i) => {
-            const percentage = ratings[i] / 100;
-            const deltaX = Math.abs(50 - _.x) * percentage;
-            const deltaY = Math.abs(50 - _.y) * percentage;
+            const deltaX = Math.abs(50 - _.x) * ratings[i];
+            const deltaY = Math.abs(50 - _.y) * ratings[i];
 
             return {
                 x: 50 + deltaX * (_.x > 50 ? 1 : -1),

@@ -1,6 +1,6 @@
 <template>
     <div class="dialog-panel-container">
-        <div class="content-panel">
+        <div class="content-panel" :style="{ width, height }">
             <div class="content">
                 <component v-if="showDialog && dialog"
                     class="dialog"
@@ -25,6 +25,8 @@ import PanelBorderSeparator from '../../separators/panel-border-separator/panel-
 class DialogPanelProp {
     public dialog = prop<any>({ default: null });
     public data = prop<any>({ default: null });
+    public width = prop<string>({ default: '40vw' });
+    public height = prop<string>({ default: '55vh' });
 }
 
 @Options({
@@ -36,6 +38,7 @@ class DialogPanelProp {
         'dialog:confirm'
     ]
 })
+/* istanbul ignore next */
 export default class DialogPanel extends Vue.with(DialogPanelProp) {
     public showDialog = false;
 
@@ -65,8 +68,6 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40vw;
-        height: 55vh;
 
         .content {
             position: relative;
@@ -88,7 +89,7 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
 
             .separator-left {
                 bottom: -30%;
-                left: -27px;
+                left: -25px;
                 transform: rotateX(180deg) rotateY(180deg);
                 opacity: 0;
                 animation: fade-in 0.15s ease forwards,
@@ -97,7 +98,7 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
 
             .separator-right {
                 top: -30%;
-                right: -27px;
+                right: -25px;
                 opacity: 0;
                 animation: fade-in 0.15s ease forwards,
                            move-separator-right 0.2s ease 0.1s forwards;

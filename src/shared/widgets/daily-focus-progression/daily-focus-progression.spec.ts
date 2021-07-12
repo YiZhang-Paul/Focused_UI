@@ -56,22 +56,22 @@ describe('daily focus progression unit test', () => {
             const mutation = `${performanceKey}/setCurrentDayProgression`;
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 0 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-insufficient-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-alert-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 5 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-insufficient-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-alert-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 6 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-sufficient-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-regular-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 11 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-sufficient-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-regular-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 12 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-overdoing-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-warning-00)');
 
             store.commit(mutation, { ...new ProgressionCounter<number>(), current: 18 });
-            expect(component.vm.percentageStyle.color).toEqual('var(--focus-progress-colors-overdoing-00)');
+            expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-warning-00)');
         });
     });
 });

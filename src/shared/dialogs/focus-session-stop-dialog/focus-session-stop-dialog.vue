@@ -1,9 +1,15 @@
 <template>
-    <div class="focus-session-end-dialog-container">
+    <div v-if="data" class="focus-session-stop-dialog-container">
         <div class="header">
             <alert class="icon" />
-            <span>End of Session</span>
+            <span>{{ isStale ? 'Focus Session Ended' : 'Stop Session?' }}</span>
         </div>
+
+        <detail-display-panel class="item-breakdown">
+            <overlay-scroll-panel class="items">
+                <item-completion-breakdown :items="data.workItems"></item-completion-breakdown>
+            </overlay-scroll-panel>
+        </detail-display-panel>
 
         <div class="focus-change">
             <span>Today's Focus</span>
@@ -20,34 +26,42 @@
             </div>
         </div>
 
-        <detail-display-panel class="actions">
+        <detail-display-panel v-if="isStale" class="confirm-actions">
+            <action-button :text="'ok'"
+                :type="buttonType.Confirm"
+                @click="$emit('dialog:confirm', stopOption)">
+            </action-button>
+        </detail-display-panel>
+
+        <detail-display-panel v-if="!isStale" class="stop-actions">
             <action-button :text="'cancel'" @click="$emit('dialog:cancel')"></action-button>
 
             <action-button class="stop-button"
-                :text="'ok'"
-                :type="buttonType.Confirm"
-                @click="$emit('dialog:confirm', startupOption)">
+                :text="'stop'"
+                :type="buttonType.Warning"
+                @click="$emit('dialog:confirm', stopOption)">
             </action-button>
         </detail-display-panel>
     </div>
 </template>
 
 <script lang="ts">
-import { markRaw } from 'vue';
 import { Options, Vue, prop } from 'vue-class-component';
-import { Alert, FormatListCheckbox } from 'mdue';
+import { Alert } from 'mdue';
 
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
-import { BreakSessionStartupOption } from '../../../core/models/time-session/break-session-startup-option';
+import { FocusSessionStopOption } from '../../../core/models/time-session/focus-session-stop-option';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { ActionButtonType } from '../../../core/enums/action-button-type.enum';
 import { TimeSessionStatus } from '../../../core/enums/time-session-status.enum';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
 import { IconUtility } from '../../../core/utilities/icon-utility/icon-utility';
-import ActionButton from '../../../shared/buttons/action-button/action-button.vue';
-import DetailDisplayPanel from '../../../shared/panels/detail-display-panel/detail-display-panel.vue';
+import ActionButton from '../../buttons/action-button/action-button.vue';
+import ItemCompletionBreakdown from '../../displays/item-completion-breakdown/item-completion-breakdown.vue';
+import DetailDisplayPanel from '../../panels/detail-display-panel/detail-display-panel.vue';
+import OverlayScrollPanel from '../../panels/overlay-scroll-panel/overlay-scroll-panel.vue';
 
-class FocusSessionEndDialogProp {
+class FocusSessionStopDialogProp {
     public data = prop<FocusSessionDto>({ default: null });
 }
 
@@ -55,27 +69,28 @@ class FocusSessionEndDialogProp {
     components: {
         Alert,
         ActionButton,
-        DetailDisplayPanel
+        ItemCompletionBreakdown,
+        DetailDisplayPanel,
+        OverlayScrollPanel
     },
     emits: [
         'dialog:cancel',
         'dialog:confirm'
     ]
 })
-export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialogProp) {
+/* istanbul ignore next */
+export default class FocusSessionStopDialog extends Vue.with(FocusSessionStopDialogProp) {
+    public readonly oneMinute = 1000 * 60;
+    public readonly oneHour = this.oneMinute * 60;
     public readonly breakEligibleDuration = 15;
     public readonly buttonType = ActionButtonType;
-    public readonly checklistIcon = markRaw(FormatListCheckbox);
 
-    get startupOption(): BreakSessionStartupOption | null {
-        if (!this.breakDuration) {
-            return null;
-        }
+    get stopOption(): FocusSessionStopOption {
+        return new FocusSessionStopOption(this.data.id, this.breakDuration);
+    }
 
-        return {
-            focusSessionId: this.data.id,
-            totalMinutes: this.breakDuration
-        };
+    get isStale(): boolean {
+        return this.targetEnd <= Date.now();
     }
 
     get focusChange(): string {
@@ -90,17 +105,23 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
     }
 
     get breakDuration(): number {
-        const oneMinute = 1000 * 60;
         const start = new Date(this.data.startTime).getTime();
-        const elapsed = (Date.now() - start) / oneMinute;
+        const end = Math.min(this.targetEnd, Date.now());
+        const elapsed = (end - start) / this.oneMinute;
 
         return elapsed >= this.breakEligibleDuration ? Math.round(elapsed / 5) : 0;
+    }
+
+    get targetEnd(): number {
+        const { startTime, targetDuration } = this.data;
+
+        return new Date(startTime).getTime() + targetDuration * this.oneHour;
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.focus-session-end-dialog-container {
+.focus-session-stop-dialog-container {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -109,7 +130,7 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
     padding-top: 1vh;
     padding-bottom: 2.5vh;
 
-    .header, .focus-change, .break-notice, .actions {
+    .header, .item-breakdown, .focus-change, .break-notice, .confirm-actions, .stop-actions {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -127,8 +148,20 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
         }
     }
 
+    .item-breakdown {
+        box-sizing: border-box;
+        padding: 0.5vh 0.75vh;
+        width: 85%;
+        height: 35%;
+
+        .items {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
     .focus-change {
-        color: var(--context-colors-confirm-00);
+        color: var(--context-colors-positive-00);
         font-size: var(--font-sizes-500);
 
         .change-value {
@@ -157,13 +190,18 @@ export default class FocusSessionEndDialog extends Vue.with(FocusSessionEndDialo
         }
     }
 
-    .actions {
+    .stop-actions {
         width: 35%;
         height: 13.5%;
 
         .stop-button {
             margin-left: 1vh;
         }
+    }
+
+    .confirm-actions {
+        width: 20%;
+        height: 13.5%;
     }
 }
 </style>

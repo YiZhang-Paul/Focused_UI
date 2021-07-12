@@ -45,24 +45,6 @@ export class WorkItemHttpService {
         }
     }
 
-    public async startWorkItem(id: string): Promise<boolean> {
-        try {
-            return (await axios.post(`${this._api}/${id}/start`)).data;
-        }
-        catch {
-            return false;
-        }
-    }
-
-    public async stopWorkItem(): Promise<boolean> {
-        try {
-            return (await axios.post(`${this._api}/stop`)).data;
-        }
-        catch {
-            return false;
-        }
-    }
-
     public async getWorkItemMeta(id: string): Promise<WorkItemDto | null> {
         try {
             return (await axios.get(`${this._api}/${id}/meta`)).data;

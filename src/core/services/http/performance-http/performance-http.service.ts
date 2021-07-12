@@ -6,6 +6,7 @@ import { EstimationBreakdownDto } from '../../../dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../../dtos/due-date-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../dtos/time-tracking-breakdown-dto';
 import { ProgressionCounter } from '../../../models/generic/progression-counter';
+import { PerformanceRating } from '../../../models/user/performance-rating';
 
 @injectable()
 export class PerformanceHttpService {
@@ -79,6 +80,17 @@ export class PerformanceHttpService {
         }
         catch {
             return new DueDateBreakdownDto();
+        }
+    }
+
+    public async getPerformanceRating(start?: Date, end?: Date): Promise<PerformanceRating> {
+        try {
+            const endpoint = `${this._api}/ratings`;
+
+            return (await axios.get(this.appendDateQueryString(endpoint, start, end))).data;
+        }
+        catch {
+            return new PerformanceRating();
         }
     }
 

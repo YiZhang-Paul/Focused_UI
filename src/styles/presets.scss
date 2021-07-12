@@ -11,6 +11,7 @@
     --primary-colors-0-04: rgba(255, 255, 255, 0.4);
     --primary-colors-2-00: rgb(205, 205, 205);
     --primary-colors-3-00: rgb(180, 180, 180);
+    --primary-colors-5-00: rgb(130, 130, 130);
     --primary-colors-6-00: rgb(110, 110, 110);
     --primary-colors-6-01: rgba(110, 110, 110, 0.1);
     --primary-colors-6-03: rgba(110, 110, 110, 0.3);
@@ -38,15 +39,15 @@
     --font-colors-9-00: rgb(35, 35, 35);
     // context colors
     --context-colors-info-00: rgb(81, 224, 255);
-    --context-colors-increase-00: rgb(66, 255, 0);
-    --context-colors-increase-04: rgba(66, 255, 0, 0.4);
-    --context-colors-decrease-00: rgb(255, 100, 100);
-    --context-colors-decrease-04: rgba(255, 100, 100, 0.4);
-    --context-colors-confirm-00: rgb(105, 255, 92);
-    --context-colors-confirm-04: rgba(105, 255, 92, 0.4);
-    --context-colors-confirm-05: rgba(105, 255, 92, 0.5);
+    --context-colors-regular-00: rgb(255, 255, 255);
+    --context-colors-regular-04: rgba(255, 255, 255, 0.4);
+    --context-colors-regular-06: rgba(255, 255, 255, 0.6);
+    --context-colors-positive-00: rgb(105, 255, 92);
+    --context-colors-positive-04: rgba(105, 255, 92, 0.4);
+    --context-colors-positive-05: rgba(105, 255, 92, 0.5);
     --context-colors-alert-00: rgb(255, 203, 69);
     --context-colors-alert-04: rgba(255, 203, 69, 0.4);
+    --context-colors-alert-05: rgba(255, 203, 69, 0.5);
     --context-colors-warning-00: rgb(255, 100, 100);
     --context-colors-warning-04: rgba(255, 100, 100, 0.4);
     --context-colors-warning-05: rgba(255, 100, 100, 0.5);
@@ -71,30 +72,14 @@
     --session-status-colors-resting-04: rgba(62, 245, 147, 0.4);
     --session-status-colors-resting-05: rgba(62, 245, 147, 0.5);
     // activity colors
-    --activity-colors-regular-00: rgb(255, 255, 255);
-    --activity-colors-regular-04: rgba(255, 255, 255, 0.4);
-    --activity-colors-recurring-00: rgb(196, 222, 142);
-    --activity-colors-recurring-04: rgba(196, 222, 142, 0.4);
-    --activity-colors-interruption-00: rgb(250, 0, 255);
-    --activity-colors-interruption-04: rgba(250, 0, 255, 0.4);
-    --activity-colors-overlearning-00: rgb(98, 236, 255);
-    --activity-colors-overlearning-04: rgba(98, 236, 255, 0.4);
-    // focus progress colors
-    --focus-progress-colors-insufficient-00: rgb(255, 203, 69);
-    --focus-progress-colors-insufficient-05: rgba(255, 203, 69, 0.5);
-    --focus-progress-colors-sufficient-00: rgb(105, 255, 92);
-    --focus-progress-colors-sufficient-05: rgba(105, 255, 92, 0.5);
-    --focus-progress-colors-overdoing-00: rgb(255, 100, 100);
-    --focus-progress-colors-overdoing-05: rgba(255, 100, 100, 0.5);
-    // progress colors
-    --progress-colors-normal-00: rgb(255, 255, 255);
-    --progress-colors-normal-04: rgba(255, 255, 255, 0.4);
-    --progress-colors-faster-00: rgb(98, 255, 142);
-    --progress-colors-faster-04: rgba(98, 255, 142, 0.4);
-    --progress-colors-overestimate-00: rgb(255, 203, 69);
-    --progress-colors-overestimate-04: rgba(255, 203, 69, 0.4);
-    --progress-colors-underestimate-00: rgb(255, 100, 100);
-    --progress-colors-underestimate-04: rgba(255, 100, 100, 0.4);
+    --activity-colors-regular-00: rgb(198, 215, 235);
+    --activity-colors-regular-04: rgba(198, 215, 235, 0.4);
+    --activity-colors-recurring-00: rgb(231, 170, 100);
+    --activity-colors-recurring-04: rgba(231, 170, 100, 0.4);
+    --activity-colors-interruption-00: rgb(240, 61, 240);
+    --activity-colors-interruption-04: rgba(240, 61, 240, 0.4);
+    --activity-colors-overlearning-00: rgb(55, 124, 214);
+    --activity-colors-overlearning-04: rgba(55, 124, 214, 0.4);
     // priority colors
     --priority-colors-0-00: rgb(255, 26, 26);
     --priority-colors-0-04: rgba(255, 26, 26, 0.4);

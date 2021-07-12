@@ -63,8 +63,8 @@ describe('item completion progress unit test', () => {
 
         test('should return correct percentages for underestimated items', async() => {
             const expected: PercentageSeries[] = [
-                { percent: 40, colorType: 'progress-colors-normal' },
-                { percent: 60, colorType: 'progress-colors-underestimate' }
+                { percent: 40, colorType: 'context-colors-regular' },
+                { percent: 60, colorType: 'context-colors-warning' }
             ];
 
             const progress: ProgressionCounter<number> = { current: 5, target: 2, isCompleted: false };
@@ -75,8 +75,8 @@ describe('item completion progress unit test', () => {
 
         test('should return correct percentages for overestimated items', async() => {
             const expected: PercentageSeries[] = [
-                { percent: 40, colorType: 'progress-colors-normal' },
-                { percent: 60, colorType: 'progress-colors-overestimate' }
+                { percent: 40, colorType: 'context-colors-regular' },
+                { percent: 60, colorType: 'context-colors-alert' }
             ];
 
             const progress: ProgressionCounter<number> = { current: 2, target: 5, isCompleted: true };
@@ -87,8 +87,8 @@ describe('item completion progress unit test', () => {
 
         test('should return correct percentages for faster items', async() => {
             const expected: PercentageSeries[] = [
-                { percent: 40, colorType: 'progress-colors-normal' },
-                { percent: 60, colorType: 'progress-colors-faster' }
+                { percent: 40, colorType: 'context-colors-regular' },
+                { percent: 60, colorType: 'context-colors-positive' }
             ];
 
             const progress: ProgressionCounter<number> = { current: 0.2, target: 0.5, isCompleted: true };
@@ -99,8 +99,8 @@ describe('item completion progress unit test', () => {
 
         test('should return correct percentages for unfinished items', async() => {
             const expected: PercentageSeries[] = [
-                { percent: 40, colorType: 'progress-colors-normal' },
-                { percent: 0, colorType: 'progress-colors-overestimate' }
+                { percent: 40, colorType: 'context-colors-regular' },
+                { percent: 0, colorType: 'context-colors-alert' }
             ];
 
             const progress: ProgressionCounter<number> = { current: 2, target: 5, isCompleted: false };

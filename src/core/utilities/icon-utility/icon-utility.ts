@@ -1,23 +1,29 @@
 import { markRaw } from 'vue';
 
 import {
+    CalendarCheck,
     Check,
+    ClockTimeThree,
     Close,
     Flash,
+    HeadAlert,
     LightbulbOn,
     PalmTree,
     ProgressQuestion,
     RecordCircleOutline,
     Repeat,
     Selection,
+    Shield,
     Tag,
     WeatherNight,
     WeatherSunset,
-    WhiteBalanceSunny
+    WhiteBalanceSunny,
+    Yoga
 } from 'mdue';
 
 import { IconMeta } from '../../models/generic/icon-meta';
 import { GenericFilterType } from '../../enums/generic-filter-type.enum';
+import { UserRating } from '../../enums/user-rating.enum';
 import { TimeSessionStatus } from '../../enums/time-session-status.enum';
 import { WorkItemType } from '../../enums/work-item-type.enum';
 
@@ -90,6 +96,48 @@ export class IconUtility {
             name: 'regular',
             content: markRaw(Selection),
             color: 'var(--activity-colors-regular-00)'
+        };
+    }
+    /* istanbul ignore next */
+    public static getUserRatingIcon(rating: UserRating): IconMeta {
+        const color = 'var(--primary-colors-0-00)';
+
+        if (rating === UserRating.Determination) {
+            return {
+                name: 'determination',
+                content: markRaw(HeadAlert),
+                color
+            };
+        }
+
+        if (rating === UserRating.Estimation) {
+            return {
+                name: 'estimation',
+                content: markRaw(ClockTimeThree),
+                color
+            };
+        }
+
+        if (rating === UserRating.Planning) {
+            return {
+                name: 'planning',
+                content: markRaw(CalendarCheck),
+                color
+            };
+        }
+
+        if (rating === UserRating.Adaptability) {
+            return {
+                name: 'adaptability',
+                content: markRaw(Yoga),
+                color
+            };
+        }
+
+        return {
+            name: 'sustainability',
+            content: markRaw(Shield),
+            color
         };
     }
 

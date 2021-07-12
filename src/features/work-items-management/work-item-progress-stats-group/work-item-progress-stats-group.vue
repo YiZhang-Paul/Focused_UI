@@ -79,24 +79,23 @@ export default class WorkItemProgressStatsGroup extends Vue {
         const total = this.activityHistories.length;
         const aggregate = { insufficient: 0, sufficient: 0, overdoing: 0 };
 
-        const { insufficient, sufficient, overdoing } = this.activityHistories.reduce((_, history) => {
-            const focus = history.regular + history.recurring + history.overlearning;
+        const { insufficient, overdoing } = this.activityHistories.reduce((_, history) => {
+            const { regular, recurring, overlearning } = history;
+            const focus = regular + recurring + overlearning;
 
             if (focus < 8) {
-                return { ..._, insufficient: _.insufficient + 1 };
+                _.insufficient++;
+            }
+            else if (focus >= 12) {
+                _.overdoing++;
             }
 
-            if (focus < 12) {
-                return { ..._, sufficient: _.sufficient + 1 };
-            }
-
-            return { ..._, overdoing: _.overdoing + 1 };
+            return _;
         }, aggregate);
 
         return [
-            new PercentageSeries(overdoing / total * 100, 'focus-progress-colors-overdoing'),
-            new PercentageSeries(insufficient / total * 100, 'focus-progress-colors-insufficient'),
-            new PercentageSeries(sufficient / total * 100, 'focus-progress-colors-sufficient')
+            new PercentageSeries(overdoing / total * 100, 'context-colors-warning'),
+            new PercentageSeries(insufficient / total * 100, 'context-colors-alert')
         ];
     }
 

@@ -205,46 +205,6 @@ describe('work item store unit test', () => {
         });
     });
 
-    describe('startWorkItem', () => {
-        test('should do nothing when failed to start work item', async() => {
-            workItemHttpStub.startWorkItem.resolves(false);
-
-            await store.dispatch(`${workItemKey}/startWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
-            sinonExpect.notCalled(workItemHttpStub.getWorkItems);
-        });
-
-        test('should reload work items when successfully started work item', async() => {
-            workItemHttpStub.startWorkItem.resolves(true);
-
-            await store.dispatch(`${workItemKey}/startWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.startWorkItem);
-            sinonExpect.calledOnce(workItemHttpStub.getWorkItems);
-        });
-    });
-
-    describe('stopWorkItem', () => {
-        test('should do nothing when failed to stop work item', async() => {
-            workItemHttpStub.stopWorkItem.resolves(false);
-
-            await store.dispatch(`${workItemKey}/stopWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.stopWorkItem);
-            sinonExpect.notCalled(workItemHttpStub.getWorkItems);
-        });
-
-        test('should reload work items when successfully stopped work item', async() => {
-            workItemHttpStub.stopWorkItem.resolves(true);
-
-            await store.dispatch(`${workItemKey}/stopWorkItem`, '1');
-
-            sinonExpect.calledOnce(workItemHttpStub.stopWorkItem);
-            sinonExpect.calledOnce(workItemHttpStub.getWorkItems);
-        });
-    });
-
     describe('updateWorkItemMeta', () => {
         beforeEach(() => {
             store.commit(`${workItemKey}/setWorkItems`, [{ ...new WorkItemDto(), id: '1', name: 'previous_name' }]);

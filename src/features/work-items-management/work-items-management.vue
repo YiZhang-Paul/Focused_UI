@@ -7,35 +7,48 @@
             @dialog:confirm="onFocusSessionStart($event)">
         </dialog-panel>
 
-        <dialog-panel v-if="showStopSessionDialog"
-            :dialog="focusSessionEndDialog"
+        <dialog-panel v-if="showStopFocusSessionDialog"
+            :dialog="focusSessionStopDialog"
             :data="activeFocusSession"
-            @dialog:cancel="showStopSessionDialog = false"
+            @dialog:cancel="showStopFocusSessionDialog = false"
             @dialog:confirm="onFocusSessionEnd($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="staleFocusSession"
+            :dialog="focusSessionStopDialog"
+            :data="staleFocusSession"
+            @dialog:confirm="onFocusSessionEnd($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="showStopBreakSessionDialog"
+            :dialog="breakSessionStopDialog"
+            :data="activeBreakSession"
+            :width="'30vw'"
+            :height="'35vh'"
+            @dialog:cancel="showStopBreakSessionDialog = false"
+            @dialog:confirm="onBreakSessionEnd($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="staleBreakSession"
+            :dialog="breakSessionEndDialog"
+            :data="staleBreakSession"
+            :width="'30vw'"
+            :height="'35vh'"
+            @dialog:confirm="onBreakSessionEnd($event)">
+        </dialog-panel>
+
+        <dialog-panel v-if="ratingsChangeOption"
+            :dialog="ratingsChangeDialog"
+            :data="ratingsChangeOption"
+            :width="'35vw'"
+            :height="'37.5vh'"
+            @dialog:confirm="onRatingsUpdate()">
         </dialog-panel>
 
         <template v-slot:actions>
             <div class="actions">
                 <creation-button @click="startCreate()"></creation-button>
-                <search-box class="search-box" @search="onSearch($event)"></search-box>
-
-                <segmented-control class="filter-group"
-                    :title="'completed'"
-                    :options="completionFilterOptions"
-                    @select="onCompletionFilter()">
-                </segmented-control>
-
-                <segmented-control class="filter-group"
-                    :title="'highlighted'"
-                    :options="highlightFilterOptions"
-                    @select="onHighlightFilter()">
-                </segmented-control>
-
-                <segmented-control class="filter-group"
-                    :title="'work item type'"
-                    :options="typeFilterOptions"
-                    @select="onTypeFilter()">
-                </segmented-control>
+                <work-item-filter class="item-filter" :query="query" @item:filter="loadWorkItems()"></work-item-filter>
             </div>
         </template>
 
@@ -43,9 +56,7 @@
             <work-item-tracking-stats-group class="stats-group"></work-item-tracking-stats-group>
 
             <display-panel class="core-content" :lineLength="'1.25vh'">
-                <session-tracker class="session-tracker"
-                    @session:stop="showStopSessionDialog = true">
-                </session-tracker>
+                <session-tracker class="session-tracker" @session:stop="showSessionStopDialog()"></session-tracker>
 
                 <work-item-editor v-if="editedItemMeta && editedItem"
                     class="work-item-editor"
@@ -65,7 +76,7 @@
                     @update:meta="onItemMetaUpdate($event)"
                     @item:select="onItemSelect($event.id)"
                     @item:start="onItemStart($event)"
-                    @item:stop="onItemStop()">
+                    @item:stop="onItemStop($event)">
                 </work-items-list>
             </display-panel>
 
@@ -78,38 +89,43 @@
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 
+import { userKey } from '../../store/user/user.state';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
+import { performanceKey } from '../../store/performance/performance.state';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { ValueChange } from '../../core/models/generic/value-change';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
+import { UserProfile } from '../../core/models/user/user-profile';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
+import { FocusSessionStartDialogOption } from '../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
+import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
+import { BreakSession } from '../../core/models/time-session/break-session';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
-import { ControlButtonOption } from '../../core/models/generic/control-button-option';
-import { GenericFilterType } from '../../core/enums/generic-filter-type.enum';
-import { WorkItemType } from '../../core/enums/work-item-type.enum';
-import { IconUtility } from '../../core/utilities/icon-utility/icon-utility';
-import SearchBox from '../../shared/inputs/search-box/search-box.vue';
-import SegmentedControl from '../../shared/inputs/segmented-control/segmented-control.vue';
+import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import CreationButton from '../../shared/buttons/creation-button/creation-button.vue';
 import DialogPanel from '../../shared/panels/dialog-panel/dialog-panel.vue';
 import DisplayPanel from '../../shared/panels/display-panel/display-panel.vue';
 import ContentViewPanel from '../../shared/panels/content-view-panel/content-view-panel.vue';
 import FocusSessionStartDialog from '../../shared/dialogs/focus-session-start-dialog/focus-session-start-dialog.vue';
-import FocusSessionEndDialog from '../../shared/dialogs/focus-session-end-dialog/focus-session-end-dialog.vue';
+import FocusSessionStopDialog from '../../shared/dialogs/focus-session-stop-dialog/focus-session-stop-dialog.vue';
+import BreakSessionStopDialog from '../../shared/dialogs/break-session-stop-dialog/break-session-stop-dialog.vue';
+import BreakSessionEndDialog from '../../shared/dialogs/break-session-end-dialog/break-session-end-dialog.vue';
+import RatingsChangeDialog from '../../shared/dialogs/ratings-change-dialog/ratings-change-dialog.vue';
 import SessionTracker from '../../shared/widgets/session-tracker/session-tracker.vue';
 import StatsBreakdown from '../../shared/widgets/stats-breakdown/stats-breakdown.vue';
 
 import WorkItemTrackingStatsGroup from './work-item-tracking-stats-group/work-item-tracking-stats-group.vue';
 import WorkItemProgressStatsGroup from './work-item-progress-stats-group/work-item-progress-stats-group.vue';
+import WorkItemFilter from './work-item-filter/work-item-filter.vue';
 import WorkItemEditor from './work-item-editor/work-item-editor.vue';
 import WorkItemsList from './work-items-list/work-items-list.vue';
 
 @Options({
     components: {
-        SearchBox,
-        SegmentedControl,
         CreationButton,
         DialogPanel,
         DisplayPanel,
@@ -118,40 +134,27 @@ import WorkItemsList from './work-items-list/work-items-list.vue';
         StatsBreakdown,
         WorkItemTrackingStatsGroup,
         WorkItemProgressStatsGroup,
+        WorkItemFilter,
         WorkItemEditor,
         WorkItemsList
     },
     emits: [
+        'session:stop',
         'item:update',
         'item:delete'
     ]
 })
 export default class WorkItemsManagement extends Vue {
     public readonly focusSessionStartDialog = markRaw(FocusSessionStartDialog);
-    public readonly focusSessionEndDialog = markRaw(FocusSessionEndDialog);
-
-    public readonly completionFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
-    ];
-
-    public readonly highlightFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.Yes)),
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.No))
-    ];
-
-    public readonly typeFilterOptions = [
-        new ControlButtonOption(IconUtility.getGenericFilterIcon(GenericFilterType.All), true),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Regular)),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Recurring)),
-        new ControlButtonOption(IconUtility.getWorkItemIcon(WorkItemType.Interruption))
-    ];
-
-    public focusSessionOption: FocusSessionStartupOption | null = null;
-    public showStopSessionDialog = false;
-    private query = new WorkItemQuery();
+    public readonly focusSessionStopDialog = markRaw(FocusSessionStopDialog);
+    public readonly breakSessionStopDialog = markRaw(BreakSessionStopDialog);
+    public readonly breakSessionEndDialog = markRaw(BreakSessionEndDialog);
+    public readonly ratingsChangeDialog = markRaw(RatingsChangeDialog);
+    public focusSessionOption: FocusSessionStartDialogOption | null = null;
+    public ratingsChangeOption: ValueChange<PerformanceRating> | null = null;
+    public showStopFocusSessionDialog = false;
+    public showStopBreakSessionDialog = false;
+    public query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
         return this.$store.getters[`${workItemKey}/pendingWorkItem`];
@@ -167,6 +170,18 @@ export default class WorkItemsManagement extends Vue {
 
     get activeFocusSession(): FocusSessionDto | null {
         return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
+    }
+
+    get staleFocusSession(): FocusSessionDto | null {
+        return this.$store.getters[`${timeSessionKey}/staleFocusSession`];
+    }
+
+    get activeBreakSession(): BreakSession | null {
+        return this.$store.getters[`${timeSessionKey}/activeBreakSession`];
+    }
+
+    get staleBreakSession(): BreakSession | null {
+        return this.$store.getters[`${timeSessionKey}/staleBreakSession`];
     }
 
     public created(): void {
@@ -190,6 +205,11 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
+    public showSessionStopDialog(): void {
+        this.showStopFocusSessionDialog = Boolean(this.activeFocusSession);
+        this.showStopBreakSessionDialog = Boolean(this.activeBreakSession);
+    }
+
     public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
         this.focusSessionOption = null;
 
@@ -198,16 +218,36 @@ export default class WorkItemsManagement extends Vue {
         }
     }
 
-    public async onFocusSessionEnd(option: BreakSessionStartupOption): Promise<void> {
-        this.showStopSessionDialog = false;
+    public async onFocusSessionEnd(option: FocusSessionStopOption): Promise<void> {
+        const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
+        this.showStopFocusSessionDialog = false;
 
-        if (!await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`)) {
-            this.showStopSessionDialog = true;
+        if (await this.$store.dispatch(`${timeSessionKey}/stopFocusSession`, option.focusSessionId)) {
+            this.showRatingsChange();
+            this.loadWorkItems();
+            this.$store.dispatch(`${timeSessionKey}/startBreakSession`, breakOption);
+            this.$emit('session:stop');
         }
+        else {
+            this.showStopFocusSessionDialog = true;
+        }
+    }
 
-        if (!option || await this.$store.dispatch(`${timeSessionKey}/startBreakSession`, option)) {
+    public async onBreakSessionEnd(id: string): Promise<void> {
+        this.showStopBreakSessionDialog = false;
+        const isStopped = await this.$store.dispatch(`${timeSessionKey}/stopBreakSession`, id);
+
+        if (isStopped) {
             await this.loadWorkItems();
         }
+        else {
+            this.showStopBreakSessionDialog = true;
+        }
+    }
+
+    public onRatingsUpdate(): void {
+        this.$store.dispatch(`${userKey}/updateUserRatings`, this.ratingsChangeOption!.current);
+        this.ratingsChangeOption = null;
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
@@ -238,73 +278,27 @@ export default class WorkItemsManagement extends Vue {
 
     public async onItemStart(item: WorkItemDto): Promise<void> {
         if (!this.$store.getters[`${timeSessionKey}/hasActiveFocusSession`]) {
-            this.focusSessionOption = new FocusSessionStartupOption(item);
+            this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
-        else if (await this.$store.dispatch(`${workItemKey}/startWorkItem`, item.id)) {
+        else if (await this.$store.dispatch(`${timeSessionKey}/switchWorkItem`, item.id)) {
             this.$emit('item:update');
         }
     }
 
-    public async onItemStop(): Promise<void> {
-        if (await this.$store.dispatch(`${workItemKey}/stopWorkItem`)) {
+    public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
+        if (await this.$store.dispatch(`${timeSessionKey}/startOverlearning`, targetStatus)) {
             this.$emit('item:update');
         }
     }
 
-    public onSearch(text: string): void {
-        this.query.searchText = text;
-        this.loadWorkItems();
-    }
-
-    public onCompletionFilter(): void {
-        if (this.completionFilterOptions[1].isActive) {
-            this.query.isCompleted = true;
-            this.resetHighlightFilter();
-        }
-        else {
-            this.query.isCompleted = this.completionFilterOptions[0].isActive ? undefined : false;
-        }
-
-        this.loadWorkItems();
-    }
-
-    public onHighlightFilter(): void {
-        if (this.highlightFilterOptions[1].isActive) {
-            this.query.isHighlighted = true;
-            this.resetCompletionFilter();
-        }
-        else {
-            this.query.isHighlighted = this.highlightFilterOptions[0].isActive ? undefined : false;
-        }
-
-        this.loadWorkItems();
-    }
-
-    public onTypeFilter(): void {
-        const types = [
-            undefined,
-            WorkItemType.Regular,
-            WorkItemType.Recurring,
-            WorkItemType.Interruption
-        ];
-
-        const index = this.typeFilterOptions.findIndex(_ => _.isActive);
-        this.query.type = types[index];
-        this.loadWorkItems();
-    }
-
-    private resetCompletionFilter(): void {
-        this.query.isCompleted = undefined;
-        this.completionFilterOptions.forEach((_, index) => _.isActive = !index);
-    }
-
-    private resetHighlightFilter(): void {
-        this.query.isHighlighted = undefined;
-        this.highlightFilterOptions.forEach((_, index) => _.isActive = !index);
-    }
-
-    private async loadWorkItems(): Promise<void> {
+    public async loadWorkItems(): Promise<void> {
         await this.$store.dispatch(`${workItemKey}/loadWorkItems`, this.query);
+    }
+
+    private async showRatingsChange(): Promise<void> {
+        const user: UserProfile = this.$store.getters[`${userKey}/profile`];
+        const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
+        this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
     }
 }
 </script>
@@ -324,12 +318,9 @@ export default class WorkItemsManagement extends Vue {
         align-items: center;
         padding: 0 7.5vh 0 2.5vh;
 
-        .search-box {
-            width: 35%;
-            height: 80%;
-        }
-
-        .filter-group {
+        .item-filter {
+            margin-left: 1.75vh;
+            width: 100%;
             height: 80%;
         }
     }

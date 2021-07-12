@@ -66,14 +66,14 @@ export default class ActionButton extends Vue.with(ActionButtonProp) {
     &.confirm-button {
 
         span {
-            color: var(--context-colors-confirm-00);
+            color: var(--context-colors-positive-00);
         }
 
         .back-drop-layer {
             background: linear-gradient(
                 90deg,
                 transparent -9.95%,
-                var(--context-colors-confirm-04) 50.96%,
+                var(--context-colors-positive-04) 50.96%,
                 transparent 113.89%
             );
         }

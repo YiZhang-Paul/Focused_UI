@@ -8,6 +8,7 @@
     </div>
 
     <work-items-management class="work-items-management"
+        @session:stop="loadPerformanceBreakdowns()"
         @item:update="loadPerformanceBreakdowns()"
         @item:delete="loadPerformanceBreakdowns()">
     </work-items-management>
@@ -39,6 +40,7 @@ export default class App extends Vue {
     public created(): void {
         this.$store.dispatch(`${userKey}/loadProfile`);
         this.$store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
+        this.$store.dispatch(`${timeSessionKey}/loadStaleTimeSession`);
         this.$store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);
         this.loadPerformanceBreakdowns();
     }

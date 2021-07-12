@@ -5,6 +5,7 @@ import { FocusSessionDto } from '../../../dtos/focus-session-dto';
 import { BreakSession } from '../../../models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../../models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../../models/time-session/break-session-startup-option';
+import { WorkItemStatus } from '../../../enums/work-item-status.enum';
 
 @injectable()
 export class TimeSessionHttpService {
@@ -13,6 +14,15 @@ export class TimeSessionHttpService {
     public async getActiveFocusSessionMeta(): Promise<FocusSessionDto | null> {
         try {
             return (await axios.get(`${this._api}/active-focus-session/meta`)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
+    public async getStaleFocusSessionMeta(): Promise<FocusSessionDto | null> {
+        try {
+            return (await axios.get(`${this._api}/stale-focus-session/meta`)).data;
         }
         catch {
             return null;
@@ -28,9 +38,27 @@ export class TimeSessionHttpService {
         }
     }
 
-    public async stopFocusSession(): Promise<boolean> {
+    public async stopFocusSession(id: string): Promise<boolean> {
         try {
-            return (await axios.post(`${this._api}/focus-session/stop`)).data;
+            return (await axios.post(`${this._api}/focus-session/${id}/stop`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public async startOverlearning(targetStatus = WorkItemStatus.Highlighted): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/focus-session/overlearning/start?status=${targetStatus}`)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public async switchWorkItem(id: string): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/focus-session/work-items/${id}/start`)).data;
         }
         catch {
             return false;
@@ -46,9 +74,27 @@ export class TimeSessionHttpService {
         }
     }
 
+    public async getStaleBreakSession(): Promise<BreakSession | null> {
+        try {
+            return (await axios.get(`${this._api}/stale-break-session`)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
     public async startBreakSession(option: BreakSessionStartupOption): Promise<boolean> {
         try {
             return (await axios.post(`${this._api}/break-session/start`, option)).data;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public async stopBreakSession(id: string): Promise<boolean> {
+        try {
+            return (await axios.post(`${this._api}/break-session/${id}/stop`)).data;
         }
         catch {
             return false;

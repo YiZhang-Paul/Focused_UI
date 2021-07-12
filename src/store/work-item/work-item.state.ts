@@ -2,7 +2,6 @@ import { ActionContext } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
-import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
@@ -119,28 +118,6 @@ const actions = {
 
         return true;
     },
-    async startWorkItem(context: ActionContext<IWorkItemState, any>, id: string): Promise<boolean> {
-        const { state, dispatch } = context;
-        const isStarted = await workItemHttpService.startWorkItem(id);
-
-        if (isStarted) {
-            dispatch('loadWorkItems', state.lastQuery);
-            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
-        }
-
-        return isStarted;
-    },
-    async stopWorkItem(context: ActionContext<IWorkItemState, any>): Promise<boolean> {
-        const { state, dispatch } = context;
-        const isStopped = await workItemHttpService.stopWorkItem();
-
-        if (isStopped) {
-            dispatch('loadWorkItems', state.lastQuery);
-            dispatch(`${timeSessionKey}/loadActiveTimeSession`, null, { root: true });
-        }
-
-        return isStopped;
-    },
     async updateWorkItemMeta(context: ActionContext<IWorkItemState, any>, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
@@ -157,6 +134,9 @@ const actions = {
         const query = payload ?? new WorkItemQuery();
         context.commit('setLastQuery', query);
         context.commit('setWorkItems', await workItemHttpService.getWorkItems(query));
+    },
+    async reloadWorkItems(context: ActionContext<IWorkItemState, any>): Promise<void> {
+        context.dispatch('loadWorkItems', context.state.lastQuery);
     }
 };
 

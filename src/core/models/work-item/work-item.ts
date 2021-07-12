@@ -4,6 +4,7 @@ import { WorkItemStatus } from '../../enums/work-item-status.enum';
 import { TimeInfo } from '../generic/time-info';
 
 import { ChecklistEntry } from './checklist-entry';
+import { CompletionRecord } from './completion-record';
 
 export class WorkItem {
     public id!: string;
@@ -18,5 +19,6 @@ export class WorkItem {
     public dueDate?: string;
     public recur: boolean[] = [];
     public checklist: ChecklistEntry[] = [];
+    public completionRecords: CompletionRecord[] = [];
     public timeInfo = new TimeInfo();
 }

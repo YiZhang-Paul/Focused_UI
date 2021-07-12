@@ -8,6 +8,7 @@ import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdown-dto';
 import { DateRange } from '../../core/models/generic/date-range';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 const oneDay = 24 * 60 * 60 * 1000;
@@ -100,9 +101,14 @@ const actions = {
         context.commit('setEstimationBreakdown', breakdown);
     },
     async loadDueDateBreakdown(context: ActionContext<IPerformanceState, any>): Promise<void> {
-        const { start, end } = context.state.dateRange;
-        const breakdown = await performanceHttpService.getDueDateBreakdown(start, end);
+        const { end } = context.state.dateRange;
+        const breakdown = await performanceHttpService.getDueDateBreakdown(undefined, end);
         context.commit('setDueDateBreakdown', breakdown);
+    },
+    async getPerformanceRating(context: ActionContext<IPerformanceState, any>): Promise<PerformanceRating | null> {
+        const { start, end } = context.state.dateRange;
+
+        return await performanceHttpService.getPerformanceRating(start, end);
     }
 };
 
