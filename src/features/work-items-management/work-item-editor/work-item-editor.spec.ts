@@ -17,19 +17,19 @@ describe('work item editor unit test', () => {
         expect(component).toBeTruthy();
     });
 
-    describe('isRecur', () => {
-        test('should return false for non-recurring items', async() => {
-            const item: WorkItem = { ...new WorkItem(), type: WorkItemType.Regular };
-            await component.setProps({ item });
-
-            expect(component.vm.isRecur).toBeFalsy();
-        });
-
-        test('should return true for recurring items', async() => {
+    describe('hasDueDate', () => {
+        test('should return false for non-regular items', async() => {
             const item: WorkItem = { ...new WorkItem(), type: WorkItemType.Recurring };
             await component.setProps({ item });
 
-            expect(component.vm.isRecur).toBeTruthy();
+            expect(component.vm.hasDueDate).toBeFalsy();
+        });
+
+        test('should return true for regular items', async() => {
+            const item: WorkItem = { ...new WorkItem(), type: WorkItemType.Regular };
+            await component.setProps({ item });
+
+            expect(component.vm.hasDueDate).toBeTruthy();
         });
     });
 

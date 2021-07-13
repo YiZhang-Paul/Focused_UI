@@ -175,20 +175,6 @@ describe('work items management unit test', () => {
             expect(component.vm.showStopFocusSessionDialog).toBeTruthy();
         });
 
-        test('should not load work items when failed to start break session', async() => {
-            const option = new FocusSessionStopOption('1234', 5);
-            timeSessionHttpStub.stopFocusSession.resolves(true);
-            timeSessionHttpStub.startBreakSession.resolves(false);
-            component.vm.showStopFocusSessionDialog = true;
-
-            await component.vm.onFocusSessionEnd(option);
-
-            sinonExpect.calledOnce(timeSessionHttpStub.stopFocusSession);
-            sinonExpect.calledOnce(timeSessionHttpStub.startBreakSession);
-            sinonExpect.notCalled(workItemHttpStub.getWorkItems);
-            expect(component.vm.showStopFocusSessionDialog).toBeFalsy();
-        });
-
         test('should load work items and close dialog when successfully stopped focus session and no break session needed', async() => {
             const option = new FocusSessionStopOption('1234', 0);
             timeSessionHttpStub.stopFocusSession.resolves(true);

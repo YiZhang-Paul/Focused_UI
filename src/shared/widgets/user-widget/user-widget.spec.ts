@@ -28,11 +28,11 @@ describe('user widget unit test', () => {
 
         test('should return user rating', () => {
             const ratings: PerformanceRating = {
-                determination: 55,
-                estimation: 65,
-                planning: 80,
-                adaptability: 60,
-                sustainability: 40
+                determination: 0.55,
+                estimation: 0.65,
+                planning: 0.8,
+                adaptability: 0.6,
+                sustainability: 0.4
             };
 
             store.commit(`${userKey}/setProfile`, { ...new UserProfile(), ratings });

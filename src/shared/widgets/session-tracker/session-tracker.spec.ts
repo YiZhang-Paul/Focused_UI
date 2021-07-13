@@ -5,7 +5,6 @@ import { createStore as createTimeSessionStore, timeSessionKey } from '../../../
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../../core/models/time-session/break-session';
-import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 
 import SessionTracker from './session-tracker.vue';
@@ -171,21 +170,20 @@ describe('session tracker unit test', () => {
         });
 
         test('should return correct progression series for focus session', () => {
-            const expected: PercentageSeries[] = [
-                { percent: 60, colorType: 'activity-colors-regular' },
-                { percent: 20, colorType: 'activity-colors-overlearning' }
-            ];
-
             const session: FocusSessionDto = {
                 ...new FocusSessionDto(),
-                activities: { regular: 1, recurring: 1, interruption: 1, overlearning: 1 },
+                startTime: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
                 targetDuration: 5
             };
 
             store.commit(focusSessionMutation, session);
             store.commit(breakSessionMutation, null);
 
-            expect(component.vm.progressSeries).toEqual(expected);
+            const result = component.vm.progressSeries;
+
+            expect(result.length).toEqual(1);
+            expect(Math.round(result[0].percent)).toEqual(80);
+            expect(result[0].colorType).toEqual('activity-colors-regular');
         });
     });
 

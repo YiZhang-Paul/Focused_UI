@@ -9,7 +9,6 @@ import { BreakSession } from '../../core/models/time-session/break-session';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
-import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service'
 
@@ -96,7 +95,7 @@ describe('time session store unit test', () => {
 
     describe('startFocusSession', () => {
         test('should return false when failed to start focus session', async() => {
-            const option = new FocusSessionStartupOption(new WorkItemDto());
+            const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(false);
 
             const result = await store.dispatch('startFocusSession', option);
@@ -108,7 +107,7 @@ describe('time session store unit test', () => {
         });
 
         test('should return true when successfully started focus session', async() => {
-            const option = new FocusSessionStartupOption(new WorkItemDto());
+            const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(true);
 
             const result = await store.dispatch('startFocusSession', option);
@@ -263,41 +262,15 @@ describe('time session store unit test', () => {
 
         test('should sync focus session time', () => {
             const startTime = new Date().toISOString();
-            const workItem: WorkItemDto = { ...new WorkItemDto(), status: WorkItemStatus.Ongoing, type: WorkItemType.Regular };
-            const session: FocusSessionDto = { ...new FocusSessionDto(), workItems: [workItem], startTime, targetDuration: 2 };
-            const { regular, recurring, interruption, overlearning } = session.activities;
+            const session: FocusSessionDto = { ...new FocusSessionDto(), startTime, targetDuration: 2 };
 
             store.dispatch('syncActiveTimeSession');
             store.commit('setActiveFocusSession', session);
             store.commit('setActiveBreakSession', null);
 
-            workItem.type = WorkItemType.Regular;
-            jest.advanceTimersByTime(oneHour * 2);
-            expect(Math.round(session.activities.regular)).toEqual(regular + 2);
-            expect(session.activities.recurring).toEqual(recurring);
-            expect(session.activities.interruption).toEqual(interruption);
-            expect(session.activities.overlearning).toEqual(overlearning);
+            jest.advanceTimersByTime(1000);
 
-            workItem.type = WorkItemType.Recurring;
-            jest.advanceTimersByTime(oneHour * 2);
-            expect(Math.round(session.activities.regular)).toEqual(regular + 2);
-            expect(Math.round(session.activities.recurring)).toEqual(recurring + 2);
-            expect(session.activities.interruption).toEqual(interruption);
-            expect(session.activities.overlearning).toEqual(overlearning);
-
-            workItem.type = WorkItemType.Interruption;
-            jest.advanceTimersByTime(oneHour * 2);
-            expect(Math.round(session.activities.regular)).toEqual(regular + 2);
-            expect(Math.round(session.activities.recurring)).toEqual(recurring + 2);
-            expect(Math.round(session.activities.interruption)).toEqual(interruption + 2);
-            expect(session.activities.overlearning).toEqual(overlearning);
-
-            workItem.status = WorkItemStatus.Completed;
-            jest.advanceTimersByTime(oneHour * 2);
-            expect(Math.round(session.activities.regular)).toEqual(regular + 2);
-            expect(Math.round(session.activities.recurring)).toEqual(recurring + 2);
-            expect(Math.round(session.activities.interruption)).toEqual(interruption + 2);
-            expect(Math.round(session.activities.overlearning)).toEqual(overlearning + 2);
+            expect(store.getters['activeFocusSession']).toEqual(session);
         });
 
         test('should sync break session time', () => {

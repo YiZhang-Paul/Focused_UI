@@ -36,11 +36,11 @@ describe('user ratings tracker unit test', () => {
             await component.setProps({ ratings });
             expect(component.vm.ratingsPath).toEqual('M50 50L50 50L50 50L50 50L50 50Z');
 
-            ratings = { determination: 100, planning: 100, sustainability: 100, adaptability: 100, estimation: 100 };
+            ratings = { determination: 1, planning: 1, sustainability: 1, adaptability: 1, estimation: 1 };
             await component.setProps({ ratings });
             expect(component.vm.ratingsPath).toEqual('M50 4.5L97.5 39L77.5 94.5L22.5 94.5L2.5 39Z');
 
-            ratings = { determination: 50, planning: 50, sustainability: 50, adaptability: 50, estimation: 50 };
+            ratings = { determination: 0.5, planning: 0.5, sustainability: 0.5, adaptability: 0.5, estimation: 0.5 };
             await component.setProps({ ratings });
             expect(component.vm.ratingsPath).toEqual('M50 27.25L73.75 44.5L63.75 72.25L36.25 72.25L26.25 44.5Z');
         });
