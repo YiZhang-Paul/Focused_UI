@@ -245,11 +245,19 @@ describe('work item store unit test', () => {
     });
 
     describe('loadWorkItems', () => {
+        test('should use default query when not provided', async() => {
+            expect(store.state[workItemKey].lastQuery).toBeFalsy();
+
+            await store.dispatch(`${workItemKey}/loadWorkItems`, null);
+
+            expect(store.state[workItemKey].lastQuery).toBeTruthy();
+        });
+
         test('should load work items and cache most recent query', async() => {
             const query: WorkItemQuery = { ...new WorkItemQuery(), searchText: 'search_text' };
             const items: WorkItemDto[] = [{ ...new WorkItemDto(), id: '1' }];
             workItemHttpStub.getWorkItems.resolves(items);
-            expect(store.state.lastQuery).not.toEqual(query);
+            expect(store.state[workItemKey].lastQuery).not.toEqual(query);
 
             await store.dispatch(`${workItemKey}/loadWorkItems`, query);
 

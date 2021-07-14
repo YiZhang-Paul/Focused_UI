@@ -4,6 +4,7 @@ import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
 import { UserProfile } from '../../core/models/user/user-profile';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 
 import { IUserState, createStore } from './user.state';
@@ -32,6 +33,41 @@ describe('user store unit test', () => {
 
             sinonExpect.calledOnce(userProfileHttpStub.getUserProfile);
             expect(store.getters['profile']).toEqual(user);
+        });
+    });
+
+    describe('updateUserRatings', () => {
+        test('should return false when failed to update ratings', async() => {
+            const user: UserProfile = {
+                ...new UserProfile(),
+                ratings: { ...new PerformanceRating(), estimation: 0.65 }
+            };
+
+            userProfileHttpStub.updateUserRatings.resolves(null);
+            store.commit('setProfile', user);
+
+            const result = await store.dispatch('updateUserRatings');
+
+            sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
+            expect(result).toBeFalsy();
+            expect(store.getters['profile']).toEqual(user);
+        });
+
+        test('should return true when successfully updated ratings', async() => {
+            const user: UserProfile = {
+                ...new UserProfile(),
+                ratings: { ...new PerformanceRating(), estimation: 0.65 }
+            };
+
+            const rating: PerformanceRating = { ...new PerformanceRating(), estimation: 0.8 };
+            userProfileHttpStub.updateUserRatings.resolves(rating);
+            store.commit('setProfile', user);
+
+            const result = await store.dispatch('updateUserRatings');
+
+            sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
+            expect(result).toBeTruthy();
+            expect(store.getters['profile'].ratings).toEqual(rating);
         });
     });
 });

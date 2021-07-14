@@ -8,6 +8,7 @@ import { TimeTrackingBreakdownDto } from '../../core/dtos/time-tracking-breakdow
 import { ActivityBreakdownDto } from '../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto';
 import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 import { IPerformanceState, createStore } from './performance.state';
@@ -111,6 +112,15 @@ describe('performance store unit test', () => {
 
             sinonExpect.calledOnce(performanceHttpStub.getDueDateBreakdown);
             expect(store.getters['dueDateBreakdown']).toEqual(breakdown);
+        });
+    });
+
+    describe('getPerformanceRating', () => {
+        test('should load performance rating', async() => {
+            const rating: PerformanceRating = { ...new PerformanceRating(), estimation: 0.65 };
+            performanceHttpStub.getPerformanceRating.resolves(rating);
+
+            expect(await store.dispatch('getPerformanceRating')).toEqual(rating);
         });
     });
 });

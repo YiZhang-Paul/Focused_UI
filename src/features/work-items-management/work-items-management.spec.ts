@@ -2,17 +2,23 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 'sinon';
 import { createStore, Store } from 'vuex';
 
+import { createStore as createUserStore, userKey } from '../../store/user/user.state';
+import { createStore as createPerformanceStore, performanceKey } from '../../store/performance/performance.state';
 import { createStore as createTimeSessionStore, timeSessionKey } from '../../store/time-session/time-session.state';
 import { createStore as createWorkItemStore, workItemKey } from '../../store/work-item/work-item.state';
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
+import { ValueChange } from '../../core/models/generic/value-change';
+import { UserProfile } from '../../core/models/user/user-profile';
+import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { FocusSessionStopOption } from '../../core/models/time-session/focus-session-stop-option';
 import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
+import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
@@ -21,13 +27,19 @@ import WorkItemsManagement from './work-items-management.vue';
 describe('work items management unit test', () => {
     let component: VueWrapper<any>;
     let store: Store<any>;
+    let userProfileHttpStub: SinonStubbedInstance<UserProfileHttpService>;
     let timeSessionHttpStub: SinonStubbedInstance<TimeSessionHttpService>;
     let workItemHttpStub: SinonStubbedInstance<WorkItemHttpService>;
 
     beforeEach(() => {
+        userProfileHttpStub = createStubInstance(UserProfileHttpService);
         timeSessionHttpStub = createStubInstance(TimeSessionHttpService);
         workItemHttpStub = createStubInstance(WorkItemHttpService);
         workItemHttpStub.getWorkItems.resolves([]);
+
+        container
+            .rebind<UserProfileHttpService>(types.UserProfileHttpService)
+            .toConstantValue(userProfileHttpStub as unknown as UserProfileHttpService);
 
         container
             .rebind<TimeSessionHttpService>(types.TimeSessionHttpService)
@@ -39,6 +51,8 @@ describe('work items management unit test', () => {
 
         store = createStore({
             modules: {
+                [userKey]: createUserStore(),
+                [performanceKey]: createPerformanceStore(),
                 [timeSessionKey]: createTimeSessionStore(),
                 [workItemKey]: createWorkItemStore()
             }
@@ -162,6 +176,10 @@ describe('work items management unit test', () => {
     });
 
     describe('onFocusSessionEnd', () => {
+        beforeEach(() => {
+            store.commit(`${userKey}/setProfile`, new UserProfile());
+        });
+
         test('should not load work items and keep dialog open when failed to stop focus session', async() => {
             const option = new FocusSessionStopOption('1234', 0);
             timeSessionHttpStub.stopFocusSession.resolves(false);
@@ -224,6 +242,20 @@ describe('work items management unit test', () => {
             sinonExpect.calledOnce(timeSessionHttpStub.stopBreakSession);
             sinonExpect.calledOnce(workItemHttpStub.getWorkItems);
             expect(component.vm.showStopBreakSessionDialog).toBeFalsy();
+        });
+    });
+
+    describe('onRatingsUpdate', () => {
+        test('should update ratings and close dialog', () => {
+            const previous = new PerformanceRating();
+            const current = new PerformanceRating();
+            component.vm.ratingsChangeOption = new ValueChange<PerformanceRating>(previous, current);
+            expect(component.vm.ratingsChangeOption).toBeTruthy();
+
+            component.vm.onRatingsUpdate();
+
+            sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
+            expect(component.vm.ratingsChangeOption).toBeFalsy();
         });
     });
 

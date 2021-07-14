@@ -142,4 +142,26 @@ describe('performance http service unit test', () => {
             expect(result.looming).toEqual(0);
         });
     });
+
+    describe('getPerformanceRating', () => {
+        test('should call correct endpoint', async() => {
+            const expected = 'api/v1/performance/ratings?end=2021-03-03T05:00:00.000Z';
+
+            await service.getPerformanceRating(undefined, new Date(2021, 2, 3));
+
+            sinonExpect.calledOnceWithExactly(getStub, expected);
+        });
+
+        test('should return empty ratings on error', async() => {
+            getStub.throws(new Error());
+
+            const result = await service.getPerformanceRating(undefined, new Date(2021, 2, 3));
+
+            expect(result.determination).toEqual(0);
+            expect(result.estimation).toEqual(0);
+            expect(result.planning).toEqual(0);
+            expect(result.adaptability).toEqual(0);
+            expect(result.sustainability).toEqual(0);
+        });
+    });
 });
