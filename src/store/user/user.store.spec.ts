@@ -1,4 +1,4 @@
-import { Store } from 'vuex';
+import { createStore, Store } from 'vuex';
 import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 'sinon';
 
 import { types } from '../../core/ioc/types';
@@ -7,7 +7,11 @@ import { UserProfile } from '../../core/models/user/user-profile';
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 
-import { IUserState, createStore } from './user.state';
+import { IUserState } from './user.state';
+import { UserGetter } from './user.getters';
+import { UserMutation } from './user.mutations';
+import { UserAction } from './user.actions';
+import { createStore as createUserStore, userCommit, userDispatch, userGetters, userKey } from './user.store';
 
 describe('user store unit test', () => {
     let store: Store<IUserState>;
@@ -20,19 +24,19 @@ describe('user store unit test', () => {
             .rebind<UserProfileHttpService>(types.UserProfileHttpService)
             .toConstantValue(userProfileHttpStub as unknown as UserProfileHttpService);
 
-        store = new Store(createStore());
+        store = createStore({ modules: { [userKey]: createUserStore() } });
     });
 
     describe('loadProfile', () => {
         test('should load user profile', async() => {
             const user: UserProfile = { ...new UserProfile(), name: 'john doe' };
             userProfileHttpStub.getUserProfile.resolves(user);
-            expect(store.getters['profile']).not.toEqual(user);
+            expect(userGetters(store, UserGetter.Profile)).not.toEqual(user);
 
-            await store.dispatch('loadProfile');
+            await userDispatch(store, UserAction.LoadProfile);
 
             sinonExpect.calledOnce(userProfileHttpStub.getUserProfile);
-            expect(store.getters['profile']).toEqual(user);
+            expect(userGetters(store, UserGetter.Profile)).toEqual(user);
         });
     });
 
@@ -44,13 +48,13 @@ describe('user store unit test', () => {
             };
 
             userProfileHttpStub.updateUserRatings.resolves(null);
-            store.commit('setProfile', user);
+            userCommit(store, UserMutation.SetProfile, user);
 
-            const result = await store.dispatch('updateUserRatings');
+            const result = await userDispatch(store, UserAction.UpdateUserRatings);
 
             sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
             expect(result).toBeFalsy();
-            expect(store.getters['profile']).toEqual(user);
+            expect(userGetters(store, UserGetter.Profile)).toEqual(user);
         });
 
         test('should return true when successfully updated ratings', async() => {
@@ -61,13 +65,13 @@ describe('user store unit test', () => {
 
             const rating: PerformanceRating = { ...new PerformanceRating(), estimation: 0.8 };
             userProfileHttpStub.updateUserRatings.resolves(rating);
-            store.commit('setProfile', user);
+            userCommit(store, UserMutation.SetProfile, user);
 
-            const result = await store.dispatch('updateUserRatings');
+            const result = await userDispatch(store, UserAction.UpdateUserRatings);
 
             sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
             expect(result).toBeTruthy();
-            expect(store.getters['profile'].ratings).toEqual(rating);
+            expect(userGetters<UserProfile>(store, UserGetter.Profile).ratings).toEqual(rating);
         });
     });
 });

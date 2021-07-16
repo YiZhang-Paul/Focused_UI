@@ -89,7 +89,9 @@
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 
-import { userKey } from '../../store/user/user.state';
+import { userDispatch, userGetters } from '../../store/user/user.store';
+import { UserGetter } from '../../store/user/user.getters';
+import { UserAction } from '../../store/user/user.actions';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
 import { performanceKey } from '../../store/performance/performance.state';
@@ -246,7 +248,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public onRatingsUpdate(): void {
-        this.$store.dispatch(`${userKey}/updateUserRatings`, this.ratingsChangeOption!.current);
+        userDispatch(this.$store, UserAction.UpdateUserRatings, this.ratingsChangeOption!.current);
         this.ratingsChangeOption = null;
     }
 
@@ -296,7 +298,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     private async showRatingsChange(): Promise<void> {
-        const user: UserProfile = this.$store.getters[`${userKey}/profile`];
+        const user = userGetters<UserProfile>(this.$store, UserGetter.Profile);
         const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
         this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
     }

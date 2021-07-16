@@ -1,7 +1,8 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
-import { createStore as createUserStore, userKey } from '../../../store/user/user.state';
+import { UserMutation } from '../../../store/user/user.mutations';
+import { createStore as createUserStore, userCommit, userKey } from '../../../store/user/user.store';
 import { createStore as createPerformanceStore, performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
@@ -102,7 +103,7 @@ describe('work item progress stats group unit test', () => {
 
     describe('ratings', () => {
         test('should return default ratings when user rating is not available', () => {
-            store.commit(`${userKey}/setProfile`, null);
+            userCommit(store, UserMutation.SetProfile, null);
 
             expect(component.vm.ratings).toEqual(new PerformanceRating());
         });
@@ -116,7 +117,7 @@ describe('work item progress stats group unit test', () => {
                 sustainability: 40
             };
 
-            store.commit(`${userKey}/setProfile`, { ...new UserProfile(), ratings } );
+            userCommit(store, UserMutation.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.ratings).toEqual(ratings);
         });

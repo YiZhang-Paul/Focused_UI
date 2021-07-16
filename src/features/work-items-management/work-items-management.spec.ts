@@ -2,7 +2,8 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 'sinon';
 import { createStore, Store } from 'vuex';
 
-import { createStore as createUserStore, userKey } from '../../store/user/user.state';
+import { UserMutation } from '../../store/user/user.mutations';
+import { createStore as createUserStore, userCommit, userKey } from '../../store/user/user.store';
 import { createStore as createPerformanceStore, performanceKey } from '../../store/performance/performance.state';
 import { createStore as createTimeSessionStore, timeSessionKey } from '../../store/time-session/time-session.state';
 import { createStore as createWorkItemStore, workItemKey } from '../../store/work-item/work-item.state';
@@ -177,7 +178,7 @@ describe('work items management unit test', () => {
 
     describe('onFocusSessionEnd', () => {
         beforeEach(() => {
-            store.commit(`${userKey}/setProfile`, new UserProfile());
+            userCommit(store, UserMutation.SetProfile, new UserProfile());
         });
 
         test('should not load work items and keep dialog open when failed to stop focus session', async() => {

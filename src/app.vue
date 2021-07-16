@@ -17,7 +17,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { userKey } from './store/user/user.state';
+import { userDispatch } from './store/user/user.store';
+import { UserAction } from './store/user/user.actions';
 import { timeSessionKey } from './store/time-session/time-session.state';
 import { performanceKey } from './store/performance/performance.state';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
@@ -38,7 +39,7 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression/dail
 export default class App extends Vue {
 
     public created(): void {
-        this.$store.dispatch(`${userKey}/loadProfile`);
+        userDispatch(this.$store, UserAction.LoadProfile);
         this.$store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
         this.$store.dispatch(`${timeSessionKey}/loadStaleTimeSession`);
         this.$store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);

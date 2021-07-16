@@ -22,7 +22,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { userKey } from '../../../store/user/user.state';
+import { userGetters } from '../../../store/user/user.store';
+import { UserGetter } from '../../../store/user/user.getters';
 import { performanceKey } from '../../../store/performance/performance.state';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
@@ -104,7 +105,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get ratings(): PerformanceRating {
-        const user = this.$store.getters[`${userKey}/profile`] as UserProfile;
+        const user = userGetters<UserProfile>(this.$store, UserGetter.Profile);
 
         return user?.ratings ?? new PerformanceRating();
     }
