@@ -26,8 +26,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { AccountReactivate, Logout } from 'mdue';
 
-import { userGetters } from '../../../store/user/user.store';
-import { UserGetter } from '../../../store/user/user.getters';
+import store from '../../../store';
 import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
@@ -45,7 +44,7 @@ import { GenericUtility } from '../../../core/utilities/generic-utility/generic-
 export default class UserWidget extends Vue {
 
     get profile(): UserProfile | null {
-        return userGetters(this.$store, UserGetter.Profile);
+        return store.user.getters(this.$store, store.user.keys.getters.Profile);
     }
 
     get rating(): number {

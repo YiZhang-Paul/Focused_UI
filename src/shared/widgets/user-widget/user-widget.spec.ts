@@ -1,8 +1,6 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
-import { createStore, Store } from 'vuex';
 
-import { MutationKey } from '../../../store/user/user.mutations';
-import { createStore as createUserStore, userCommit, userKey } from '../../../store/user/user.store';
+import { createStore } from '../../../store';
 import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
 
@@ -10,11 +8,11 @@ import UserWidget from './user-widget.vue';
 
 describe('user widget unit test', () => {
     let component: VueWrapper<any>;
-    let store: Store<any>;
+    let store: ReturnType<typeof createStore>;
 
     beforeEach(() => {
-        store = createStore({ modules: { [userKey]: createUserStore() } });
-        component = shallowMount(UserWidget, { global: { mocks: { $store: store } } });
+        store = createStore();
+        component = shallowMount(UserWidget, { global: { mocks: { $store: store.store } } });
     });
 
     test('should create component instance', () => {
@@ -36,7 +34,7 @@ describe('user widget unit test', () => {
                 sustainability: 0.4
             };
 
-            userCommit(store, MutationKey.SetProfile, { ...new UserProfile(), ratings });
+            store.user.commit(store.store, store.user.keys.mutations.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.rating).toEqual(60);
         });

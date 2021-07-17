@@ -43,8 +43,7 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import { WorkItemGetter } from '../../../store/work-item/work-item.getters';
-import { workItemGetters } from '../../../store/work-item/work-item.store';
+import store from '../../../store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItem } from '../../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
@@ -78,7 +77,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
 
     get workItems(): WorkItemDto[] {
-        return workItemGetters(this.$store, WorkItemGetter.WorkItems);
+        return store.workItem.getters(this.$store, store.workItem.keys.getters.WorkItems);
     }
 
     public onStatusSelected(item: WorkItemDto, status: WorkItemStatus): void {

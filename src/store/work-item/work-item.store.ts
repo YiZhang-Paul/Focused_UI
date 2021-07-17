@@ -5,36 +5,40 @@ import { container } from '../../core/ioc/container';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
 import { IState, state } from './work-item.state';
-import { getters, IGetters } from './work-item.getters';
-import { IMutations, mutations } from './work-item.mutations';
-import { actions, IActions, setActionServices } from './work-item.actions';
+import { GetterKey, getters, IGetters } from './work-item.getters';
+import { IMutations, MutationKey, mutations } from './work-item.mutations';
+import { ActionKey, actions, IActions, setActionServices } from './work-item.actions';
 
-export const workItemKey = 'workItem';
-export const workItemState = (store: Store<any>): IState => store.state[workItemKey];
+type Unpacked<T> = T extends Promise<infer U> ? U : T;
 
-export const workItemGetters = <T extends keyof IGetters>(store: Store<any>, getter: T): ReturnType<IGetters[T]> => {
-    return store.getters[`${workItemKey}/${getter}`];
-}
+export const createStore = (namespace: string) => {
+    setActionServices(container.get<WorkItemHttpService>(types.WorkItemHttpService));
 
-export const workItemCommit = (store: Store<any>, mutation: keyof IMutations, payload: any): void => {
-    store.commit(`${workItemKey}/${mutation}`, payload);
-}
-
-export const workItemDispatch = async<T extends keyof IActions>(store: Store<any>, action: T, payload?: any): Promise<ReturnType<IActions[T]>> => {
-    return await store.dispatch(`${workItemKey}/${action}`, payload);
-}
-
-export const createStore = (): Module<IState, any> => {
-    const workItemHttp = container.get<WorkItemHttpService>(types.WorkItemHttpService);
-    setActionServices(workItemHttp);
-
-    return {
+    const module: Module<IState, any> = {
         namespaced: true,
         state,
         getters,
         mutations,
         actions
     };
-};
 
-export const workItem = createStore();
+    const utilities = {
+        keys: {
+            getters: GetterKey,
+            mutations: MutationKey,
+            actions: ActionKey
+        },
+        state: (store: Store<any>): IState => store.state[namespace],
+        getters<T extends keyof IGetters>(store: Store<any>, getter: T): ReturnType<IGetters[T]> {
+            return store.getters[`${namespace}/${getter}`];
+        },
+        commit(store: Store<any>, mutation: keyof IMutations, payload: any): void {
+            store.commit(`${namespace}/${mutation}`, payload);
+        },
+        async dispatch<T extends keyof IActions>(store: Store<any>, action: T, payload?: any): Promise<Unpacked<ReturnType<IActions[T]>>> {
+            return await store.dispatch(`${namespace}/${action}`, payload);
+        }
+    };
+
+    return { module, utilities };
+}

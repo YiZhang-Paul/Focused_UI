@@ -17,12 +17,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { userDispatch } from './store/user/user.store';
-import { UserAction } from './store/user/user.actions';
-import { TimeSessionAction } from './store/time-session/time-session.actions';
-import { timeSessionDispatch } from './store/time-session/time-session.store';
-import { PerformanceAction } from './store/performance/performance.actions';
-import { performanceDispatch } from './store/performance/performance.store';
+import store from './store';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel/lightsource-panel.vue';
 import UserWidget from './shared/widgets/user-widget/user-widget.vue';
@@ -41,20 +36,20 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression/dail
 export default class App extends Vue {
 
     public created(): void {
-        userDispatch(this.$store, UserAction.LoadProfile);
-        timeSessionDispatch(this.$store, TimeSessionAction.LoadActiveTimeSession);
-        timeSessionDispatch(this.$store, TimeSessionAction.LoadStaleTimeSession);
-        timeSessionDispatch(this.$store, TimeSessionAction.SyncActiveTimeSession);
+        store.user.dispatch(this.$store, store.user.keys.actions.LoadProfile);
+        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.LoadActiveTimeSession);
+        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.LoadStaleTimeSession);
+        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.SyncActiveTimeSession);
         this.loadPerformanceBreakdowns();
     }
 
     public loadPerformanceBreakdowns(): void {
-        performanceDispatch(this.$store, PerformanceAction.LoadCurrentDayProgression);
-        performanceDispatch(this.$store, PerformanceAction.LoadCurrentDayTimeTracking);
-        performanceDispatch(this.$store, PerformanceAction.LoadActivityBreakdown);
-        performanceDispatch(this.$store, PerformanceAction.LoadActivityHistories);
-        performanceDispatch(this.$store, PerformanceAction.LoadEstimationBreakdown);
-        performanceDispatch(this.$store, PerformanceAction.LoadDueDateBreakdown);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadCurrentDayProgression);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadCurrentDayTimeTracking);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadActivityBreakdown);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadActivityHistories);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadEstimationBreakdown);
+        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadDueDateBreakdown);
     }
 }
 </script>

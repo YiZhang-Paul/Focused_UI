@@ -89,18 +89,7 @@
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 
-import { userDispatch, userGetters } from '../../store/user/user.store';
-import { UserGetter } from '../../store/user/user.getters';
-import { UserAction } from '../../store/user/user.actions';
-import { WorkItemGetter } from '../../store/work-item/work-item.getters';
-import { WorkItemMutation } from '../../store/work-item/work-item.mutations';
-import { WorkItemAction } from '../../store/work-item/work-item.actions';
-import { workItemCommit, workItemDispatch, workItemGetters } from '../../store/work-item/work-item.store';
-import { TimeSessionGetter } from '../../store/time-session/time-session.getters';
-import { TimeSessionAction } from '../../store/time-session/time-session.actions';
-import { timeSessionDispatch, timeSessionGetters } from '../../store/time-session/time-session.store';
-import { PerformanceAction } from '../../store/performance/performance.actions';
-import { performanceDispatch } from '../../store/performance/performance.store';
+import store from '../../store';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { ValueChange } from '../../core/models/generic/value-change';
@@ -164,31 +153,31 @@ export default class WorkItemsManagement extends Vue {
     public query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
-        return workItemGetters(this.$store, WorkItemGetter.PendingWorkItem);
+        return store.workItem.getters(this.$store, store.workItem.keys.getters.PendingWorkItem);
     }
 
     get editedItemMeta(): WorkItemDto | null {
-        return workItemGetters(this.$store, WorkItemGetter.EditedWorkItemMeta);
+        return store.workItem.getters(this.$store, store.workItem.keys.getters.EditedWorkItemMeta);
     }
 
     get editedItem(): WorkItem | null {
-        return workItemGetters(this.$store, WorkItemGetter.EditedWorkItem);
+        return store.workItem.getters(this.$store, store.workItem.keys.getters.EditedWorkItem);
     }
 
     get activeFocusSession(): FocusSessionDto | null {
-        return timeSessionGetters(this.$store, TimeSessionGetter.ActiveFocusSession);
+        return store.timeSession.getters(this.$store, store.timeSession.keys.getters.ActiveFocusSession);
     }
 
     get staleFocusSession(): FocusSessionDto | null {
-        return timeSessionGetters(this.$store, TimeSessionGetter.StaleFocusSession);
+        return store.timeSession.getters(this.$store, store.timeSession.keys.getters.StaleFocusSession);
     }
 
     get activeBreakSession(): BreakSession | null {
-        return timeSessionGetters(this.$store, TimeSessionGetter.ActiveBreakSession);
+        return store.timeSession.getters(this.$store, store.timeSession.keys.getters.ActiveBreakSession);
     }
 
     get staleBreakSession(): BreakSession | null {
-        return timeSessionGetters(this.$store, TimeSessionGetter.StaleBreakSession);
+        return store.timeSession.getters(this.$store, store.timeSession.keys.getters.StaleBreakSession);
     }
 
     public created(): void {
@@ -196,15 +185,15 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public startCreate(): void {
-        workItemCommit(this.$store, WorkItemMutation.SetPendingWorkItem, new WorkItemDto());
+        store.workItem.commit(this.$store, store.workItem.keys.mutations.SetPendingWorkItem, new WorkItemDto());
     }
 
     public cancelCreate(): void {
-        workItemCommit(this.$store, WorkItemMutation.SetPendingWorkItem, null);
+        store.workItem.commit(this.$store, store.workItem.keys.mutations.SetPendingWorkItem, null);
     }
 
     public async confirmCreate(): Promise<void> {
-        const id = await workItemDispatch(this.$store, WorkItemAction.CreateWorkItem);
+        const id = await store.workItem.dispatch(this.$store, store.workItem.keys.actions.CreateWorkItem);
 
         if (id) {
             await this.onItemSelect(id);
@@ -220,7 +209,7 @@ export default class WorkItemsManagement extends Vue {
     public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
         this.focusSessionOption = null;
 
-        if (await timeSessionDispatch(this.$store, TimeSessionAction.StartFocusSession, option)) {
+        if (await store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.StartFocusSession, option)) {
             await this.loadWorkItems();
         }
     }
@@ -229,10 +218,10 @@ export default class WorkItemsManagement extends Vue {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopFocusSessionDialog = false;
 
-        if (await timeSessionDispatch(this.$store, TimeSessionAction.StopFocusSession, option.focusSessionId)) {
+        if (await store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.StopFocusSession, option.focusSessionId)) {
             this.showRatingsChange();
             this.loadWorkItems();
-            timeSessionDispatch(this.$store, TimeSessionAction.StartBreakSession, breakOption);
+            store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.StartBreakSession, breakOption);
             this.$emit('session:stop');
         }
         else {
@@ -242,7 +231,7 @@ export default class WorkItemsManagement extends Vue {
 
     public async onBreakSessionEnd(id: string): Promise<void> {
         this.showStopBreakSessionDialog = false;
-        const isStopped = await timeSessionDispatch(this.$store, TimeSessionAction.StopBreakSession, id);
+        const isStopped = await store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.StopBreakSession, id);
 
         if (isStopped) {
             await this.loadWorkItems();
@@ -253,58 +242,58 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public onRatingsUpdate(): void {
-        userDispatch(this.$store, UserAction.UpdateUserRatings, this.ratingsChangeOption!.current);
+        store.user.dispatch(this.$store, store.user.keys.actions.UpdateUserRatings, this.ratingsChangeOption!.current);
         this.ratingsChangeOption = null;
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
-        if (await workItemDispatch(this.$store, WorkItemAction.UpdateWorkItemMeta, item)) {
+        if (await store.workItem.dispatch(this.$store, store.workItem.keys.actions.UpdateWorkItemMeta, item)) {
             this.$emit('item:update');
         }
     }
 
     public onItemClose(): void {
-        workItemCommit(this.$store, WorkItemMutation.SetEditedWorkItem, null);
+        store.workItem.commit(this.$store, store.workItem.keys.mutations.SetEditedWorkItem, null);
     }
 
     public async onItemUpdate(item: WorkItem): Promise<void> {
-        if (await workItemDispatch(this.$store, WorkItemAction.UpdateWorkItem, item)) {
+        if (await store.workItem.dispatch(this.$store, store.workItem.keys.actions.UpdateWorkItem, item)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemDelete(id: string): Promise<void> {
-        if (await workItemDispatch(this.$store, WorkItemAction.DeleteWorkItem, id)) {
+        if (await store.workItem.dispatch(this.$store, store.workItem.keys.actions.DeleteWorkItem, id)) {
             this.$emit('item:delete');
         }
     }
 
     public async onItemSelect(id: string): Promise<void> {
-        await workItemDispatch(this.$store, WorkItemAction.LoadEditedWorkItem, id);
+        await store.workItem.dispatch(this.$store, store.workItem.keys.actions.LoadEditedWorkItem, id);
     }
 
     public async onItemStart(item: WorkItemDto): Promise<void> {
-        if (!timeSessionGetters(this.$store, TimeSessionGetter.HasActiveFocusSession)) {
+        if (!store.timeSession.getters(this.$store, store.timeSession.keys.getters.HasActiveFocusSession)) {
             this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
-        else if (await timeSessionDispatch(this.$store, TimeSessionAction.SwitchWorkItem, item.id)) {
+        else if (await store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.SwitchWorkItem, item.id)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
-        if (await timeSessionDispatch(this.$store, TimeSessionAction.StartOverlearning, targetStatus)) {
+        if (await store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.StartOverlearning, targetStatus)) {
             this.$emit('item:update');
         }
     }
 
     public async loadWorkItems(): Promise<void> {
-        await workItemDispatch(this.$store, WorkItemAction.LoadWorkItems, this.query);
+        await store.workItem.dispatch(this.$store, store.workItem.keys.actions.LoadWorkItems, this.query);
     }
 
     private async showRatingsChange(): Promise<void> {
-        const user = userGetters(this.$store, UserGetter.Profile);
-        const ratings = await performanceDispatch(this.$store, PerformanceAction.GetPerformanceRating);
+        const user = store.user.getters(this.$store, store.user.keys.getters.Profile);
+        const ratings = await store.performance.dispatch(this.$store, store.performance.keys.actions.GetPerformanceRating);
         this.ratingsChangeOption = new ValueChange(user!.ratings, ratings!);
     }
 }

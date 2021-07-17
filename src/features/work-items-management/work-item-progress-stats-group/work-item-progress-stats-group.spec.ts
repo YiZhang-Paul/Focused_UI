@@ -1,10 +1,6 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
-import { createStore, Store } from 'vuex';
 
-import { MutationKey as UserMutationKey } from '../../../store/user/user.mutations';
-import { createStore as createUserStore, userCommit, userKey } from '../../../store/user/user.store';
-import { MutationKey as PerformanceMutationKey } from '../../../store/performance/performance.mutations';
-import { createStore as createPerformanceStore, performanceCommit, performanceKey } from '../../../store/performance/performance.store';
+import { createStore } from '../../../store';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
@@ -15,17 +11,11 @@ import WorkItemProgressStatsGroup from './work-item-progress-stats-group.vue';
 
 describe('work item progress stats group unit test', () => {
     let component: VueWrapper<any>;
-    let store: Store<any>;
+    let store: ReturnType<typeof createStore>;
 
     beforeEach(() => {
-        store = createStore({
-            modules: {
-                [userKey]: createUserStore(),
-                [performanceKey]: createPerformanceStore()
-            }
-        });
-
-        component = shallowMount(WorkItemProgressStatsGroup, { global: { mocks: { $store: store } } });
+        store = createStore();
+        component = shallowMount(WorkItemProgressStatsGroup, { global: { mocks: { $store: store.store } } });
     });
 
     test('should create component instance', () => {
@@ -35,7 +25,7 @@ describe('work item progress stats group unit test', () => {
     describe('pastDueAndLooming', () => {
         test('should return total past due and looming items', () => {
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            performanceCommit(store, MutationKey.SetDueDateBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.keys.mutations.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLooming).toEqual('5');
         });
@@ -49,7 +39,7 @@ describe('work item progress stats group unit test', () => {
             ];
 
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            performanceCommit(store, PerformanceMutationKey.SetDueDateBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.keys.mutations.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLoomingSeries).toEqual(expected);
         });
@@ -64,7 +54,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 2.5, recurring: 3, overlearning: 0, interruption: 0 }
             ];
 
-            performanceCommit(store, PerformanceMutationKey.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('4.5 hours');
         });
@@ -76,7 +66,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 0, recurring: 0, overlearning: 0, interruption: 0 }
             ];
 
-            performanceCommit(store, PerformanceMutationKey.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('1 hour');
         });
@@ -96,7 +86,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 3, recurring: 3, overlearning: 2, interruption: 0 }
             ];
 
-            performanceCommit(store, PerformanceMutationKey.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
 
             expect(component.vm.dailyFocusSeries).toEqual(expected);
         });
@@ -104,7 +94,7 @@ describe('work item progress stats group unit test', () => {
 
     describe('ratings', () => {
         test('should return default ratings when user rating is not available', () => {
-            userCommit(store, UserMutationKey.SetProfile, null);
+            store.user.commit(store.store, store.user.keys.mutations.SetProfile, null);
 
             expect(component.vm.ratings).toEqual(new PerformanceRating());
         });
@@ -118,7 +108,7 @@ describe('work item progress stats group unit test', () => {
                 sustainability: 40
             };
 
-            userCommit(store, UserMutationKey.SetProfile, { ...new UserProfile(), ratings });
+            store.user.commit(store.store, store.user.keys.mutations.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.ratings).toEqual(ratings);
         });

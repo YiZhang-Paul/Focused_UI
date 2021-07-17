@@ -12,15 +12,14 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { PerformanceGetter } from '../../../store/performance/performance.getters';
-import { performanceGetters } from '../../../store/performance/performance.store';
+import store from '../../../store';
 import { StyleConfig } from '../../../core/models/generic/style-config';
 import { ProgressionCounter } from '../../../core/models/generic/progression-counter';
 
 export default class DailyFocusProgression extends Vue {
 
     get progression(): ProgressionCounter<number> | null {
-        return performanceGetters(this.$store, PerformanceGetter.CurrentDayProgression);
+        return store.performance.getters(this.$store, store.performance.keys.getters.CurrentDayProgression);
     }
 
     get hoursFocused(): string {

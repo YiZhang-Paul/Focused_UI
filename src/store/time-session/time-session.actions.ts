@@ -1,7 +1,6 @@
 import { ActionContext, ActionTree } from 'vuex';
 
 import { ActionKey as WorkItemActionKey } from '../work-item/work-item.actions';
-import { workItemKey } from '../work-item/work-item.store';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
@@ -70,7 +69,7 @@ export const actions: ActionTree<IState, IState> & IActions = {
         const isStarted = await timeSessionHttpService.startOverlearning(targetStatus);
 
         if (isStarted) {
-            context.dispatch(`${workItemKey}/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
+            context.dispatch(`workItem/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
             context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 
@@ -80,7 +79,7 @@ export const actions: ActionTree<IState, IState> & IActions = {
         const isSwitched = await timeSessionHttpService.switchWorkItem(id);
 
         if (isSwitched) {
-            context.dispatch(`${workItemKey}/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
+            context.dispatch(`workItem/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
             context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 

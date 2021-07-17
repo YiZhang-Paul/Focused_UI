@@ -22,10 +22,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { userGetters } from '../../../store/user/user.store';
-import { UserGetter } from '../../../store/user/user.getters';
-import { PerformanceGetter } from '../../../store/performance/performance.getters';
-import { performanceGetters } from '../../../store/performance/performance.store';
+import store from '../../../store';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../core/dtos/time-tracking-breakdown-dto';
@@ -46,7 +43,7 @@ import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker/use
 export default class WorkItemProgressStatsGroup extends Vue {
 
     get dueDateBreakdown(): DueDateBreakdownDto | null {
-        return performanceGetters(this.$store, PerformanceGetter.DueDateBreakdown);
+        return store.performance.getters(this.$store, store.performance.keys.getters.DueDateBreakdown);
     }
 
     get pastDueAndLooming(): string {
@@ -66,7 +63,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return performanceGetters(this.$store, PerformanceGetter.ActivityHistories);
+        return store.performance.getters(this.$store, store.performance.keys.getters.ActivityHistories);
     }
 
     get averageFocus(): string {
@@ -101,11 +98,11 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
-        return performanceGetters(this.$store, PerformanceGetter.CurrentDayTimeTracking);
+        return store.performance.getters(this.$store, store.performance.keys.getters.CurrentDayTimeTracking);
     }
 
     get ratings(): PerformanceRating {
-        const user = userGetters(this.$store, UserGetter.Profile);
+        const user = store.user.getters(this.$store, store.user.keys.getters.Profile);
 
         return user?.ratings ?? new PerformanceRating();
     }

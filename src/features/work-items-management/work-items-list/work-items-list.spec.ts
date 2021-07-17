@@ -1,7 +1,6 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
-import { createStore, Store } from 'vuex';
 
-import { createStore as createWorkItemStore, workItemKey } from '../../../store/work-item/work-item.store';
+import { createStore } from '../../../store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 
@@ -9,11 +8,11 @@ import WorkItemsList from './work-items-list.vue';
 
 describe('work items list unit test', () => {
     let component: VueWrapper<any>;
-    let store: Store<any>;
+    let store: ReturnType<typeof createStore>;
 
     beforeEach(() => {
-        store = createStore({ modules: { [workItemKey]: createWorkItemStore() } });
-        component = shallowMount(WorkItemsList, { global: { mocks: { $store: store } } });
+        store = createStore();
+        component = shallowMount(WorkItemsList, { global: { mocks: { $store: store.store } } });
     });
 
     test('should create component instance', () => {

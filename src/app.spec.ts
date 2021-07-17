@@ -1,25 +1,15 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
-import { createStore, Store } from 'vuex';
 
-import { createStore as createUserStore, userKey } from './store/user/user.store';
-import { createStore as createTimeSessionStore, timeSessionKey } from './store/time-session/time-session.store';
-import { createStore as createPerformanceStore, performanceKey } from './store/performance/performance.store';
+import { createStore } from './store';
 import App from './app.vue';
 
 describe('app unit test', () => {
     let component: VueWrapper<any>;
-    let store: Store<any>;
+    let store: ReturnType<typeof createStore>;
 
     beforeEach(() => {
-        store = createStore({
-            modules: {
-                [userKey]: createUserStore(),
-                [timeSessionKey]: createTimeSessionStore(),
-                [performanceKey]: createPerformanceStore()
-            }
-        });
-
-        component = shallowMount(App, { global: { mocks: { $store: store } } });
+        store = createStore();
+        component = shallowMount(App, { global: { mocks: { $store: store.store } } });
     });
 
     test('should create component instance', () => {

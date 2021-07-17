@@ -26,10 +26,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { PerformanceGetter } from '../../../store/performance/performance.getters';
-import { performanceGetters } from '../../../store/performance/performance.store';
-import { WorkItemGetter } from '../../../store/work-item/work-item.getters';
-import { workItemGetters } from '../../../store/work-item/work-item.store';
+import store from '../../../store';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
 import { DateRange } from '../../../core/models/generic/date-range';
@@ -50,15 +47,15 @@ import ActivityHistory from '../../../shared/widgets/activity-history/activity-h
 export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
-        return performanceGetters(this.$store, PerformanceGetter.DateRange);
+        return store.performance.getters(this.$store, store.performance.keys.getters.DateRange);
     }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
-        return performanceGetters(this.$store, PerformanceGetter.ActivityBreakdown);
+        return store.performance.getters(this.$store, store.performance.keys.getters.ActivityBreakdown);
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return performanceGetters(this.$store, PerformanceGetter.ActivityHistories);
+        return store.performance.getters(this.$store, store.performance.keys.getters.ActivityHistories);
     }
 
     get timeTracked(): string {
@@ -81,7 +78,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get estimationBreakdown(): EstimationBreakdownDto | null {
-        return performanceGetters(this.$store, PerformanceGetter.EstimationBreakdown);
+        return store.performance.getters(this.$store, store.performance.keys.getters.EstimationBreakdown);
     }
 
     get inaccurateEstimate(): string {
@@ -102,7 +99,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get radarSeries(): RadarSeries[] {
-        const items = workItemGetters(this.$store, WorkItemGetter.WorkItems);
+        const items = store.workItem.getters(this.$store, store.workItem.keys.getters.WorkItems);
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,
