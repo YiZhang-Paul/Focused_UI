@@ -19,7 +19,7 @@ export const userCommit = <T = any>(rootStore: Store<any>, mutation: UserMutatio
     rootStore.commit(`${userKey}/${mutation}`, payload);
 }
 
-export const userDispatch = async<T = any, K = void>(rootStore: Store<any>, action: UserAction, payload?: T): Promise<K> => {
+export const userDispatch = async<T = void>(rootStore: Store<any>, action: UserAction, payload?: any): Promise<T> => {
     return await rootStore.dispatch(`${userKey}/${action}`, payload);
 }
 

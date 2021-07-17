@@ -26,7 +26,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import { performanceKey } from '../../../store/performance/performance.state';
+import { PerformanceGetter } from '../../../store/performance/performance.getters';
+import { performanceGetters, performanceKey } from '../../../store/performance/performance.store';
 import { workItemKey } from '../../../store/work-item/work-item.state';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
@@ -49,15 +50,15 @@ import ActivityHistory from '../../../shared/widgets/activity-history/activity-h
 export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
-        return this.$store.getters[`${performanceKey}/dateRange`];
+        return performanceGetters(this.$store, PerformanceGetter.DateRange);
     }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
-        return this.$store.getters[`${performanceKey}/activityBreakdown`];
+        return performanceGetters(this.$store, PerformanceGetter.ActivityBreakdown);
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return this.$store.getters[`${performanceKey}/activityHistories`];
+        return performanceGetters(this.$store, PerformanceGetter.ActivityHistories);
     }
 
     get timeTracked(): string {
@@ -80,7 +81,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get estimationBreakdown(): EstimationBreakdownDto | null {
-        return this.$store.getters[`${performanceKey}/estimationBreakdown`];
+        return performanceGetters(this.$store, PerformanceGetter.EstimationBreakdown);
     }
 
     get inaccurateEstimate(): string {

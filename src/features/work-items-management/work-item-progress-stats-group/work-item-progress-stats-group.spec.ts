@@ -3,7 +3,8 @@ import { createStore, Store } from 'vuex';
 
 import { UserMutation } from '../../../store/user/user.mutations';
 import { createStore as createUserStore, userCommit, userKey } from '../../../store/user/user.store';
-import { createStore as createPerformanceStore, performanceKey } from '../../../store/performance/performance.state';
+import { PerformanceMutation } from '../../../store/performance/performance.mutations';
+import { createStore as createPerformanceStore, performanceCommit, performanceKey } from '../../../store/performance/performance.store';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
@@ -34,7 +35,7 @@ describe('work item progress stats group unit test', () => {
     describe('pastDueAndLooming', () => {
         test('should return total past due and looming items', () => {
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            store.commit(`${performanceKey}/setDueDateBreakdown`, breakdown);
+            performanceCommit(store, PerformanceMutation.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLooming).toEqual('5');
         });
@@ -48,7 +49,7 @@ describe('work item progress stats group unit test', () => {
             ];
 
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            store.commit(`${performanceKey}/setDueDateBreakdown`, breakdown);
+            performanceCommit(store, PerformanceMutation.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLoomingSeries).toEqual(expected);
         });
@@ -63,7 +64,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 2.5, recurring: 3, overlearning: 0, interruption: 0 }
             ];
 
-            store.commit(`${performanceKey}/setActivityHistories`, histories);
+            performanceCommit(store, PerformanceMutation.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('4.5 hours');
         });
@@ -75,7 +76,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 0, recurring: 0, overlearning: 0, interruption: 0 }
             ];
 
-            store.commit(`${performanceKey}/setActivityHistories`, histories);
+            performanceCommit(store, PerformanceMutation.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('1 hour');
         });
@@ -95,7 +96,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 3, recurring: 3, overlearning: 2, interruption: 0 }
             ];
 
-            store.commit(`${performanceKey}/setActivityHistories`, histories);
+            performanceCommit(store, PerformanceMutation.SetActivityHistories, histories);
 
             expect(component.vm.dailyFocusSeries).toEqual(expected);
         });

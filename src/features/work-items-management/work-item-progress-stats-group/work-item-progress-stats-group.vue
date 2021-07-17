@@ -24,7 +24,8 @@ import { Options, Vue } from 'vue-class-component';
 
 import { userGetters } from '../../../store/user/user.store';
 import { UserGetter } from '../../../store/user/user.getters';
-import { performanceKey } from '../../../store/performance/performance.state';
+import { PerformanceGetter } from '../../../store/performance/performance.getters';
+import { performanceGetters } from '../../../store/performance/performance.store';
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../core/dtos/time-tracking-breakdown-dto';
@@ -46,7 +47,7 @@ import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker/use
 export default class WorkItemProgressStatsGroup extends Vue {
 
     get dueDateBreakdown(): DueDateBreakdownDto | null {
-        return this.$store.getters[`${performanceKey}/dueDateBreakdown`];
+        return performanceGetters(this.$store, PerformanceGetter.DueDateBreakdown);
     }
 
     get pastDueAndLooming(): string {
@@ -66,7 +67,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return this.$store.getters[`${performanceKey}/activityHistories`];
+        return performanceGetters(this.$store, PerformanceGetter.ActivityHistories);
     }
 
     get averageFocus(): string {
@@ -101,7 +102,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
-        return this.$store.getters[`${performanceKey}/currentDayTimeTracking`];
+        return performanceGetters(this.$store, PerformanceGetter.CurrentDayTimeTracking);
     }
 
     get ratings(): PerformanceRating {

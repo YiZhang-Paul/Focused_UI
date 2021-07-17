@@ -94,7 +94,8 @@ import { UserGetter } from '../../store/user/user.getters';
 import { UserAction } from '../../store/user/user.actions';
 import { workItemKey } from '../../store/work-item/work-item.state';
 import { timeSessionKey } from '../../store/time-session/time-session.state';
-import { performanceKey } from '../../store/performance/performance.state';
+import { PerformanceAction } from '../../store/performance/performance.actions';
+import { performanceDispatch } from '../../store/performance/performance.store';
 import { FocusSessionDto } from '../../core/dtos/focus-session-dto';
 import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { ValueChange } from '../../core/models/generic/value-change';
@@ -299,7 +300,7 @@ export default class WorkItemsManagement extends Vue {
 
     private async showRatingsChange(): Promise<void> {
         const user = userGetters<UserProfile>(this.$store, UserGetter.Profile);
-        const ratings = await this.$store.dispatch(`${performanceKey}/getPerformanceRating`);
+        const ratings = await performanceDispatch<PerformanceRating>(this.$store, PerformanceAction.GetPerformanceRating);
         this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
     }
 }

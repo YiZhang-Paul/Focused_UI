@@ -20,7 +20,8 @@ import { Options, Vue } from 'vue-class-component';
 import { userDispatch } from './store/user/user.store';
 import { UserAction } from './store/user/user.actions';
 import { timeSessionKey } from './store/time-session/time-session.state';
-import { performanceKey } from './store/performance/performance.state';
+import { PerformanceAction } from './store/performance/performance.actions';
+import { performanceDispatch } from './store/performance/performance.store';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
 import LightsourcePanel from './shared/panels/lightsource-panel/lightsource-panel.vue';
 import UserWidget from './shared/widgets/user-widget/user-widget.vue';
@@ -47,12 +48,12 @@ export default class App extends Vue {
     }
 
     public loadPerformanceBreakdowns(): void {
-        this.$store.dispatch(`${performanceKey}/loadCurrentDayProgression`);
-        this.$store.dispatch(`${performanceKey}/loadCurrentDayTimeTracking`);
-        this.$store.dispatch(`${performanceKey}/loadActivityBreakdown`);
-        this.$store.dispatch(`${performanceKey}/loadActivityHistories`);
-        this.$store.dispatch(`${performanceKey}/loadEstimationBreakdown`);
-        this.$store.dispatch(`${performanceKey}/loadDueDateBreakdown`);
+        performanceDispatch(this.$store, PerformanceAction.LoadCurrentDayProgression);
+        performanceDispatch(this.$store, PerformanceAction.LoadCurrentDayTimeTracking);
+        performanceDispatch(this.$store, PerformanceAction.LoadActivityBreakdown);
+        performanceDispatch(this.$store, PerformanceAction.LoadActivityHistories);
+        performanceDispatch(this.$store, PerformanceAction.LoadEstimationBreakdown);
+        performanceDispatch(this.$store, PerformanceAction.LoadDueDateBreakdown);
     }
 }
 </script>

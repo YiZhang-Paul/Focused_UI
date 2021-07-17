@@ -4,7 +4,7 @@ import { createStore, Store } from 'vuex';
 
 import { UserMutation } from '../../store/user/user.mutations';
 import { createStore as createUserStore, userCommit, userKey } from '../../store/user/user.store';
-import { createStore as createPerformanceStore, performanceKey } from '../../store/performance/performance.state';
+import { createStore as createPerformanceStore, performanceKey } from '../../store/performance/performance.store';
 import { createStore as createTimeSessionStore, timeSessionKey } from '../../store/time-session/time-session.state';
 import { createStore as createWorkItemStore, workItemKey } from '../../store/work-item/work-item.state';
 import { types } from '../../core/ioc/types';
