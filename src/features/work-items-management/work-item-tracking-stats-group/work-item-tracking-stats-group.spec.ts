@@ -3,7 +3,8 @@ import { createStore, Store } from 'vuex';
 
 import { PerformanceMutation } from '../../../store/performance/performance.mutations';
 import { createStore as createPerformanceStore, performanceCommit, performanceKey } from '../../../store/performance/performance.store';
-import { createStore as createWorkItemStore, workItemKey } from '../../../store/work-item/work-item.state';
+import { WorkItemMutation } from '../../../store/work-item/work-item.mutations';
+import { createStore as createWorkItemStore, workItemCommit, workItemKey } from '../../../store/work-item/work-item.store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
@@ -124,7 +125,7 @@ describe('work item tracking stats group unit test', () => {
                 { quadrant: 4, value: 7, colorType: 'priority-colors-3' }
             ];
 
-            store.commit(`${workItemKey}/setWorkItems`, items);
+            workItemCommit(store, WorkItemMutation.SetWorkItems, items);
 
             expect(component.vm.radarSeries).toEqual(expected);
         });

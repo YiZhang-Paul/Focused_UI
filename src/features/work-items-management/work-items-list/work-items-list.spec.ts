@@ -1,7 +1,7 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
-import { createStore as createWorkItemStore, workItemKey } from '../../../store/work-item/work-item.state';
+import { createStore as createWorkItemStore, workItemKey } from '../../../store/work-item/work-item.store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 

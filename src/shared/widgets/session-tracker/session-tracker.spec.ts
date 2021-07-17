@@ -1,7 +1,8 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
-import { createStore as createTimeSessionStore, timeSessionKey } from '../../../store/time-session/time-session.state';
+import { TimeSessionMutation } from '../../../store/time-session/time-session.mutations';
+import { createStore as createTimeSessionStore, timeSessionCommit, timeSessionKey } from '../../../store/time-session/time-session.store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
 import { BreakSession } from '../../../core/models/time-session/break-session';
@@ -10,8 +11,6 @@ import { WorkItemStatus } from '../../../core/enums/work-item-status.enum';
 import SessionTracker from './session-tracker.vue';
 
 describe('session tracker unit test', () => {
-    const focusSessionMutation = `${timeSessionKey}/setActiveFocusSession`;
-    const breakSessionMutation = `${timeSessionKey}/setActiveBreakSession`;
     let component: VueWrapper<any>;
     let store: Store<any>;
 
@@ -26,8 +25,8 @@ describe('session tracker unit test', () => {
 
     describe('containerStyle', () => {
         test('should return correct container style', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             const result = component.vm.containerStyle;
 
@@ -40,8 +39,8 @@ describe('session tracker unit test', () => {
 
     describe('verticalGuardStyle', () => {
         test('should return correct style', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             const result = component.vm.verticalGuardStyle;
 
@@ -52,8 +51,8 @@ describe('session tracker unit test', () => {
 
     describe('horizontalGuardStyle', () => {
         test('should return correct style', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             const result = component.vm.horizontalGuardStyle;
 
@@ -64,22 +63,22 @@ describe('session tracker unit test', () => {
 
     describe('title', () => {
         test('should return correct title for idle state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.title).toEqual('no active item.');
         });
 
         test('should return correct title for resting state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, new BreakSession());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, new BreakSession());
 
             expect(component.vm.title).toEqual('taking a break...');
         });
 
         test('should return correct title for pending state', () => {
-            store.commit(focusSessionMutation, new FocusSessionDto());
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.title).toEqual('waiting for next item...');
         });
@@ -90,8 +89,8 @@ describe('session tracker unit test', () => {
                 workItems: [{ ...new WorkItemDto(), name: 'item_name', status: WorkItemStatus.Ongoing }]
             };
 
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.title).toEqual('item_name');
         });
@@ -102,8 +101,8 @@ describe('session tracker unit test', () => {
                 workItems: [{ ...new WorkItemDto(), status: WorkItemStatus.Ongoing }]
             };
 
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.title).toEqual('N/A');
         });
@@ -111,22 +110,22 @@ describe('session tracker unit test', () => {
 
     describe('dropItemText', () => {
         test('should return correct drop item text for idle state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.dropItemText).toEqual('drop to start');
         });
 
         test('should return correct drop item text for resting state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, new BreakSession());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, new BreakSession());
 
             expect(component.vm.dropItemText).toEqual('drop to start');
         });
 
         test('should return correct drop item text for pending state', () => {
-            store.commit(focusSessionMutation, new FocusSessionDto());
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.dropItemText).toEqual('drop to continue');
         });
@@ -137,8 +136,8 @@ describe('session tracker unit test', () => {
                 workItems: [{ ...new WorkItemDto(), status: WorkItemStatus.Ongoing }]
             };
 
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.dropItemText).toEqual('drop to swap');
         });
@@ -146,8 +145,8 @@ describe('session tracker unit test', () => {
 
     describe('progressSeries', () => {
         test('should return correct progression series for idle state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.progressSeries).toEqual([]);
         });
@@ -159,8 +158,8 @@ describe('session tracker unit test', () => {
                 targetDuration: 2
             };
 
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, session);
 
             const result = component.vm.progressSeries;
 
@@ -176,8 +175,8 @@ describe('session tracker unit test', () => {
                 targetDuration: 5
             };
 
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             const result = component.vm.progressSeries;
 
@@ -189,22 +188,22 @@ describe('session tracker unit test', () => {
 
     describe('colorType', () => {
         test('should return correct color type for idle state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.colorType).toEqual('session-status-colors-idle');
         });
 
         test('should return correct color type for resting state', () => {
-            store.commit(focusSessionMutation, null);
-            store.commit(breakSessionMutation, new BreakSession());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, new BreakSession());
 
             expect(component.vm.colorType).toEqual('session-status-colors-resting');
         });
 
         test('should return correct color type for pending state', () => {
-            store.commit(focusSessionMutation, new FocusSessionDto());
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.colorType).toEqual('session-status-colors-pending');
         });
@@ -215,8 +214,8 @@ describe('session tracker unit test', () => {
                 workItems: [{ ...new WorkItemDto(), status: WorkItemStatus.Ongoing }]
             };
 
-            store.commit(focusSessionMutation, session);
-            store.commit(breakSessionMutation, null);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, session);
+            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
 
             expect(component.vm.colorType).toEqual('session-status-colors-ongoing');
         });

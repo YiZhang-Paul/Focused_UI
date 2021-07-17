@@ -19,7 +19,8 @@ import { Options, Vue } from 'vue-class-component';
 
 import { userDispatch } from './store/user/user.store';
 import { UserAction } from './store/user/user.actions';
-import { timeSessionKey } from './store/time-session/time-session.state';
+import { TimeSessionAction } from './store/time-session/time-session.actions';
+import { timeSessionDispatch } from './store/time-session/time-session.store';
 import { PerformanceAction } from './store/performance/performance.actions';
 import { performanceDispatch } from './store/performance/performance.store';
 import WorkItemsManagement from './features/work-items-management/work-items-management.vue';
@@ -41,9 +42,9 @@ export default class App extends Vue {
 
     public created(): void {
         userDispatch(this.$store, UserAction.LoadProfile);
-        this.$store.dispatch(`${timeSessionKey}/loadActiveTimeSession`);
-        this.$store.dispatch(`${timeSessionKey}/loadStaleTimeSession`);
-        this.$store.dispatch(`${timeSessionKey}/syncActiveTimeSession`);
+        timeSessionDispatch(this.$store, TimeSessionAction.LoadActiveTimeSession);
+        timeSessionDispatch(this.$store, TimeSessionAction.LoadStaleTimeSession);
+        timeSessionDispatch(this.$store, TimeSessionAction.SyncActiveTimeSession);
         this.loadPerformanceBreakdowns();
     }
 

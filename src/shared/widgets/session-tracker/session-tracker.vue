@@ -35,7 +35,8 @@
 import { Options, Vue } from 'vue-class-component';
 import { StopCircle, Tag, Timer, Undo } from 'mdue';
 
-import { timeSessionKey } from '../../../store/time-session/time-session.state';
+import { TimeSessionGetter } from '../../../store/time-session/time-session.getters';
+import { timeSessionGetters } from '../../../store/time-session/time-session.store';
 import { FocusSessionDto } from '../../../core/dtos/focus-session-dto';
 import { IconMeta } from '../../../core/models/generic/icon-meta';
 import { StyleConfig } from '../../../core/models/generic/style-config';
@@ -159,23 +160,23 @@ export default class SessionTracker extends Vue {
     }
 
     get hasOngoingSession(): boolean {
-        return this.$store.getters[`${timeSessionKey}/hasOngoingTimeSession`];
+        return timeSessionGetters(this.$store, TimeSessionGetter.HasOngoingTimeSession);
     }
 
     get ongoingSessionEnd(): Date | null {
-        return this.$store.getters[`${timeSessionKey}/ongoingTimeSessionEnd`];
+        return timeSessionGetters(this.$store, TimeSessionGetter.OngoingTimeSessionEnd);
     }
 
     get sessionStatus(): TimeSessionStatus {
-        return this.$store.getters[`${timeSessionKey}/timeSessionStatus`];
+        return timeSessionGetters(this.$store, TimeSessionGetter.TimeSessionStatus);
     }
 
     get focusSession(): FocusSessionDto | null {
-        return this.$store.getters[`${timeSessionKey}/activeFocusSession`];
+        return timeSessionGetters(this.$store, TimeSessionGetter.ActiveFocusSession);
     }
 
     get breakSession(): BreakSession | null {
-        return this.$store.getters[`${timeSessionKey}/activeBreakSession`];
+        return timeSessionGetters(this.$store, TimeSessionGetter.ActiveBreakSession);
     }
 }
 </script>

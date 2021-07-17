@@ -2,7 +2,7 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
 import { createStore as createUserStore, userKey } from './store/user/user.store';
-import { createStore as createTimeSessionStore, timeSessionKey } from './store/time-session/time-session.state';
+import { createStore as createTimeSessionStore, timeSessionKey } from './store/time-session/time-session.store';
 import { createStore as createPerformanceStore, performanceKey } from './store/performance/performance.store';
 import App from './app.vue';
 
