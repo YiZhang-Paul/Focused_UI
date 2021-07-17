@@ -14,7 +14,7 @@ function getDateRange(): DateRange {
     return { start: new Date(end.getTime() - 14 * oneDay), end };
 }
 
-export interface IPerformanceState {
+export interface IState {
     dateRange: DateRange;
     currentDayProgression: ProgressionCounter<number> | null;
     currentDayTimeTracking: TimeTrackingBreakdownDto | null;
@@ -24,7 +24,7 @@ export interface IPerformanceState {
     dueDateBreakdown: DueDateBreakdownDto | null;
 }
 
-export const state = (): IPerformanceState => ({
+export const state = (): IState => ({
     dateRange: getDateRange(),
     currentDayProgression: null,
     currentDayTimeTracking: null,

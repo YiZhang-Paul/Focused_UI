@@ -5,12 +5,12 @@ import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
-import { IWorkItemState } from './work-item.state';
-import { IWorkItemMutations, WorkItemMutation } from './work-item.mutations';
+import { IState } from './work-item.state';
+import { IMutations, MutationKey } from './work-item.mutations';
 
 let workItemHttpService: WorkItemHttpService;
 
-export enum WorkItemAction {
+export enum ActionKey {
     CreateWorkItem = 'create_work_item',
     UpdateWorkItem = 'update_work_item',
     DeleteWorkItem = 'delete_work_item',
@@ -20,26 +20,26 @@ export enum WorkItemAction {
     ReloadWorkItems = 'reload_work_items'
 }
 
-interface ActionAugments extends Omit<ActionContext<IWorkItemState, IWorkItemState>, 'commit'> {
-    commit<T extends keyof IWorkItemMutations>(key: T, payload: Parameters<IWorkItemMutations[T]>[1]): ReturnType<IWorkItemMutations[T]>;
+interface ActionAugments extends Omit<ActionContext<IState, IState>, 'commit'> {
+    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
 }
 
-export interface IWorkItemActions {
-    [WorkItemAction.CreateWorkItem](context: ActionAugments): Promise<string | null>;
-    [WorkItemAction.UpdateWorkItem](context: ActionAugments, payload: WorkItem): Promise<boolean>;
-    [WorkItemAction.DeleteWorkItem](context: ActionAugments, id: string): Promise<boolean>;
-    [WorkItemAction.UpdateWorkItemMeta](context: ActionAugments, payload: WorkItemDto): Promise<boolean>;
-    [WorkItemAction.LoadEditedWorkItem](context: ActionAugments, id: string): Promise<void>;
-    [WorkItemAction.LoadWorkItems](context: ActionAugments, payload: WorkItemQuery | null): Promise<void>;
-    [WorkItemAction.ReloadWorkItems](context: ActionAugments): Promise<void>;
+export interface IActions {
+    [ActionKey.CreateWorkItem](context: ActionAugments): Promise<string | null>;
+    [ActionKey.UpdateWorkItem](context: ActionAugments, payload: WorkItem): Promise<boolean>;
+    [ActionKey.DeleteWorkItem](context: ActionAugments, id: string): Promise<boolean>;
+    [ActionKey.UpdateWorkItemMeta](context: ActionAugments, payload: WorkItemDto): Promise<boolean>;
+    [ActionKey.LoadEditedWorkItem](context: ActionAugments, id: string): Promise<void>;
+    [ActionKey.LoadWorkItems](context: ActionAugments, payload: WorkItemQuery | null): Promise<void>;
+    [ActionKey.ReloadWorkItems](context: ActionAugments): Promise<void>;
 }
 
 export const setActionServices = (workItemHttp: WorkItemHttpService): void => {
     workItemHttpService = workItemHttp;
 }
 
-export const actions: ActionTree<IWorkItemState, IWorkItemState> & IWorkItemActions = {
-    async [WorkItemAction.CreateWorkItem](context: ActionAugments): Promise<string | null> {
+export const actions: ActionTree<IState, IState> & IActions = {
+    async [ActionKey.CreateWorkItem](context: ActionAugments): Promise<string | null> {
         const { state, commit } = context;
 
         if (!state.pendingWorkItem) {
@@ -49,12 +49,12 @@ export const actions: ActionTree<IWorkItemState, IWorkItemState> & IWorkItemActi
         const id = await workItemHttpService.createWorkItem(state.pendingWorkItem);
 
         if (id) {
-            commit(WorkItemMutation.SetPendingWorkItem, null);
+            commit(MutationKey.SetPendingWorkItem, null);
         }
 
         return id;
     },
-    async [WorkItemAction.UpdateWorkItem](context: ActionAugments, payload: WorkItem): Promise<boolean> {
+    async [ActionKey.UpdateWorkItem](context: ActionAugments, payload: WorkItem): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItem(payload);
 
         if (!updated) {
@@ -65,47 +65,47 @@ export const actions: ActionTree<IWorkItemState, IWorkItemState> & IWorkItemActi
         const meta = await workItemHttpService.getWorkItemMeta(updated.id);
 
         if (meta) {
-            commit(WorkItemMutation.SetWorkItem, meta);
+            commit(MutationKey.SetWorkItem, meta);
         }
 
         if (updated.id === state.editedWorkItem?.id) {
-            commit(WorkItemMutation.SetEditedWorkItem, updated);
+            commit(MutationKey.SetEditedWorkItem, updated);
         }
 
         return true;
     },
-    async [WorkItemAction.DeleteWorkItem](context: ActionAugments, id: string): Promise<boolean> {
+    async [ActionKey.DeleteWorkItem](context: ActionAugments, id: string): Promise<boolean> {
         if (!await workItemHttpService.deleteWorkItem(id)) {
             return false;
         }
 
         const { state, commit } = context;
-        commit(WorkItemMutation.DeleteWorkItem, id);
+        commit(MutationKey.DeleteWorkItem, id);
 
         if (state.editedWorkItem?.id === id) {
-            commit(WorkItemMutation.SetEditedWorkItem, null);
+            commit(MutationKey.SetEditedWorkItem, null);
         }
 
         return true;
     },
-    async [WorkItemAction.UpdateWorkItemMeta](context: ActionAugments, payload: WorkItemDto): Promise<boolean> {
+    async [ActionKey.UpdateWorkItemMeta](context: ActionAugments, payload: WorkItemDto): Promise<boolean> {
         const updated = await workItemHttpService.updateWorkItemMeta(payload);
 
         if (updated) {
-            context.commit(WorkItemMutation.SetWorkItem, updated);
+            context.commit(MutationKey.SetWorkItem, updated);
         }
 
         return Boolean(updated);
     },
-    async [WorkItemAction.LoadEditedWorkItem](context: ActionAugments, id: string): Promise<void> {
-        context.commit(WorkItemMutation.SetEditedWorkItem, await workItemHttpService.getWorkItem(id));
+    async [ActionKey.LoadEditedWorkItem](context: ActionAugments, id: string): Promise<void> {
+        context.commit(MutationKey.SetEditedWorkItem, await workItemHttpService.getWorkItem(id));
     },
-    async [WorkItemAction.LoadWorkItems](context: ActionAugments, payload: WorkItemQuery | null): Promise<void> {
+    async [ActionKey.LoadWorkItems](context: ActionAugments, payload: WorkItemQuery | null): Promise<void> {
         const query = payload ?? new WorkItemQuery();
-        context.commit(WorkItemMutation.SetLastQuery, query);
-        context.commit(WorkItemMutation.SetWorkItems, await workItemHttpService.getWorkItems(query));
+        context.commit(MutationKey.SetLastQuery, query);
+        context.commit(MutationKey.SetWorkItems, await workItemHttpService.getWorkItems(query));
     },
-    async [WorkItemAction.ReloadWorkItems](context: ActionAugments): Promise<void> {
-        context.dispatch(WorkItemAction.LoadWorkItems, context.state.lastQuery);
+    async [ActionKey.ReloadWorkItems](context: ActionAugments): Promise<void> {
+        context.dispatch(ActionKey.LoadWorkItems, context.state.lastQuery);
     }
 };

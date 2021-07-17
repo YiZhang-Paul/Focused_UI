@@ -11,9 +11,9 @@ import { WorkItemPriority } from '../../core/enums/work-item-priority.enum';
 import { WorkItemType } from '../../core/enums/work-item-type.enum';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
-import { WorkItemGetter } from './work-item.getters';
-import { WorkItemMutation } from './work-item.mutations';
-import { WorkItemAction } from './work-item.actions';
+import { GetterKey } from './work-item.getters';
+import { MutationKey } from './work-item.mutations';
+import { ActionKey } from './work-item.actions';
 import { createStore as createWorkItemStore, workItemCommit, workItemDispatch, workItemGetters, workItemKey, workItemState } from './work-item.store';
 
 describe('work item store unit test', () => {
@@ -38,9 +38,9 @@ describe('work item store unit test', () => {
 
     describe('editedWorkItemMeta', () => {
         test('should return null when no edited work item exists', () => {
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, null);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, null);
 
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItemMeta)).toBeNull();
+            expect(workItemGetters(store, GetterKey.EditedWorkItemMeta)).toBeNull();
         });
 
         test('should return null when edited work item does not exist in work items list', () => {
@@ -49,10 +49,10 @@ describe('work item store unit test', () => {
                 { ...new WorkItemDto(), id: '3' }
             ];
 
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, { ...new WorkItem(), id: '1' });
-            workItemCommit(store, WorkItemMutation.SetWorkItems, items);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, { ...new WorkItem(), id: '1' });
+            workItemCommit(store, MutationKey.SetWorkItems, items);
 
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItemMeta)).toBeNull();
+            expect(workItemGetters(store, GetterKey.EditedWorkItemMeta)).toBeNull();
         });
 
         test('should return edited work item meta', () => {
@@ -61,10 +61,10 @@ describe('work item store unit test', () => {
                 { ...new WorkItemDto(), id: '2' }
             ];
 
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, { ...new WorkItem(), id: '2' });
-            workItemCommit(store, WorkItemMutation.SetWorkItems, items);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, { ...new WorkItem(), id: '2' });
+            workItemCommit(store, MutationKey.SetWorkItems, items);
 
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItemMeta).id).toEqual('2');
+            expect(workItemGetters(store, GetterKey.EditedWorkItemMeta).id).toEqual('2');
         });
     });
 
@@ -78,17 +78,17 @@ describe('work item store unit test', () => {
 
             const sorted = [unsorted[2], unsorted[1], unsorted[0]];
 
-            workItemCommit(store, WorkItemMutation.SetWorkItems, unsorted);
+            workItemCommit(store, MutationKey.SetWorkItems, unsorted);
 
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)).toEqual(sorted);
+            expect(workItemGetters(store, GetterKey.WorkItems)).toEqual(sorted);
         });
     });
 
     describe('createWorkItem', () => {
         test('should do nothing when no pending work item exists', async() => {
-            workItemCommit(store, WorkItemMutation.SetPendingWorkItem, null);
+            workItemCommit(store, MutationKey.SetPendingWorkItem, null);
 
-            const result = await workItemDispatch(store, WorkItemAction.CreateWorkItem);
+            const result = await workItemDispatch(store, ActionKey.CreateWorkItem);
 
             sinonExpect.notCalled(workItemHttpStub.createWorkItem);
             expect(result).toBeNull();
@@ -96,25 +96,25 @@ describe('work item store unit test', () => {
 
         test('should return null when failed to create work item', async() => {
             workItemHttpStub.createWorkItem.resolves(null);
-            workItemCommit(store, WorkItemMutation.SetPendingWorkItem, new WorkItemDto());
-            expect(workItemGetters(store, WorkItemGetter.PendingWorkItem)).toBeTruthy();
+            workItemCommit(store, MutationKey.SetPendingWorkItem, new WorkItemDto());
+            expect(workItemGetters(store, GetterKey.PendingWorkItem)).toBeTruthy();
 
-            const result = await workItemDispatch(store, WorkItemAction.CreateWorkItem);
+            const result = await workItemDispatch(store, ActionKey.CreateWorkItem);
 
             sinonExpect.calledOnce(workItemHttpStub.createWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.PendingWorkItem)).toBeTruthy();
+            expect(workItemGetters(store, GetterKey.PendingWorkItem)).toBeTruthy();
             expect(result).toBeNull();
         });
 
         test('should return work item id and clear pending work item on creation success', async() => {
             workItemHttpStub.createWorkItem.resolves('1234567890');
-            workItemCommit(store, WorkItemMutation.SetPendingWorkItem, new WorkItemDto());
-            expect(workItemGetters(store, WorkItemGetter.PendingWorkItem)).toBeTruthy();
+            workItemCommit(store, MutationKey.SetPendingWorkItem, new WorkItemDto());
+            expect(workItemGetters(store, GetterKey.PendingWorkItem)).toBeTruthy();
 
-            const result = await workItemDispatch(store, WorkItemAction.CreateWorkItem);
+            const result = await workItemDispatch(store, ActionKey.CreateWorkItem);
 
             sinonExpect.calledOnce(workItemHttpStub.createWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.PendingWorkItem)).toBeNull();
+            expect(workItemGetters(store, GetterKey.PendingWorkItem)).toBeNull();
             expect(result).toEqual('1234567890');
         });
     });
@@ -123,7 +123,7 @@ describe('work item store unit test', () => {
         test('should do nothing and return false when update failed', async() => {
             workItemHttpStub.updateWorkItem.resolves(null);
 
-            const result = await workItemDispatch(store, WorkItemAction.UpdateWorkItem, new WorkItem());
+            const result = await workItemDispatch(store, ActionKey.UpdateWorkItem, new WorkItem());
 
             sinonExpect.calledOnce(workItemHttpStub.updateWorkItem);
             sinonExpect.notCalled(workItemHttpStub.getWorkItemMeta);
@@ -136,15 +136,15 @@ describe('work item store unit test', () => {
             const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };
             workItemHttpStub.updateWorkItem.resolves(toUpdate);
             workItemHttpStub.getWorkItemMeta.resolves(updated);
-            workItemCommit(store, WorkItemMutation.SetWorkItems, [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, edited);
+            workItemCommit(store, MutationKey.SetWorkItems, [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, edited);
 
-            const result = await workItemDispatch(store, WorkItemAction.UpdateWorkItem, toUpdate);
+            const result = await workItemDispatch(store, ActionKey.UpdateWorkItem, toUpdate);
 
             sinonExpect.calledOnce(workItemHttpStub.updateWorkItem);
             sinonExpect.calledOnce(workItemHttpStub.getWorkItemMeta);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)[0]).toEqual(updated);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).toEqual(edited);
+            expect(workItemGetters(store, GetterKey.WorkItems)[0]).toEqual(updated);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).toEqual(edited);
             expect(result).toBeTruthy();
         });
 
@@ -153,83 +153,83 @@ describe('work item store unit test', () => {
             const updated: WorkItemDto = { ...new WorkItemDto(), id: toUpdate.id, name: toUpdate.name };
             workItemHttpStub.updateWorkItem.resolves(toUpdate);
             workItemHttpStub.getWorkItemMeta.resolves(updated);
-            workItemCommit(store, WorkItemMutation.SetWorkItems, [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, toUpdate);
+            workItemCommit(store, MutationKey.SetWorkItems, [{ ...new WorkItemDto(), id: toUpdate.id, name: 'previous_name' }]);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, toUpdate);
 
-            const result = await workItemDispatch(store, WorkItemAction.UpdateWorkItem, toUpdate);
+            const result = await workItemDispatch(store, ActionKey.UpdateWorkItem, toUpdate);
 
             sinonExpect.calledOnce(workItemHttpStub.updateWorkItem);
             sinonExpect.calledOnce(workItemHttpStub.getWorkItemMeta);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)[0]).toEqual(updated);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).toEqual(toUpdate);
+            expect(workItemGetters(store, GetterKey.WorkItems)[0]).toEqual(updated);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).toEqual(toUpdate);
             expect(result).toBeTruthy();
         });
     });
 
     describe('deleteWorkItem', () => {
         beforeEach(() => {
-            workItemCommit(store, WorkItemMutation.SetWorkItems, [{ ...new WorkItemDto(), id: '1' }]);
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, { ...new WorkItem(), id: '1' });
+            workItemCommit(store, MutationKey.SetWorkItems, [{ ...new WorkItemDto(), id: '1' }]);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, { ...new WorkItem(), id: '1' });
         });
 
         test('should do nothing and return false when delete failed', async() => {
             workItemHttpStub.deleteWorkItem.resolves(false);
 
-            const result = await workItemDispatch(store, WorkItemAction.DeleteWorkItem, '1');
+            const result = await workItemDispatch(store, ActionKey.DeleteWorkItem, '1');
 
             sinonExpect.calledOnce(workItemHttpStub.deleteWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems).length).toEqual(1);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)[0].id).toEqual('1');
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem).id).toEqual('1');
+            expect(workItemGetters(store, GetterKey.WorkItems).length).toEqual(1);
+            expect(workItemGetters(store, GetterKey.WorkItems)[0].id).toEqual('1');
+            expect(workItemGetters(store, GetterKey.EditedWorkItem).id).toEqual('1');
             expect(result).toBeFalsy();
         });
 
         test('should return true on delete success', async() => {
             workItemHttpStub.deleteWorkItem.resolves(true);
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, { ...new WorkItem(), id: '2' });
+            workItemCommit(store, MutationKey.SetEditedWorkItem, { ...new WorkItem(), id: '2' });
 
-            const result = await workItemDispatch(store, WorkItemAction.DeleteWorkItem, '1');
+            const result = await workItemDispatch(store, ActionKey.DeleteWorkItem, '1');
 
             sinonExpect.calledOnce(workItemHttpStub.deleteWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems).length).toEqual(0);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).not.toBeNull();
+            expect(workItemGetters(store, GetterKey.WorkItems).length).toEqual(0);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).not.toBeNull();
             expect(result).toBeTruthy();
         });
 
         test('should return true and remove work item content when applicable on delete success', async() => {
             workItemHttpStub.deleteWorkItem.resolves(true);
 
-            const result = await workItemDispatch(store, WorkItemAction.DeleteWorkItem, '1');
+            const result = await workItemDispatch(store, ActionKey.DeleteWorkItem, '1');
 
             sinonExpect.calledOnce(workItemHttpStub.deleteWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems).length).toEqual(0);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).toBeNull();
+            expect(workItemGetters(store, GetterKey.WorkItems).length).toEqual(0);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).toBeNull();
             expect(result).toBeTruthy();
         });
     });
 
     describe('updateWorkItemMeta', () => {
         beforeEach(() => {
-            workItemCommit(store, WorkItemMutation.SetWorkItems, [{ ...new WorkItemDto(), id: '1', name: 'previous_name' }]);
+            workItemCommit(store, MutationKey.SetWorkItems, [{ ...new WorkItemDto(), id: '1', name: 'previous_name' }]);
         });
 
         test('should return false when failed to update work item meta', async() => {
             workItemHttpStub.updateWorkItemMeta.resolves(null);
 
-            const result = await workItemDispatch(store, WorkItemAction.UpdateWorkItemMeta, new WorkItemDto());
+            const result = await workItemDispatch(store, ActionKey.UpdateWorkItemMeta, new WorkItemDto());
 
             sinonExpect.calledOnce(workItemHttpStub.updateWorkItemMeta);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)[0].name).toEqual('previous_name');
+            expect(workItemGetters(store, GetterKey.WorkItems)[0].name).toEqual('previous_name');
             expect(result).toBeFalsy();
         });
 
         test('should return true and reload work item content when updated successfully', async() => {
             workItemHttpStub.updateWorkItemMeta.resolves({ ...new WorkItemDto(), id: '1', name: 'updated_name' });
 
-            const result = await workItemDispatch(store, WorkItemAction.UpdateWorkItemMeta, new WorkItemDto());
+            const result = await workItemDispatch(store, ActionKey.UpdateWorkItemMeta, new WorkItemDto());
 
             sinonExpect.calledOnce(workItemHttpStub.updateWorkItemMeta);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)[0].name).toEqual('updated_name');
+            expect(workItemGetters(store, GetterKey.WorkItems)[0].name).toEqual('updated_name');
             expect(result).toBeTruthy();
         });
     });
@@ -238,12 +238,12 @@ describe('work item store unit test', () => {
         test('should load edited work item', async() => {
             const item: WorkItem = { ...new WorkItem(), id: '1' };
             workItemHttpStub.getWorkItem.resolves(item);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).not.toEqual(item);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).not.toEqual(item);
 
-            await workItemDispatch(store, WorkItemAction.LoadEditedWorkItem, '1');
+            await workItemDispatch(store, ActionKey.LoadEditedWorkItem, '1');
 
             sinonExpect.calledOnce(workItemHttpStub.getWorkItem);
-            expect(workItemGetters(store, WorkItemGetter.EditedWorkItem)).toEqual(item);
+            expect(workItemGetters(store, GetterKey.EditedWorkItem)).toEqual(item);
         });
     });
 
@@ -251,7 +251,7 @@ describe('work item store unit test', () => {
         test('should use default query when not provided', async() => {
             expect(workItemState(store).lastQuery).toBeFalsy();
 
-            await workItemDispatch(store, WorkItemAction.LoadWorkItems, null);
+            await workItemDispatch(store, ActionKey.LoadWorkItems, null);
 
             expect(workItemState(store).lastQuery).toBeTruthy();
         });
@@ -262,11 +262,11 @@ describe('work item store unit test', () => {
             workItemHttpStub.getWorkItems.resolves(items);
             expect(workItemState(store).lastQuery).not.toEqual(query);
 
-            await workItemDispatch(store, WorkItemAction.LoadWorkItems, query);
+            await workItemDispatch(store, ActionKey.LoadWorkItems, query);
 
             sinonExpect.calledOnce(workItemHttpStub.getWorkItems);
             expect(workItemState(store).lastQuery).toEqual(query);
-            expect(workItemGetters(store, WorkItemGetter.WorkItems)).toEqual(items);
+            expect(workItemGetters(store, GetterKey.WorkItems)).toEqual(items);
         });
     });
 });

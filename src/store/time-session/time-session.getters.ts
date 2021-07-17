@@ -5,11 +5,11 @@ import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionStatus } from '../../core/enums/time-session-status.enum';
 
-import { ITimeSessionState } from './time-session.state';
+import { IState } from './time-session.state';
 
 const oneHour = 1000 * 60 * 60;
 
-export enum TimeSessionGetter {
+export enum GetterKey {
     TimeSessionStatus = 'time_session_status',
     HasActiveFocusSession = 'has_active_focus_session',
     HasOngoingTimeSession = 'has_ongoing_time_session',
@@ -21,22 +21,22 @@ export enum TimeSessionGetter {
 }
 
 export type GettersAugments = {
-    [key in TimeSessionGetter]: ReturnType<ITimeSessionGetters[key]>;
+    [key in GetterKey]: ReturnType<IGetters[key]>;
 }
 
-export interface ITimeSessionGetters {
-    [TimeSessionGetter.TimeSessionStatus](state: ITimeSessionState): TimeSessionStatus;
-    [TimeSessionGetter.HasActiveFocusSession](state: ITimeSessionState): boolean;
-    [TimeSessionGetter.HasOngoingTimeSession](state: ITimeSessionState, getters: GettersAugments): boolean;
-    [TimeSessionGetter.OngoingTimeSessionEnd](state: ITimeSessionState, getters: GettersAugments): Date | null;
-    [TimeSessionGetter.ActiveFocusSession](state: ITimeSessionState): FocusSessionDto | null;
-    [TimeSessionGetter.StaleFocusSession](state: ITimeSessionState): FocusSessionDto | null;
-    [TimeSessionGetter.ActiveBreakSession](state: ITimeSessionState): BreakSession | null;
-    [TimeSessionGetter.StaleBreakSession](state: ITimeSessionState): BreakSession | null;
+export interface IGetters {
+    [GetterKey.TimeSessionStatus](state: IState): TimeSessionStatus;
+    [GetterKey.HasActiveFocusSession](state: IState): boolean;
+    [GetterKey.HasOngoingTimeSession](state: IState, getters: GettersAugments): boolean;
+    [GetterKey.OngoingTimeSessionEnd](state: IState, getters: GettersAugments): Date | null;
+    [GetterKey.ActiveFocusSession](state: IState): FocusSessionDto | null;
+    [GetterKey.StaleFocusSession](state: IState): FocusSessionDto | null;
+    [GetterKey.ActiveBreakSession](state: IState): BreakSession | null;
+    [GetterKey.StaleBreakSession](state: IState): BreakSession | null;
 }
 
-export const getters: GetterTree<ITimeSessionState, ITimeSessionState> & ITimeSessionGetters = {
-    [TimeSessionGetter.TimeSessionStatus]: (state: ITimeSessionState): TimeSessionStatus => {
+export const getters: GetterTree<IState, IState> & IGetters = {
+    [GetterKey.TimeSessionStatus]: (state: IState): TimeSessionStatus => {
         const { activeFocusSession, activeBreakSession } = state;
 
         if (activeBreakSession) {
@@ -51,15 +51,15 @@ export const getters: GetterTree<ITimeSessionState, ITimeSessionState> & ITimeSe
 
         return isOngoing ? TimeSessionStatus.Ongoing : TimeSessionStatus.Pending;
     },
-    [TimeSessionGetter.HasActiveFocusSession]: (state: ITimeSessionState): boolean => Boolean(state.activeFocusSession),
-    [TimeSessionGetter.HasOngoingTimeSession]: (_: ITimeSessionState, getters: GettersAugments): boolean => {
-        const timestamp = getters[TimeSessionGetter.OngoingTimeSessionEnd]?.getTime() ?? 0;
+    [GetterKey.HasActiveFocusSession]: (state: IState): boolean => Boolean(state.activeFocusSession),
+    [GetterKey.HasOngoingTimeSession]: (_: IState, getters: GettersAugments): boolean => {
+        const timestamp = getters[GetterKey.OngoingTimeSessionEnd]?.getTime() ?? 0;
 
         return timestamp >= Date.now();
     },
-    [TimeSessionGetter.OngoingTimeSessionEnd]: (state: ITimeSessionState, getters: GettersAugments): Date | null => {
+    [GetterKey.OngoingTimeSessionEnd]: (state: IState, getters: GettersAugments): Date | null => {
         const { activeBreakSession, activeFocusSession } = state;
-        const status = getters[TimeSessionGetter.TimeSessionStatus];
+        const status = getters[GetterKey.TimeSessionStatus];
 
         if (status === TimeSessionStatus.Idle) {
             return null;
@@ -71,8 +71,8 @@ export const getters: GetterTree<ITimeSessionState, ITimeSessionState> & ITimeSe
 
         return new Date(new Date(start).getTime() + duration * oneHour);
     },
-    [TimeSessionGetter.ActiveFocusSession]: (state: ITimeSessionState): FocusSessionDto | null => state.activeFocusSession,
-    [TimeSessionGetter.StaleFocusSession]: (state: ITimeSessionState): FocusSessionDto | null => state.staleFocusSession,
-    [TimeSessionGetter.ActiveBreakSession]: (state: ITimeSessionState): BreakSession | null => state.activeBreakSession,
-    [TimeSessionGetter.StaleBreakSession]: (state: ITimeSessionState): BreakSession | null => state.staleBreakSession
+    [GetterKey.ActiveFocusSession]: (state: IState): FocusSessionDto | null => state.activeFocusSession,
+    [GetterKey.StaleFocusSession]: (state: IState): FocusSessionDto | null => state.staleFocusSession,
+    [GetterKey.ActiveBreakSession]: (state: IState): BreakSession | null => state.activeBreakSession,
+    [GetterKey.StaleBreakSession]: (state: IState): BreakSession | null => state.staleBreakSession
 };

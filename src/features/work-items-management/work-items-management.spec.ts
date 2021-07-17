@@ -2,12 +2,12 @@ import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { assert as sinonExpect, createStubInstance, SinonStubbedInstance } from 'sinon';
 import { createStore, Store } from 'vuex';
 
-import { UserMutation } from '../../store/user/user.mutations';
+import { MutationKey as UserMutationKey } from '../../store/user/user.mutations';
 import { createStore as createUserStore, userCommit, userKey } from '../../store/user/user.store';
 import { createStore as createPerformanceStore, performanceKey } from '../../store/performance/performance.store';
-import { TimeSessionMutation } from '../../store/time-session/time-session.mutations';
+import { MutationKey as TimeSessionMutationKey } from '../../store/time-session/time-session.mutations';
 import { createStore as createTimeSessionStore, timeSessionCommit, timeSessionKey } from '../../store/time-session/time-session.store';
-import { WorkItemMutation } from '../../store/work-item/work-item.mutations';
+import { MutationKey } from '../../store/work-item/work-item.mutations';
 import { createStore as createWorkItemStore, workItemCommit, workItemKey } from '../../store/work-item/work-item.store';
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
@@ -85,7 +85,7 @@ describe('work items management unit test', () => {
 
     describe('cancelCreate', () => {
         test('should remove pending work item', () => {
-            workItemCommit(store, WorkItemMutation.SetPendingWorkItem, new WorkItemDto());
+            workItemCommit(store, MutationKey.SetPendingWorkItem, new WorkItemDto());
             expect(component.vm.pendingItem).toBeTruthy();
 
             component.vm.cancelCreate();
@@ -96,7 +96,7 @@ describe('work items management unit test', () => {
 
     describe('confirmCreate', () => {
         beforeEach(() => {
-            workItemCommit(store, WorkItemMutation.SetPendingWorkItem, new WorkItemDto());
+            workItemCommit(store, MutationKey.SetPendingWorkItem, new WorkItemDto());
         });
 
         test('should do nothing on creation failure', async() => {
@@ -122,8 +122,8 @@ describe('work items management unit test', () => {
 
     describe('showSessionStopDialog', () => {
         test('should set correct value when no active session exists', () => {
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
-            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveBreakSession, null);
 
             component.vm.showSessionStopDialog();
 
@@ -132,8 +132,8 @@ describe('work items management unit test', () => {
         });
 
         test('should set correct value when active focus session exists', () => {
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
-            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, null);
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveBreakSession, null);
 
             component.vm.showSessionStopDialog();
 
@@ -142,8 +142,8 @@ describe('work items management unit test', () => {
         });
 
         test('should set correct value when active break session exists', () => {
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
-            timeSessionCommit(store, TimeSessionMutation.SetActiveBreakSession, new BreakSession());
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveFocusSession, null);
+            timeSessionCommit(store, TimeSessionMutationKey.SetActiveBreakSession, new BreakSession());
 
             component.vm.showSessionStopDialog();
 
@@ -180,7 +180,7 @@ describe('work items management unit test', () => {
 
     describe('onFocusSessionEnd', () => {
         beforeEach(() => {
-            userCommit(store, UserMutation.SetProfile, new UserProfile());
+            userCommit(store, UserMutationKey.SetProfile, new UserProfile());
         });
 
         test('should not load work items and keep dialog open when failed to stop focus session', async() => {
@@ -284,8 +284,8 @@ describe('work items management unit test', () => {
         test('should close edited item', () => {
             const item: WorkItem = { ...new WorkItem(), id: '1' };
             const meta: WorkItemDto = { ...new WorkItemDto(), id: '1' };
-            workItemCommit(store, WorkItemMutation.SetWorkItems, [meta]);
-            workItemCommit(store, WorkItemMutation.SetEditedWorkItem, item);
+            workItemCommit(store, MutationKey.SetWorkItems, [meta]);
+            workItemCommit(store, MutationKey.SetEditedWorkItem, item);
             expect(component.vm.editedItem).toBeTruthy();
             expect(component.vm.editedItemMeta).toBeTruthy();
 
@@ -335,7 +335,7 @@ describe('work items management unit test', () => {
     describe('onItemStart', () => {
         test('should create focus session option when no active focus session exists', async() => {
             const item: WorkItemDto = { ...new WorkItemDto(), id: '12345' };
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, null);
+            timeSessionCommit(store, MutationKey.SetActiveFocusSession, null);
             component.vm.focusSessionOption = null;
 
             await component.vm.onItemStart(item);
@@ -348,7 +348,7 @@ describe('work items management unit test', () => {
         test('should not emit anything when failed to start work item', async() => {
             const item: WorkItemDto = { ...new WorkItemDto(), id: '12345' };
             timeSessionHttpStub.switchWorkItem.resolves(false);
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, MutationKey.SetActiveFocusSession, new FocusSessionDto());
 
             await component.vm.onItemStart(item);
 
@@ -359,7 +359,7 @@ describe('work items management unit test', () => {
         test('should start work item and emit event when active focus session exists', async() => {
             const item: WorkItemDto = { ...new WorkItemDto(), id: '12345' };
             timeSessionHttpStub.switchWorkItem.resolves(true);
-            timeSessionCommit(store, TimeSessionMutation.SetActiveFocusSession, new FocusSessionDto());
+            timeSessionCommit(store, MutationKey.SetActiveFocusSession, new FocusSessionDto());
 
             await component.vm.onItemStart(item);
 

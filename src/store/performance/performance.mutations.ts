@@ -6,9 +6,9 @@ import { EstimationBreakdownDto } from '../../core/dtos/estimation-breakdown-dto
 import { DueDateBreakdownDto } from '../../core/dtos/due-date-breakdown-dto';
 import { ProgressionCounter } from '../../core/models/generic/progression-counter';
 
-import { IPerformanceState } from './performance.state';
+import { IState } from './performance.state';
 
-export enum PerformanceMutation {
+export enum MutationKey {
     SetCurrentDayProgression = 'set_current_day_progression',
     SetCurrentDayTimeTracking = 'set_current_day_time_tracking',
     SetActivityBreakdown = 'set_activity_breakdown',
@@ -17,32 +17,32 @@ export enum PerformanceMutation {
     SetDueDateBreakdown = 'set_due_date_breakdown'
 }
 
-export interface IPerformanceMutations {
-    [PerformanceMutation.SetCurrentDayProgression](state: IPerformanceState, progression: ProgressionCounter<number> | null): void;
-    [PerformanceMutation.SetCurrentDayTimeTracking](state: IPerformanceState, tracking: TimeTrackingBreakdownDto | null): void;
-    [PerformanceMutation.SetActivityBreakdown](state: IPerformanceState, breakdown: ActivityBreakdownDto | null): void;
-    [PerformanceMutation.SetActivityHistories](state: IPerformanceState, histories: ActivityBreakdownDto[]): void;
-    [PerformanceMutation.SetEstimationBreakdown](state: IPerformanceState, breakdown: EstimationBreakdownDto | null): void;
-    [PerformanceMutation.SetDueDateBreakdown](state: IPerformanceState, breakdown: DueDateBreakdownDto | null): void;
+export interface IMutations {
+    [MutationKey.SetCurrentDayProgression](state: IState, progression: ProgressionCounter<number> | null): void;
+    [MutationKey.SetCurrentDayTimeTracking](state: IState, tracking: TimeTrackingBreakdownDto | null): void;
+    [MutationKey.SetActivityBreakdown](state: IState, breakdown: ActivityBreakdownDto | null): void;
+    [MutationKey.SetActivityHistories](state: IState, histories: ActivityBreakdownDto[]): void;
+    [MutationKey.SetEstimationBreakdown](state: IState, breakdown: EstimationBreakdownDto | null): void;
+    [MutationKey.SetDueDateBreakdown](state: IState, breakdown: DueDateBreakdownDto | null): void;
 }
 
-export const mutations: MutationTree<IPerformanceState> & IPerformanceMutations = {
-    [PerformanceMutation.SetCurrentDayProgression](state: IPerformanceState, progression: ProgressionCounter<number> | null): void {
+export const mutations: MutationTree<IState> & IMutations = {
+    [MutationKey.SetCurrentDayProgression](state: IState, progression: ProgressionCounter<number> | null): void {
         state.currentDayProgression = progression;
     },
-    [PerformanceMutation.SetCurrentDayTimeTracking](state: IPerformanceState, tracking: TimeTrackingBreakdownDto | null): void {
+    [MutationKey.SetCurrentDayTimeTracking](state: IState, tracking: TimeTrackingBreakdownDto | null): void {
         state.currentDayTimeTracking = tracking;
     },
-    [PerformanceMutation.SetActivityBreakdown](state: IPerformanceState, breakdown: ActivityBreakdownDto | null): void {
+    [MutationKey.SetActivityBreakdown](state: IState, breakdown: ActivityBreakdownDto | null): void {
         state.activityBreakdown = breakdown;
     },
-    [PerformanceMutation.SetActivityHistories](state: IPerformanceState, histories: ActivityBreakdownDto[]): void {
+    [MutationKey.SetActivityHistories](state: IState, histories: ActivityBreakdownDto[]): void {
         state.activityHistories = histories;
     },
-    [PerformanceMutation.SetEstimationBreakdown](state: IPerformanceState, breakdown: EstimationBreakdownDto | null): void {
+    [MutationKey.SetEstimationBreakdown](state: IState, breakdown: EstimationBreakdownDto | null): void {
         state.estimationBreakdown = breakdown;
     },
-    [PerformanceMutation.SetDueDateBreakdown](state: IPerformanceState, breakdown: DueDateBreakdownDto | null): void {
+    [MutationKey.SetDueDateBreakdown](state: IState, breakdown: DueDateBreakdownDto | null): void {
         state.dueDateBreakdown = breakdown;
     }
 };

@@ -1,9 +1,9 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
-import { PerformanceMutation } from '../../../store/performance/performance.mutations';
+import { MutationKey as PerformanceMutationKey } from '../../../store/performance/performance.mutations';
 import { createStore as createPerformanceStore, performanceCommit, performanceKey } from '../../../store/performance/performance.store';
-import { WorkItemMutation } from '../../../store/work-item/work-item.mutations';
+import { MutationKey as WorkItemMutationKey } from '../../../store/work-item/work-item.mutations';
 import { createStore as createWorkItemStore, workItemCommit, workItemKey } from '../../../store/work-item/work-item.store';
 import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
@@ -36,7 +36,7 @@ describe('work item tracking stats group unit test', () => {
     describe('timeTracked', () => {
         test('should return total time tracked', () => {
             const breakdown: ActivityBreakdownDto = { regular: 15, recurring: 10, interruption: 8, overlearning: 10 };
-            performanceCommit(store, PerformanceMutation.SetActivityBreakdown, breakdown);
+            performanceCommit(store, PerformanceMutationKey.SetActivityBreakdown, breakdown);
 
             expect(component.vm.timeTracked).toEqual('1.8 / 14 days');
         });
@@ -52,7 +52,7 @@ describe('work item tracking stats group unit test', () => {
             ];
 
             const breakdown: ActivityBreakdownDto = { regular: 25, recurring: 10, interruption: 5, overlearning: 10 };
-            performanceCommit(store, PerformanceMutation.SetActivityBreakdown, breakdown);
+            performanceCommit(store, PerformanceMutationKey.SetActivityBreakdown, breakdown);
 
             expect(component.vm.timeTrackedSeries).toEqual(expected);
         });
@@ -61,14 +61,14 @@ describe('work item tracking stats group unit test', () => {
     describe('inaccurateEstimate', () => {
         test('should return inaccurate estimations', () => {
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 0.5, underestimate: 0.5 };
-            performanceCommit(store, PerformanceMutation.SetEstimationBreakdown, breakdown);
+            performanceCommit(store, PerformanceMutationKey.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimate).toEqual('1 hour');
         });
 
         test('should handle plural for hours', () => {
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 4, underestimate: 6 };
-            performanceCommit(store, PerformanceMutation.SetEstimationBreakdown, breakdown);
+            performanceCommit(store, PerformanceMutationKey.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimate).toEqual('10 hours');
         });
@@ -82,7 +82,7 @@ describe('work item tracking stats group unit test', () => {
             ];
 
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 4, underestimate: 6 };
-            performanceCommit(store, PerformanceMutation.SetEstimationBreakdown, breakdown);
+            performanceCommit(store, PerformanceMutationKey.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimateSeries).toEqual(expected);
         });
@@ -125,7 +125,7 @@ describe('work item tracking stats group unit test', () => {
                 { quadrant: 4, value: 7, colorType: 'priority-colors-3' }
             ];
 
-            workItemCommit(store, WorkItemMutation.SetWorkItems, items);
+            workItemCommit(store, WorkItemMutationKey.SetWorkItems, items);
 
             expect(component.vm.radarSeries).toEqual(expected);
         });

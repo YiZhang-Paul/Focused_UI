@@ -3,12 +3,12 @@ import { ActionContext, ActionTree } from 'vuex';
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
-import { IPerformanceState } from './performance.state';
-import { IPerformanceMutations, PerformanceMutation } from './performance.mutations';
+import { IState } from './performance.state';
+import { IMutations, MutationKey } from './performance.mutations';
 
 let performanceHttpService: PerformanceHttpService;
 
-export enum PerformanceAction {
+export enum ActionKey {
     LoadCurrentDayProgression = 'load_current_day_progression',
     LoadCurrentDayTimeTracking = 'load_current_day_time_tracking',
     LoadActivityBreakdown = 'load_activity_breakdown',
@@ -18,58 +18,58 @@ export enum PerformanceAction {
     GetPerformanceRating = 'get_performance_rating'
 }
 
-interface ActionAugments extends Omit<ActionContext<IPerformanceState, IPerformanceState>, 'commit'> {
-    commit<T extends keyof IPerformanceMutations>(key: T, payload: Parameters<IPerformanceMutations[T]>[1]): ReturnType<IPerformanceMutations[T]>;
+interface ActionAugments extends Omit<ActionContext<IState, IState>, 'commit'> {
+    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
 }
 
-export interface IPerformanceActions {
-    [PerformanceAction.LoadCurrentDayProgression](context: ActionAugments): Promise<void>;
-    [PerformanceAction.LoadCurrentDayTimeTracking](context: ActionAugments): Promise<void>;
-    [PerformanceAction.LoadActivityBreakdown](context: ActionAugments): Promise<void>
-    [PerformanceAction.LoadActivityHistories](context: ActionAugments): Promise<void>;
-    [PerformanceAction.LoadEstimationBreakdown](context: ActionAugments): Promise<void>;
-    [PerformanceAction.LoadDueDateBreakdown](context: ActionAugments): Promise<void>;
-    [PerformanceAction.GetPerformanceRating](context: ActionAugments): Promise<PerformanceRating | null>;
+export interface IActions {
+    [ActionKey.LoadCurrentDayProgression](context: ActionAugments): Promise<void>;
+    [ActionKey.LoadCurrentDayTimeTracking](context: ActionAugments): Promise<void>;
+    [ActionKey.LoadActivityBreakdown](context: ActionAugments): Promise<void>
+    [ActionKey.LoadActivityHistories](context: ActionAugments): Promise<void>;
+    [ActionKey.LoadEstimationBreakdown](context: ActionAugments): Promise<void>;
+    [ActionKey.LoadDueDateBreakdown](context: ActionAugments): Promise<void>;
+    [ActionKey.GetPerformanceRating](context: ActionAugments): Promise<PerformanceRating | null>;
 }
 
 export const setActionServices = (performanceHttp: PerformanceHttpService): void => {
     performanceHttpService = performanceHttp;
 }
 
-export const actions: ActionTree<IPerformanceState, IPerformanceState> & IPerformanceActions = {
-    async [PerformanceAction.LoadCurrentDayProgression](context: ActionAugments): Promise<void> {
+export const actions: ActionTree<IState, IState> & IActions = {
+    async [ActionKey.LoadCurrentDayProgression](context: ActionAugments): Promise<void> {
         const now = new Date();
         const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];
         const progression = await performanceHttpService.getDailyProgression(year, month, day);
-        context.commit(PerformanceMutation.SetCurrentDayProgression, progression);
+        context.commit(MutationKey.SetCurrentDayProgression, progression);
     },
-    async [PerformanceAction.LoadCurrentDayTimeTracking](context: ActionAugments): Promise<void> {
+    async [ActionKey.LoadCurrentDayTimeTracking](context: ActionAugments): Promise<void> {
         const now = new Date();
         const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];
         const tracking = await performanceHttpService.getDailyTimeTracking(year, month, day);
-        context.commit(PerformanceMutation.SetCurrentDayTimeTracking, tracking);
+        context.commit(MutationKey.SetCurrentDayTimeTracking, tracking);
     },
-    async [PerformanceAction.LoadActivityBreakdown](context: ActionAugments): Promise<void> {
+    async [ActionKey.LoadActivityBreakdown](context: ActionAugments): Promise<void> {
         const { start, end } = context.state.dateRange;
         const breakdown = await performanceHttpService.getActivityBreakdownByDateRange(start, end);
-        context.commit(PerformanceMutation.SetActivityBreakdown, breakdown);
+        context.commit(MutationKey.SetActivityBreakdown, breakdown);
     },
-    async [PerformanceAction.LoadActivityHistories](context: ActionAugments): Promise<void> {
+    async [ActionKey.LoadActivityHistories](context: ActionAugments): Promise<void> {
         const { start, end } = context.state.dateRange;
         const histories = await performanceHttpService.getActivityBreakdownByDays(start, end);
-        context.commit(PerformanceMutation.SetActivityHistories, histories);
+        context.commit(MutationKey.SetActivityHistories, histories);
     },
-    async [PerformanceAction.LoadEstimationBreakdown](context: ActionAugments): Promise<void> {
+    async [ActionKey.LoadEstimationBreakdown](context: ActionAugments): Promise<void> {
         const { start, end } = context.state.dateRange;
         const breakdown = await performanceHttpService.getEstimationBreakdown(start, end);
-        context.commit(PerformanceMutation.SetEstimationBreakdown, breakdown);
+        context.commit(MutationKey.SetEstimationBreakdown, breakdown);
     },
-    async [PerformanceAction.LoadDueDateBreakdown](context: ActionAugments): Promise<void> {
+    async [ActionKey.LoadDueDateBreakdown](context: ActionAugments): Promise<void> {
         const { end } = context.state.dateRange;
         const breakdown = await performanceHttpService.getDueDateBreakdown(undefined, end);
-        context.commit(PerformanceMutation.SetDueDateBreakdown, breakdown);
+        context.commit(MutationKey.SetDueDateBreakdown, breakdown);
     },
-    async [PerformanceAction.GetPerformanceRating](context: ActionAugments): Promise<PerformanceRating | null> {
+    async [ActionKey.GetPerformanceRating](context: ActionAugments): Promise<PerformanceRating | null> {
         const { start, end } = context.state.dateRange;
 
         return await performanceHttpService.getPerformanceRating(start, end);

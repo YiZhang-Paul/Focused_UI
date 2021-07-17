@@ -2,18 +2,18 @@ import { MutationTree } from 'vuex';
 
 import { UserProfile } from '../../core/models/user/user-profile';
 
-import { IUserState } from './user.state';
+import { IState } from './user.state';
 
-export enum UserMutation {
+export enum MutationKey {
     SetProfile = 'set_profile'
 }
 
-export interface IUserMutations {
-    [UserMutation.SetProfile](state: IUserState, profile: UserProfile | null): void;
+export interface IMutations {
+    [MutationKey.SetProfile](state: IState, profile: UserProfile | null): void;
 }
 
-export const mutations: MutationTree<IUserState> & IUserMutations = {
-    [UserMutation.SetProfile](state: IUserState, profile: UserProfile | null): void {
+export const mutations: MutationTree<IState> & IMutations = {
+    [MutationKey.SetProfile](state: IState, profile: UserProfile | null): void {
         state.profile = profile;
     }
 };

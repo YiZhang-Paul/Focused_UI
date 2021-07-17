@@ -1,7 +1,7 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
 
-import { UserMutation } from '../../../store/user/user.mutations';
+import { MutationKey } from '../../../store/user/user.mutations';
 import { createStore as createUserStore, userCommit, userKey } from '../../../store/user/user.store';
 import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
@@ -36,7 +36,7 @@ describe('user widget unit test', () => {
                 sustainability: 0.4
             };
 
-            userCommit(store, UserMutation.SetProfile, { ...new UserProfile(), ratings });
+            userCommit(store, MutationKey.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.rating).toEqual(60);
         });

@@ -5,9 +5,9 @@ import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { GenericUtility } from '../../core/utilities/generic-utility/generic-utility';
 
-import { IWorkItemState } from './work-item.state';
+import { IState } from './work-item.state';
 
-export enum WorkItemMutation {
+export enum MutationKey {
     SetLastQuery = 'set_last_query',
     SetPendingWorkItem = 'set_pending_work_item',
     SetEditedWorkItem = 'set_edited_work_item',
@@ -16,36 +16,36 @@ export enum WorkItemMutation {
     SetWorkItems = 'set_work_items'
 }
 
-export interface IWorkItemMutations {
-    [WorkItemMutation.SetLastQuery](state: IWorkItemState, query: WorkItemQuery | null): void;
-    [WorkItemMutation.SetPendingWorkItem](state: IWorkItemState, item: WorkItemDto | null): void;
-    [WorkItemMutation.SetEditedWorkItem](state: IWorkItemState, item: WorkItem | null): void;
-    [WorkItemMutation.SetWorkItem](state: IWorkItemState, item: WorkItemDto): void;
-    [WorkItemMutation.DeleteWorkItem](state: IWorkItemState, id: string): void;
-    [WorkItemMutation.SetWorkItems](state: IWorkItemState, items: WorkItemDto[]): void;
+export interface IMutations {
+    [MutationKey.SetLastQuery](state: IState, query: WorkItemQuery | null): void;
+    [MutationKey.SetPendingWorkItem](state: IState, item: WorkItemDto | null): void;
+    [MutationKey.SetEditedWorkItem](state: IState, item: WorkItem | null): void;
+    [MutationKey.SetWorkItem](state: IState, item: WorkItemDto): void;
+    [MutationKey.DeleteWorkItem](state: IState, id: string): void;
+    [MutationKey.SetWorkItems](state: IState, items: WorkItemDto[]): void;
 }
 
-export const mutations: MutationTree<IWorkItemState> & IWorkItemMutations = {
-    [WorkItemMutation.SetLastQuery](state: IWorkItemState, query: WorkItemQuery | null): void {
+export const mutations: MutationTree<IState> & IMutations = {
+    [MutationKey.SetLastQuery](state: IState, query: WorkItemQuery | null): void {
         state.lastQuery = query;
     },
-    [WorkItemMutation.SetPendingWorkItem](state: IWorkItemState, item: WorkItemDto | null): void {
+    [MutationKey.SetPendingWorkItem](state: IState, item: WorkItemDto | null): void {
         state.pendingWorkItem = item;
     },
-    [WorkItemMutation.SetEditedWorkItem](state: IWorkItemState, item: WorkItem | null): void {
+    [MutationKey.SetEditedWorkItem](state: IState, item: WorkItem | null): void {
         state.editedWorkItem = item;
     },
-    [WorkItemMutation.SetWorkItem](state: IWorkItemState, item: WorkItemDto): void {
+    [MutationKey.SetWorkItem](state: IState, item: WorkItemDto): void {
         const index = state.workItems.findIndex(_ => _.id === item.id);
 
         if (index !== -1) {
             state.workItems = GenericUtility.replaceAt(state.workItems, item, index);
         }
     },
-    [WorkItemMutation.DeleteWorkItem](state: IWorkItemState, id: string): void {
+    [MutationKey.DeleteWorkItem](state: IState, id: string): void {
         state.workItems = state.workItems.filter(_ => _.id !== id);
     },
-    [WorkItemMutation.SetWorkItems](state: IWorkItemState, items: WorkItemDto[]): void {
+    [MutationKey.SetWorkItems](state: IState, items: WorkItemDto[]): void {
         state.workItems = items.slice();
     }
 };

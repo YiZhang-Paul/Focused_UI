@@ -1,19 +1,19 @@
 import { ActionContext, ActionTree } from 'vuex';
 
-import { WorkItemAction } from '../work-item/work-item.actions';
+import { ActionKey as WorkItemActionKey } from '../work-item/work-item.actions';
 import { workItemKey } from '../work-item/work-item.store';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
 import { BreakSessionStartupOption } from '../../core/models/time-session/break-session-startup-option';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
 
-import { ITimeSessionState } from './time-session.state';
-import { GettersAugments, TimeSessionGetter } from './time-session.getters';
-import { ITimeSessionMutations, TimeSessionMutation } from './time-session.mutations';
+import { IState } from './time-session.state';
+import { GettersAugments, GetterKey } from './time-session.getters';
+import { IMutations, MutationKey } from './time-session.mutations';
 
 let timeSessionHttpService: TimeSessionHttpService;
 
-export enum TimeSessionAction {
+export enum ActionKey {
     StartFocusSession = 'start_focus_session',
     StopFocusSession = 'stop_focus_session',
     StartOverlearning = 'start_overlearning',
@@ -25,68 +25,68 @@ export enum TimeSessionAction {
     SyncActiveTimeSession = 'sync_active_time_session'
 }
 
-interface ActionAugments extends Omit<ActionContext<ITimeSessionState, ITimeSessionState>, 'getters' | 'commit'> {
+interface ActionAugments extends Omit<ActionContext<IState, IState>, 'getters' | 'commit'> {
     getters: GettersAugments;
-    commit<T extends keyof ITimeSessionMutations>(key: T, payload: Parameters<ITimeSessionMutations[T]>[1]): ReturnType<ITimeSessionMutations[T]>;
+    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
 }
 
-export interface ITimeSessionActions {
-    [TimeSessionAction.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean>;
-    [TimeSessionAction.StopFocusSession](context: ActionAugments, id: string): Promise<boolean>;
-    [TimeSessionAction.StartOverlearning](context: ActionAugments, targetStatus: WorkItemStatus): Promise<boolean>;
-    [TimeSessionAction.SwitchWorkItem](context: ActionAugments, id: string): Promise<boolean>;
-    [TimeSessionAction.StartBreakSession](context: ActionAugments, payload: BreakSessionStartupOption): Promise<boolean>;
-    [TimeSessionAction.StopBreakSession](context: ActionAugments, id: string): Promise<boolean>;
-    [TimeSessionAction.LoadActiveTimeSession](context: ActionAugments): Promise<void>;
-    [TimeSessionAction.LoadStaleTimeSession](context: ActionAugments): Promise<void>;
-    [TimeSessionAction.SyncActiveTimeSession](context: ActionAugments): Promise<void>;
+export interface IActions {
+    [ActionKey.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean>;
+    [ActionKey.StopFocusSession](context: ActionAugments, id: string): Promise<boolean>;
+    [ActionKey.StartOverlearning](context: ActionAugments, targetStatus: WorkItemStatus): Promise<boolean>;
+    [ActionKey.SwitchWorkItem](context: ActionAugments, id: string): Promise<boolean>;
+    [ActionKey.StartBreakSession](context: ActionAugments, payload: BreakSessionStartupOption): Promise<boolean>;
+    [ActionKey.StopBreakSession](context: ActionAugments, id: string): Promise<boolean>;
+    [ActionKey.LoadActiveTimeSession](context: ActionAugments): Promise<void>;
+    [ActionKey.LoadStaleTimeSession](context: ActionAugments): Promise<void>;
+    [ActionKey.SyncActiveTimeSession](context: ActionAugments): Promise<void>;
 }
 
 export const setActionServices = (timeSessionHttp: TimeSessionHttpService): void => {
     timeSessionHttpService = timeSessionHttp;
 }
 
-export const actions: ActionTree<ITimeSessionState, ITimeSessionState> & ITimeSessionActions = {
-    async [TimeSessionAction.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean> {
+export const actions: ActionTree<IState, IState> & IActions = {
+    async [ActionKey.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startFocusSession(payload);
 
         if (isStarted) {
-            await context.dispatch(TimeSessionAction.LoadActiveTimeSession);
+            await context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 
         return isStarted;
     },
-    async [TimeSessionAction.StopFocusSession](context: ActionAugments, id: string): Promise<boolean> {
+    async [ActionKey.StopFocusSession](context: ActionAugments, id: string): Promise<boolean> {
         const isStopped = await timeSessionHttpService.stopFocusSession(id);
 
         if (isStopped) {
-            await context.dispatch(TimeSessionAction.LoadActiveTimeSession);
-            await context.dispatch(TimeSessionAction.LoadStaleTimeSession);
+            await context.dispatch(ActionKey.LoadActiveTimeSession);
+            await context.dispatch(ActionKey.LoadStaleTimeSession);
         }
 
         return isStopped;
     },
-    async [TimeSessionAction.StartOverlearning](context: ActionAugments, targetStatus: WorkItemStatus): Promise<boolean> {
+    async [ActionKey.StartOverlearning](context: ActionAugments, targetStatus: WorkItemStatus): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startOverlearning(targetStatus);
 
         if (isStarted) {
-            context.dispatch(`${workItemKey}/${WorkItemAction.ReloadWorkItems}`, null, { root: true });
-            context.dispatch(TimeSessionAction.LoadActiveTimeSession);
+            context.dispatch(`${workItemKey}/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
+            context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 
         return isStarted;
     },
-    async [TimeSessionAction.SwitchWorkItem](context: ActionAugments, id: string): Promise<boolean> {
+    async [ActionKey.SwitchWorkItem](context: ActionAugments, id: string): Promise<boolean> {
         const isSwitched = await timeSessionHttpService.switchWorkItem(id);
 
         if (isSwitched) {
-            context.dispatch(`${workItemKey}/${WorkItemAction.ReloadWorkItems}`, null, { root: true });
-            context.dispatch(TimeSessionAction.LoadActiveTimeSession);
+            context.dispatch(`${workItemKey}/${WorkItemActionKey.ReloadWorkItems}`, null, { root: true });
+            context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 
         return isSwitched;
     },
-    async [TimeSessionAction.StartBreakSession](context: ActionAugments, payload: BreakSessionStartupOption): Promise<boolean> {
+    async [ActionKey.StartBreakSession](context: ActionAugments, payload: BreakSessionStartupOption): Promise<boolean> {
         if (!payload.totalMinutes) {
             return true;
         }
@@ -94,46 +94,46 @@ export const actions: ActionTree<ITimeSessionState, ITimeSessionState> & ITimeSe
         const isStarted = await timeSessionHttpService.startBreakSession(payload);
 
         if (isStarted) {
-            await context.dispatch(TimeSessionAction.LoadActiveTimeSession);
+            await context.dispatch(ActionKey.LoadActiveTimeSession);
         }
 
         return isStarted;
     },
-    async [TimeSessionAction.StopBreakSession](context: ActionAugments, id: string): Promise<boolean> {
+    async [ActionKey.StopBreakSession](context: ActionAugments, id: string): Promise<boolean> {
         const isStopped = await timeSessionHttpService.stopBreakSession(id);
 
         if (isStopped) {
-            await context.dispatch(TimeSessionAction.LoadActiveTimeSession);
-            await context.dispatch(TimeSessionAction.LoadStaleTimeSession);
+            await context.dispatch(ActionKey.LoadActiveTimeSession);
+            await context.dispatch(ActionKey.LoadStaleTimeSession);
         }
 
         return isStopped;
     },
-    async [TimeSessionAction.LoadActiveTimeSession](context: ActionAugments): Promise<void> {
-        context.commit(TimeSessionMutation.SetActiveFocusSession, await timeSessionHttpService.getActiveFocusSessionMeta());
-        context.commit(TimeSessionMutation.SetActiveBreakSession, await timeSessionHttpService.getActiveBreakSession());
+    async [ActionKey.LoadActiveTimeSession](context: ActionAugments): Promise<void> {
+        context.commit(MutationKey.SetActiveFocusSession, await timeSessionHttpService.getActiveFocusSessionMeta());
+        context.commit(MutationKey.SetActiveBreakSession, await timeSessionHttpService.getActiveBreakSession());
     },
-    async [TimeSessionAction.LoadStaleTimeSession](context: ActionAugments): Promise<void> {
-        context.commit(TimeSessionMutation.SetStaleFocusSession, await timeSessionHttpService.getStaleFocusSessionMeta());
-        context.commit(TimeSessionMutation.SetStaleBreakSession, await timeSessionHttpService.getStaleBreakSession());
+    async [ActionKey.LoadStaleTimeSession](context: ActionAugments): Promise<void> {
+        context.commit(MutationKey.SetStaleFocusSession, await timeSessionHttpService.getStaleFocusSessionMeta());
+        context.commit(MutationKey.SetStaleBreakSession, await timeSessionHttpService.getStaleBreakSession());
     },
-    async [TimeSessionAction.SyncActiveTimeSession](context: ActionAugments): Promise<void> {
+    async [ActionKey.SyncActiveTimeSession](context: ActionAugments): Promise<void> {
         const { getters, commit, dispatch } = context;
-        const focusSession = getters[TimeSessionGetter.ActiveFocusSession];
-        const breakSession = getters[TimeSessionGetter.ActiveBreakSession];
+        const focusSession = getters[GetterKey.ActiveFocusSession];
+        const breakSession = getters[GetterKey.ActiveBreakSession];
         const hasSession = focusSession || breakSession;
 
-        if (hasSession && !getters[TimeSessionGetter.HasOngoingTimeSession]) {
-            await dispatch(TimeSessionAction.LoadStaleTimeSession);
-            await dispatch(TimeSessionAction.LoadActiveTimeSession);
+        if (hasSession && !getters[GetterKey.HasOngoingTimeSession]) {
+            await dispatch(ActionKey.LoadStaleTimeSession);
+            await dispatch(ActionKey.LoadActiveTimeSession);
         }
         else if (focusSession) {
-            commit(TimeSessionMutation.SetActiveFocusSession, { ...focusSession });
+            commit(MutationKey.SetActiveFocusSession, { ...focusSession });
         }
         else if (breakSession) {
-            commit(TimeSessionMutation.SetActiveBreakSession, { ...breakSession });
+            commit(MutationKey.SetActiveBreakSession, { ...breakSession });
         }
 
-        setTimeout(() => actions[TimeSessionAction.SyncActiveTimeSession](context), 1000);
+        setTimeout(() => actions[ActionKey.SyncActiveTimeSession](context), 1000);
     }
 };
