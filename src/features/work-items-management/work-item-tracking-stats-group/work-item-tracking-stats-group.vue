@@ -30,7 +30,6 @@ import { PerformanceGetter } from '../../../store/performance/performance.getter
 import { performanceGetters } from '../../../store/performance/performance.store';
 import { WorkItemGetter } from '../../../store/work-item/work-item.getters';
 import { workItemGetters } from '../../../store/work-item/work-item.store';
-import { WorkItemDto } from '../../../core/dtos/work-item-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { EstimationBreakdownDto } from '../../../core/dtos/estimation-breakdown-dto';
 import { DateRange } from '../../../core/models/generic/date-range';
@@ -103,7 +102,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get radarSeries(): RadarSeries[] {
-        const items = workItemGetters<WorkItemDto[]>(this.$store, WorkItemGetter.WorkItems);
+        const items = workItemGetters(this.$store, WorkItemGetter.WorkItems);
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,

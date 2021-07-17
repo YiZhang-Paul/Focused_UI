@@ -5,21 +5,21 @@ import { container } from '../../core/ioc/container';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 import { IPerformanceState, state } from './performance.state';
-import { getters, PerformanceGetter } from './performance.getters';
+import { getters, IPerformanceGetters } from './performance.getters';
 import { mutations, PerformanceMutation } from './performance.mutations';
-import { actions, setActionServices, PerformanceAction } from './performance.actions';
+import { actions, setActionServices, IPerformanceActions } from './performance.actions';
 
 export const performanceKey = 'performance';
 
-export const performanceGetters = <T = any>(rootStore: Store<any>, getter: PerformanceGetter): T => {
+export const performanceGetters = <T extends keyof IPerformanceGetters>(rootStore: Store<any>, getter: T): ReturnType<IPerformanceGetters[T]> => {
     return rootStore.getters[`${performanceKey}/${getter}`];
 }
 
-export const performanceCommit = <T = any>(rootStore: Store<any>, mutation: PerformanceMutation, payload: T): void => {
+export const performanceCommit = (rootStore: Store<any>, mutation: PerformanceMutation, payload: any): void => {
     rootStore.commit(`${performanceKey}/${mutation}`, payload);
 }
 
-export const performanceDispatch = async<T = void>(rootStore: Store<any>, action: PerformanceAction, payload?: any): Promise<T> => {
+export const performanceDispatch = async<T extends keyof IPerformanceActions>(rootStore: Store<any>, action: T, payload?: any): Promise<ReturnType<IPerformanceActions[T]>> => {
     return await rootStore.dispatch(`${performanceKey}/${action}`, payload);
 }
 

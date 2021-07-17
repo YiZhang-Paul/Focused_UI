@@ -71,7 +71,7 @@ describe('user store unit test', () => {
 
             sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
             expect(result).toBeTruthy();
-            expect(userGetters<UserProfile>(store, UserGetter.Profile).ratings).toEqual(rating);
+            expect(userGetters(store, UserGetter.Profile)?.ratings).toEqual(rating);
         });
     });
 });

@@ -106,7 +106,6 @@ import { WorkItemDto } from '../../core/dtos/work-item-dto';
 import { ValueChange } from '../../core/models/generic/value-change';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
-import { UserProfile } from '../../core/models/user/user-profile';
 import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { FocusSessionStartDialogOption } from '../../core/models/time-session/focus-session-start-dialog-option';
 import { FocusSessionStartupOption } from '../../core/models/time-session/focus-session-startup-option';
@@ -205,7 +204,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async confirmCreate(): Promise<void> {
-        const id = await workItemDispatch<string>(this.$store, WorkItemAction.CreateWorkItem);
+        const id = await workItemDispatch(this.$store, WorkItemAction.CreateWorkItem);
 
         if (id) {
             await this.onItemSelect(id);
@@ -221,7 +220,7 @@ export default class WorkItemsManagement extends Vue {
     public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
         this.focusSessionOption = null;
 
-        if (await timeSessionDispatch<boolean>(this.$store, TimeSessionAction.StartFocusSession, option)) {
+        if (await timeSessionDispatch(this.$store, TimeSessionAction.StartFocusSession, option)) {
             await this.loadWorkItems();
         }
     }
@@ -230,7 +229,7 @@ export default class WorkItemsManagement extends Vue {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopFocusSessionDialog = false;
 
-        if (await timeSessionDispatch<boolean>(this.$store, TimeSessionAction.StopFocusSession, option.focusSessionId)) {
+        if (await timeSessionDispatch(this.$store, TimeSessionAction.StopFocusSession, option.focusSessionId)) {
             this.showRatingsChange();
             this.loadWorkItems();
             timeSessionDispatch(this.$store, TimeSessionAction.StartBreakSession, breakOption);
@@ -243,7 +242,7 @@ export default class WorkItemsManagement extends Vue {
 
     public async onBreakSessionEnd(id: string): Promise<void> {
         this.showStopBreakSessionDialog = false;
-        const isStopped = await timeSessionDispatch<boolean>(this.$store, TimeSessionAction.StopBreakSession, id);
+        const isStopped = await timeSessionDispatch(this.$store, TimeSessionAction.StopBreakSession, id);
 
         if (isStopped) {
             await this.loadWorkItems();
@@ -259,7 +258,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
-        if (await workItemDispatch<boolean>(this.$store, WorkItemAction.UpdateWorkItemMeta, item)) {
+        if (await workItemDispatch(this.$store, WorkItemAction.UpdateWorkItemMeta, item)) {
             this.$emit('item:update');
         }
     }
@@ -269,13 +268,13 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public async onItemUpdate(item: WorkItem): Promise<void> {
-        if (await workItemDispatch<boolean>(this.$store, WorkItemAction.UpdateWorkItem, item)) {
+        if (await workItemDispatch(this.$store, WorkItemAction.UpdateWorkItem, item)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemDelete(id: string): Promise<void> {
-        if (await workItemDispatch<boolean>(this.$store, WorkItemAction.DeleteWorkItem, id)) {
+        if (await workItemDispatch(this.$store, WorkItemAction.DeleteWorkItem, id)) {
             this.$emit('item:delete');
         }
     }
@@ -288,13 +287,13 @@ export default class WorkItemsManagement extends Vue {
         if (!timeSessionGetters(this.$store, TimeSessionGetter.HasActiveFocusSession)) {
             this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
-        else if (await timeSessionDispatch<boolean>(this.$store, TimeSessionAction.SwitchWorkItem, item.id)) {
+        else if (await timeSessionDispatch(this.$store, TimeSessionAction.SwitchWorkItem, item.id)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
-        if (await timeSessionDispatch<boolean>(this.$store, TimeSessionAction.StartOverlearning, targetStatus)) {
+        if (await timeSessionDispatch(this.$store, TimeSessionAction.StartOverlearning, targetStatus)) {
             this.$emit('item:update');
         }
     }
@@ -304,9 +303,9 @@ export default class WorkItemsManagement extends Vue {
     }
 
     private async showRatingsChange(): Promise<void> {
-        const user = userGetters<UserProfile>(this.$store, UserGetter.Profile);
-        const ratings = await performanceDispatch<PerformanceRating>(this.$store, PerformanceAction.GetPerformanceRating);
-        this.ratingsChangeOption = new ValueChange(user.ratings, ratings);
+        const user = userGetters(this.$store, UserGetter.Profile);
+        const ratings = await performanceDispatch(this.$store, PerformanceAction.GetPerformanceRating);
+        this.ratingsChangeOption = new ValueChange(user!.ratings, ratings!);
     }
 }
 </script>

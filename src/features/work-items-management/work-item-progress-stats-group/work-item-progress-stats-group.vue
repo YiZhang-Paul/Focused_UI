@@ -29,7 +29,6 @@ import { performanceGetters } from '../../../store/performance/performance.store
 import { DueDateBreakdownDto } from '../../../core/dtos/due-date-breakdown-dto';
 import { ActivityBreakdownDto } from '../../../core/dtos/activity-breakdown-dto';
 import { TimeTrackingBreakdownDto } from '../../../core/dtos/time-tracking-breakdown-dto';
-import { UserProfile } from '../../../core/models/user/user-profile';
 import { PerformanceRating } from '../../../core/models/user/performance-rating';
 import { PercentageSeries } from '../../../core/models/progress-bar/percentage-series';
 import { GenericUtility } from '../../../core/utilities/generic-utility/generic-utility';
@@ -106,7 +105,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get ratings(): PerformanceRating {
-        const user = userGetters<UserProfile>(this.$store, UserGetter.Profile);
+        const user = userGetters(this.$store, UserGetter.Profile);
 
         return user?.ratings ?? new PerformanceRating();
     }

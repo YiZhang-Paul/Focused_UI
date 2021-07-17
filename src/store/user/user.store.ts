@@ -5,21 +5,21 @@ import { container } from '../../core/ioc/container';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
 
 import { IUserState, state } from './user.state';
-import { getters, UserGetter } from './user.getters';
+import { getters, IUserGetters } from './user.getters';
 import { mutations, UserMutation } from './user.mutations';
-import { actions, setActionServices, UserAction } from './user.actions';
+import { actions, IUserActions, setActionServices } from './user.actions';
 
 export const userKey = 'user';
 
-export const userGetters = <T = any>(rootStore: Store<any>, getter: UserGetter): T => {
+export const userGetters = <T extends keyof IUserGetters>(rootStore: Store<any>, getter: T): ReturnType<IUserGetters[T]> => {
     return rootStore.getters[`${userKey}/${getter}`];
 }
 
-export const userCommit = <T = any>(rootStore: Store<any>, mutation: UserMutation, payload: T): void => {
+export const userCommit = (rootStore: Store<any>, mutation: UserMutation, payload: any): void => {
     rootStore.commit(`${userKey}/${mutation}`, payload);
 }
 
-export const userDispatch = async<T = void>(rootStore: Store<any>, action: UserAction, payload?: any): Promise<T> => {
+export const userDispatch = async<T extends keyof IUserActions>(rootStore: Store<any>, action: T, payload?: any): Promise<ReturnType<IUserActions[T]>> => {
     return await rootStore.dispatch(`${userKey}/${action}`, payload);
 }
 
