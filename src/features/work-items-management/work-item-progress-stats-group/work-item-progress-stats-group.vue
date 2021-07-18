@@ -43,7 +43,7 @@ import UserRatingsTracker from '../../../shared/widgets/user-ratings-tracker/use
 export default class WorkItemProgressStatsGroup extends Vue {
 
     get dueDateBreakdown(): DueDateBreakdownDto | null {
-        return store.performance.getters(this.$store, store.performance.getter.DueDateBreakdown);
+        return store.performance.getters(store.performance.getter.DueDateBreakdown);
     }
 
     get pastDueAndLooming(): string {
@@ -63,7 +63,7 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.performance.getters(this.$store, store.performance.getter.ActivityHistories);
+        return store.performance.getters(store.performance.getter.ActivityHistories);
     }
 
     get averageFocus(): string {
@@ -98,11 +98,11 @@ export default class WorkItemProgressStatsGroup extends Vue {
     }
 
     get timeTracking(): TimeTrackingBreakdownDto | null {
-        return store.performance.getters(this.$store, store.performance.getter.CurrentDayTimeTracking);
+        return store.performance.getters(store.performance.getter.CurrentDayTimeTracking);
     }
 
     get ratings(): PerformanceRating {
-        const user = store.user.getters(this.$store, store.user.getter.Profile);
+        const user = store.user.getters(store.user.getter.Profile);
 
         return user?.ratings ?? new PerformanceRating();
     }

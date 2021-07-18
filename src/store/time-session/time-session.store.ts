@@ -1,4 +1,4 @@
-import { Module } from 'vuex';
+import { Module, Store } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
@@ -10,10 +10,18 @@ import { GetterKey, getters, Getters } from './time-session.getters';
 import { Mutations, MutationKey, mutations } from './time-session.mutations';
 import { ActionKey, actions, Actions, setActionServices } from './time-session.actions';
 
-export const createStore = (namespace: string) => {
+export const createModule = (): Module<IState, any> => ({
+    namespaced: true,
+    state,
+    getters,
+    mutations,
+    actions
+});
+
+export const createHandlers = (namespace: string, getStore: () => Store<any>) => {
     setActionServices(container.get<TimeSessionHttpService>(types.TimeSessionHttpService));
 
-    const handlers = DataStoreUtility.getHandlers<
+    return DataStoreUtility.getHandlers<
         IState,
         Getters,
         Mutations,
@@ -21,15 +29,5 @@ export const createStore = (namespace: string) => {
         typeof GetterKey,
         typeof MutationKey,
         typeof ActionKey
-    >(namespace, GetterKey, MutationKey, ActionKey);
-
-    const module: Module<IState, any> = {
-        namespaced: true,
-        state,
-        getters,
-        mutations,
-        actions
-    };
-
-    return { handlers, module };
+    >(namespace, GetterKey, MutationKey, ActionKey, getStore);
 }

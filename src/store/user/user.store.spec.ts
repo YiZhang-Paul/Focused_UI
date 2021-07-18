@@ -25,12 +25,12 @@ describe('user store unit test', () => {
         test('should load user profile', async() => {
             const user: UserProfile = { ...new UserProfile(), name: 'john doe' };
             userProfileHttpStub.getUserProfile.resolves(user);
-            expect(store.user.getters(store.store, store.user.getter.Profile)).not.toEqual(user);
+            expect(store.user.getters(store.user.getter.Profile)).not.toEqual(user);
 
-            await store.user.dispatch(store.store, store.user.action.LoadProfile);
+            await store.user.dispatch(store.user.action.LoadProfile);
 
             sinonExpect.calledOnce(userProfileHttpStub.getUserProfile);
-            expect(store.user.getters(store.store, store.user.getter.Profile)).toEqual(user);
+            expect(store.user.getters(store.user.getter.Profile)).toEqual(user);
         });
     });
 
@@ -42,13 +42,13 @@ describe('user store unit test', () => {
             };
 
             userProfileHttpStub.updateUserRatings.resolves(null);
-            store.user.commit(store.store, store.user.mutation.SetProfile, user);
+            store.user.commit(store.user.mutation.SetProfile, user);
 
-            const result = await store.user.dispatch(store.store, store.user.action.UpdateUserRatings);
+            const result = await store.user.dispatch(store.user.action.UpdateUserRatings);
 
             sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
             expect(result).toBeFalsy();
-            expect(store.user.getters(store.store, store.user.getter.Profile)).toEqual(user);
+            expect(store.user.getters(store.user.getter.Profile)).toEqual(user);
         });
 
         test('should return true when successfully updated ratings', async() => {
@@ -59,13 +59,13 @@ describe('user store unit test', () => {
 
             const rating: PerformanceRating = { ...new PerformanceRating(), estimation: 0.8 };
             userProfileHttpStub.updateUserRatings.resolves(rating);
-            store.user.commit(store.store, store.user.mutation.SetProfile, user);
+            store.user.commit(store.user.mutation.SetProfile, user);
 
-            const result = await store.user.dispatch(store.store, store.user.action.UpdateUserRatings);
+            const result = await store.user.dispatch(store.user.action.UpdateUserRatings);
 
             sinonExpect.calledOnce(userProfileHttpStub.updateUserRatings);
             expect(result).toBeTruthy();
-            expect(store.user.getters(store.store, store.user.getter.Profile)?.ratings).toEqual(rating);
+            expect(store.user.getters(store.user.getter.Profile)?.ratings).toEqual(rating);
         });
     });
 });

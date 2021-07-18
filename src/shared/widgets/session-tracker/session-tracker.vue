@@ -159,23 +159,23 @@ export default class SessionTracker extends Vue {
     }
 
     get hasOngoingSession(): boolean {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.HasOngoingTimeSession);
+        return store.timeSession.getters(store.timeSession.getter.HasOngoingTimeSession);
     }
 
     get ongoingSessionEnd(): Date | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.OngoingTimeSessionEnd);
+        return store.timeSession.getters(store.timeSession.getter.OngoingTimeSessionEnd);
     }
 
     get sessionStatus(): TimeSessionStatus {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.TimeSessionStatus);
+        return store.timeSession.getters(store.timeSession.getter.TimeSessionStatus);
     }
 
     get focusSession(): FocusSessionDto | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.ActiveFocusSession);
+        return store.timeSession.getters(store.timeSession.getter.ActiveFocusSession);
     }
 
     get breakSession(): BreakSession | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.ActiveBreakSession);
+        return store.timeSession.getters(store.timeSession.getter.ActiveBreakSession);
     }
 }
 </script>

@@ -153,31 +153,31 @@ export default class WorkItemsManagement extends Vue {
     public query = new WorkItemQuery();
 
     get pendingItem(): WorkItemDto | null {
-        return store.workItem.getters(this.$store, store.workItem.getter.PendingWorkItem);
+        return store.workItem.getters(store.workItem.getter.PendingWorkItem);
     }
 
     get editedItemMeta(): WorkItemDto | null {
-        return store.workItem.getters(this.$store, store.workItem.getter.EditedWorkItemMeta);
+        return store.workItem.getters(store.workItem.getter.EditedWorkItemMeta);
     }
 
     get editedItem(): WorkItem | null {
-        return store.workItem.getters(this.$store, store.workItem.getter.EditedWorkItem);
+        return store.workItem.getters(store.workItem.getter.EditedWorkItem);
     }
 
     get activeFocusSession(): FocusSessionDto | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.ActiveFocusSession);
+        return store.timeSession.getters(store.timeSession.getter.ActiveFocusSession);
     }
 
     get staleFocusSession(): FocusSessionDto | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.StaleFocusSession);
+        return store.timeSession.getters(store.timeSession.getter.StaleFocusSession);
     }
 
     get activeBreakSession(): BreakSession | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.ActiveBreakSession);
+        return store.timeSession.getters(store.timeSession.getter.ActiveBreakSession);
     }
 
     get staleBreakSession(): BreakSession | null {
-        return store.timeSession.getters(this.$store, store.timeSession.getter.StaleBreakSession);
+        return store.timeSession.getters(store.timeSession.getter.StaleBreakSession);
     }
 
     public created(): void {
@@ -185,15 +185,15 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public startCreate(): void {
-        store.workItem.commit(this.$store, store.workItem.mutation.SetPendingWorkItem, new WorkItemDto());
+        store.workItem.commit(store.workItem.mutation.SetPendingWorkItem, new WorkItemDto());
     }
 
     public cancelCreate(): void {
-        store.workItem.commit(this.$store, store.workItem.mutation.SetPendingWorkItem, null);
+        store.workItem.commit(store.workItem.mutation.SetPendingWorkItem, null);
     }
 
     public async confirmCreate(): Promise<void> {
-        const id = await store.workItem.dispatch(this.$store, store.workItem.action.CreateWorkItem);
+        const id = await store.workItem.dispatch(store.workItem.action.CreateWorkItem);
 
         if (id) {
             await this.onItemSelect(id);
@@ -209,7 +209,7 @@ export default class WorkItemsManagement extends Vue {
     public async onFocusSessionStart(option: FocusSessionStartupOption): Promise<void> {
         this.focusSessionOption = null;
 
-        if (await store.timeSession.dispatch(this.$store, store.timeSession.action.StartFocusSession, option)) {
+        if (await store.timeSession.dispatch(store.timeSession.action.StartFocusSession, option)) {
             await this.loadWorkItems();
         }
     }
@@ -218,10 +218,10 @@ export default class WorkItemsManagement extends Vue {
         const breakOption = new BreakSessionStartupOption(option.focusSessionId, option.breakSessionDuration);
         this.showStopFocusSessionDialog = false;
 
-        if (await store.timeSession.dispatch(this.$store, store.timeSession.action.StopFocusSession, option.focusSessionId)) {
+        if (await store.timeSession.dispatch(store.timeSession.action.StopFocusSession, option.focusSessionId)) {
             this.showRatingsChange();
             this.loadWorkItems();
-            store.timeSession.dispatch(this.$store, store.timeSession.action.StartBreakSession, breakOption);
+            store.timeSession.dispatch(store.timeSession.action.StartBreakSession, breakOption);
             this.$emit('session:stop');
         }
         else {
@@ -231,7 +231,7 @@ export default class WorkItemsManagement extends Vue {
 
     public async onBreakSessionEnd(id: string): Promise<void> {
         this.showStopBreakSessionDialog = false;
-        const isStopped = await store.timeSession.dispatch(this.$store, store.timeSession.action.StopBreakSession, id);
+        const isStopped = await store.timeSession.dispatch(store.timeSession.action.StopBreakSession, id);
 
         if (isStopped) {
             await this.loadWorkItems();
@@ -242,58 +242,58 @@ export default class WorkItemsManagement extends Vue {
     }
 
     public onRatingsUpdate(): void {
-        store.user.dispatch(this.$store, store.user.action.UpdateUserRatings, this.ratingsChangeOption!.current);
+        store.user.dispatch(store.user.action.UpdateUserRatings, this.ratingsChangeOption!.current);
         this.ratingsChangeOption = null;
     }
 
     public async onItemMetaUpdate(item: WorkItemDto): Promise<void> {
-        if (await store.workItem.dispatch(this.$store, store.workItem.action.UpdateWorkItemMeta, item)) {
+        if (await store.workItem.dispatch(store.workItem.action.UpdateWorkItemMeta, item)) {
             this.$emit('item:update');
         }
     }
 
     public onItemClose(): void {
-        store.workItem.commit(this.$store, store.workItem.mutation.SetEditedWorkItem, null);
+        store.workItem.commit(store.workItem.mutation.SetEditedWorkItem, null);
     }
 
     public async onItemUpdate(item: WorkItem): Promise<void> {
-        if (await store.workItem.dispatch(this.$store, store.workItem.action.UpdateWorkItem, item)) {
+        if (await store.workItem.dispatch(store.workItem.action.UpdateWorkItem, item)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemDelete(id: string): Promise<void> {
-        if (await store.workItem.dispatch(this.$store, store.workItem.action.DeleteWorkItem, id)) {
+        if (await store.workItem.dispatch(store.workItem.action.DeleteWorkItem, id)) {
             this.$emit('item:delete');
         }
     }
 
     public async onItemSelect(id: string): Promise<void> {
-        await store.workItem.dispatch(this.$store, store.workItem.action.LoadEditedWorkItem, id);
+        await store.workItem.dispatch(store.workItem.action.LoadEditedWorkItem, id);
     }
 
     public async onItemStart(item: WorkItemDto): Promise<void> {
-        if (!store.timeSession.getters(this.$store, store.timeSession.getter.HasActiveFocusSession)) {
+        if (!store.timeSession.getters(store.timeSession.getter.HasActiveFocusSession)) {
             this.focusSessionOption = new FocusSessionStartDialogOption(item);
         }
-        else if (await store.timeSession.dispatch(this.$store, store.timeSession.action.SwitchWorkItem, item.id)) {
+        else if (await store.timeSession.dispatch(store.timeSession.action.SwitchWorkItem, item.id)) {
             this.$emit('item:update');
         }
     }
 
     public async onItemStop(targetStatus: WorkItemStatus): Promise<void> {
-        if (await store.timeSession.dispatch(this.$store, store.timeSession.action.StartOverlearning, targetStatus)) {
+        if (await store.timeSession.dispatch(store.timeSession.action.StartOverlearning, targetStatus)) {
             this.$emit('item:update');
         }
     }
 
     public async loadWorkItems(): Promise<void> {
-        await store.workItem.dispatch(this.$store, store.workItem.action.LoadWorkItems, this.query);
+        await store.workItem.dispatch(store.workItem.action.LoadWorkItems, this.query);
     }
 
     private async showRatingsChange(): Promise<void> {
-        const user = store.user.getters(this.$store, store.user.getter.Profile);
-        const ratings = await store.performance.dispatch(this.$store, store.performance.action.GetPerformanceRating);
+        const user = store.user.getters(store.user.getter.Profile);
+        const ratings = await store.performance.dispatch(store.performance.action.GetPerformanceRating);
         this.ratingsChangeOption = new ValueChange(user!.ratings, ratings!);
     }
 }

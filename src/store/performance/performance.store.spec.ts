@@ -29,7 +29,7 @@ describe('performance store unit test', () => {
         test('should return correct date range', () => {
             const oneDay = 24 * 60 * 60 * 1000;
 
-            const result = store.performance.getters(store.store, store.performance.getter.DateRange);
+            const result = store.performance.getters(store.performance.getter.DateRange);
 
             expect(result.end.getTime() - result.start.getTime()).toEqual(14 * oneDay);
         });
@@ -39,12 +39,12 @@ describe('performance store unit test', () => {
         test('should load current day progression', async() => {
             const progression: ProgressionCounter<number> = { current: 2, target: 3, isCompleted: false };
             performanceHttpStub.getDailyProgression.resolves(progression);
-            expect(store.performance.getters(store.store, store.performance.getter.CurrentDayProgression)).not.toEqual(progression);
+            expect(store.performance.getters(store.performance.getter.CurrentDayProgression)).not.toEqual(progression);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadCurrentDayProgression);
+            await store.performance.dispatch(store.performance.action.LoadCurrentDayProgression);
 
             sinonExpect.calledOnce(performanceHttpStub.getDailyProgression);
-            expect(store.performance.getters(store.store, store.performance.getter.CurrentDayProgression)).toEqual(progression);
+            expect(store.performance.getters(store.performance.getter.CurrentDayProgression)).toEqual(progression);
         });
     });
 
@@ -52,12 +52,12 @@ describe('performance store unit test', () => {
         test('should load current day time tracking', async() => {
             const tracking: TimeTrackingBreakdownDto = { activityTime: 5, breakTime: 5, untrackedTime: 14 };
             performanceHttpStub.getDailyTimeTracking.resolves(tracking);
-            expect(store.performance.getters(store.store, store.performance.getter.CurrentDayTimeTracking)).not.toEqual(tracking);
+            expect(store.performance.getters(store.performance.getter.CurrentDayTimeTracking)).not.toEqual(tracking);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadCurrentDayTimeTracking);
+            await store.performance.dispatch(store.performance.action.LoadCurrentDayTimeTracking);
 
             sinonExpect.calledOnce(performanceHttpStub.getDailyTimeTracking);
-            expect(store.performance.getters(store.store, store.performance.getter.CurrentDayTimeTracking)).toEqual(tracking);
+            expect(store.performance.getters(store.performance.getter.CurrentDayTimeTracking)).toEqual(tracking);
         });
     });
 
@@ -65,12 +65,12 @@ describe('performance store unit test', () => {
         test('should load activity breakdown', async() => {
             const breakdown: ActivityBreakdownDto = { regular: 5, recurring: 2, overlearning: 2, interruption: 1 };
             performanceHttpStub.getActivityBreakdownByDateRange.resolves(breakdown);
-            expect(store.performance.getters(store.store, store.performance.getter.ActivityBreakdown)).not.toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.ActivityBreakdown)).not.toEqual(breakdown);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadActivityBreakdown);
+            await store.performance.dispatch(store.performance.action.LoadActivityBreakdown);
 
             sinonExpect.calledOnce(performanceHttpStub.getActivityBreakdownByDateRange);
-            expect(store.performance.getters(store.store, store.performance.getter.ActivityBreakdown)).toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.ActivityBreakdown)).toEqual(breakdown);
         });
     });
 
@@ -78,12 +78,12 @@ describe('performance store unit test', () => {
         test('should load activity histories', async() => {
             const histories: ActivityBreakdownDto[] = [{ regular: 5, recurring: 2, overlearning: 2, interruption: 1 }];
             performanceHttpStub.getActivityBreakdownByDays.resolves(histories);
-            expect(store.performance.getters(store.store, store.performance.getter.ActivityHistories)).not.toEqual(histories);
+            expect(store.performance.getters(store.performance.getter.ActivityHistories)).not.toEqual(histories);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadActivityHistories);
+            await store.performance.dispatch(store.performance.action.LoadActivityHistories);
 
             sinonExpect.calledOnce(performanceHttpStub.getActivityBreakdownByDays);
-            expect(store.performance.getters(store.store, store.performance.getter.ActivityHistories)).toEqual(histories);
+            expect(store.performance.getters(store.performance.getter.ActivityHistories)).toEqual(histories);
         });
     });
 
@@ -91,12 +91,12 @@ describe('performance store unit test', () => {
         test('should load estimation breakdown', async() => {
             const breakdown: EstimationBreakdownDto = { underestimate: 1, overestimate: 1.2, normal: 2 };
             performanceHttpStub.getEstimationBreakdown.resolves(breakdown);
-            expect(store.performance.getters(store.store, store.performance.getter.EstimationBreakdown)).not.toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.EstimationBreakdown)).not.toEqual(breakdown);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadEstimationBreakdown);
+            await store.performance.dispatch(store.performance.action.LoadEstimationBreakdown);
 
             sinonExpect.calledOnce(performanceHttpStub.getEstimationBreakdown);
-            expect(store.performance.getters(store.store, store.performance.getter.EstimationBreakdown)).toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.EstimationBreakdown)).toEqual(breakdown);
         });
     });
 
@@ -104,12 +104,12 @@ describe('performance store unit test', () => {
         test('should load due date breakdown', async() => {
             const breakdown: DueDateBreakdownDto = { pastDue: 0, looming: 2 };
             performanceHttpStub.getDueDateBreakdown.resolves(breakdown);
-            expect(store.performance.getters(store.store, store.performance.getter.DueDateBreakdown)).not.toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.DueDateBreakdown)).not.toEqual(breakdown);
 
-            await store.performance.dispatch(store.store, store.performance.action.LoadDueDateBreakdown);
+            await store.performance.dispatch(store.performance.action.LoadDueDateBreakdown);
 
             sinonExpect.calledOnce(performanceHttpStub.getDueDateBreakdown);
-            expect(store.performance.getters(store.store, store.performance.getter.DueDateBreakdown)).toEqual(breakdown);
+            expect(store.performance.getters(store.performance.getter.DueDateBreakdown)).toEqual(breakdown);
         });
     });
 
@@ -118,7 +118,7 @@ describe('performance store unit test', () => {
             const rating: PerformanceRating = { ...new PerformanceRating(), estimation: 0.65 };
             performanceHttpStub.getPerformanceRating.resolves(rating);
 
-            expect(await store.performance.dispatch(store.store, store.performance.action.GetPerformanceRating)).toEqual(rating);
+            expect(await store.performance.dispatch(store.performance.action.GetPerformanceRating)).toEqual(rating);
         });
     });
 });

@@ -34,7 +34,7 @@ describe('user widget unit test', () => {
                 sustainability: 0.4
             };
 
-            store.user.commit(store.store, store.user.mutation.SetProfile, { ...new UserProfile(), ratings });
+            store.user.commit(store.user.mutation.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.rating).toEqual(60);
         });

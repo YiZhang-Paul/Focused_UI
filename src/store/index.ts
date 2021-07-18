@@ -1,35 +1,34 @@
-import { createStore as createBaseStore } from 'vuex';
+import { createStore as createBaseStore, Store } from 'vuex';
 
-import { createStore as createUserStore } from './user/user.store';
-import { createStore as createPerformanceStore } from './performance/performance.store';
-import { createStore as createTimeSessionStore } from './time-session/time-session.store';
-import { createStore as createWorkItemStore } from './work-item/work-item.store';
+import { createModule as createUserModule, createHandlers as createUserHandlers } from './user/user.store';
+import { createModule as createPerformanceModule, createHandlers as createPerformanceHandlers } from './performance/performance.store';
+import { createModule as createTimeSessionModule, createHandlers as createTimeSessionHandlers } from './time-session/time-session.store';
+import { createModule as createWorkItemModule, createHandlers as createWorkItemHandlers } from './work-item/work-item.store';
 
+let store: Store<any>;
+const getStore = () => store;
 const userKey = 'user';
 const performanceKey = 'performance';
 const timeSessionKey = 'timeSession';
 const workItemKey = 'workItem';
 
 export const createStore = () => {
-    const user = createUserStore(userKey);
-    const performance = createPerformanceStore(performanceKey);
-    const timeSession = createTimeSessionStore(timeSessionKey);
-    const workItem = createWorkItemStore(workItemKey);
+    store = createBaseStore({
+        modules: {
+            [userKey]: createUserModule(),
+            [performanceKey]: createPerformanceModule(),
+            [timeSessionKey]: createTimeSessionModule(),
+            [workItemKey]: createWorkItemModule()
+        }
+    });
 
     return {
-        [userKey]: user.handlers,
-        [performanceKey]: performance.handlers,
-        [timeSessionKey]: timeSession.handlers,
-        [workItemKey]: workItem.handlers,
-        store: createBaseStore({
-            modules: {
-                [userKey]: user.module,
-                [performanceKey]: performance.module,
-                [timeSessionKey]: timeSession.module,
-                [workItemKey]: workItem.module
-            }
-        })
+        store,
+        [userKey]: createUserHandlers(userKey, getStore),
+        [performanceKey]: createPerformanceHandlers(performanceKey, getStore),
+        [timeSessionKey]: createTimeSessionHandlers(timeSessionKey, getStore),
+        [workItemKey]: createWorkItemHandlers(workItemKey, getStore)
     };
-};
+}
 
 export default createStore();

@@ -36,20 +36,20 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression/dail
 export default class App extends Vue {
 
     public created(): void {
-        store.user.dispatch(this.$store, store.user.action.LoadProfile);
-        store.timeSession.dispatch(this.$store, store.timeSession.action.LoadActiveTimeSession);
-        store.timeSession.dispatch(this.$store, store.timeSession.action.LoadStaleTimeSession);
-        store.timeSession.dispatch(this.$store, store.timeSession.action.SyncActiveTimeSession);
+        store.user.dispatch(store.user.action.LoadProfile);
+        store.timeSession.dispatch(store.timeSession.action.LoadActiveTimeSession);
+        store.timeSession.dispatch(store.timeSession.action.LoadStaleTimeSession);
+        store.timeSession.dispatch(store.timeSession.action.SyncActiveTimeSession);
         this.loadPerformanceBreakdowns();
     }
 
     public loadPerformanceBreakdowns(): void {
-        store.performance.dispatch(this.$store, store.performance.action.LoadCurrentDayProgression);
-        store.performance.dispatch(this.$store, store.performance.action.LoadCurrentDayTimeTracking);
-        store.performance.dispatch(this.$store, store.performance.action.LoadActivityBreakdown);
-        store.performance.dispatch(this.$store, store.performance.action.LoadActivityHistories);
-        store.performance.dispatch(this.$store, store.performance.action.LoadEstimationBreakdown);
-        store.performance.dispatch(this.$store, store.performance.action.LoadDueDateBreakdown);
+        store.performance.dispatch(store.performance.action.LoadCurrentDayProgression);
+        store.performance.dispatch(store.performance.action.LoadCurrentDayTimeTracking);
+        store.performance.dispatch(store.performance.action.LoadActivityBreakdown);
+        store.performance.dispatch(store.performance.action.LoadActivityHistories);
+        store.performance.dispatch(store.performance.action.LoadEstimationBreakdown);
+        store.performance.dispatch(store.performance.action.LoadDueDateBreakdown);
     }
 }
 </script>

@@ -19,7 +19,7 @@ import { ProgressionCounter } from '../../../core/models/generic/progression-cou
 export default class DailyFocusProgression extends Vue {
 
     get progression(): ProgressionCounter<number> | null {
-        return store.performance.getters(this.$store, store.performance.getter.CurrentDayProgression);
+        return store.performance.getters(store.performance.getter.CurrentDayProgression);
     }
 
     get hoursFocused(): string {

@@ -44,7 +44,7 @@ import { GenericUtility } from '../../../core/utilities/generic-utility/generic-
 export default class UserWidget extends Vue {
 
     get profile(): UserProfile | null {
-        return store.user.getters(this.$store, store.user.getter.Profile);
+        return store.user.getters(store.user.getter.Profile);
     }
 
     get rating(): number {

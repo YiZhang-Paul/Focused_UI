@@ -13,24 +13,20 @@ export class DataStoreUtility {
         GetterKey,
         MutationKey,
         ActionKey
-    >(namespace: string, getterKey: GetterKey, mutationKey: MutationKey, actionKey: ActionKey) {
+    >(namespace: string, getterKey: GetterKey, mutationKey: MutationKey, actionKey: ActionKey, getStore: () => Store<any>) {
         return {
             getter: getterKey,
             mutation: mutationKey,
             action: actionKey,
-            state: (store: Store<any>): State => store.state[namespace],
-            getters<T extends keyof Getters>(store: Store<any>, getter: T): ReturnType<Getters[T]> {
-                return store.getters[`${namespace}/${getter}`];
+            state: (): State => getStore().state[namespace],
+            getters<T extends keyof Getters>(getter: T): ReturnType<Getters[T]> {
+                return getStore().getters[`${namespace}/${getter}`];
             },
-            commit(store: Store<any>, mutation: keyof Mutations, payload: any): void {
-                store.commit(`${namespace}/${mutation}`, payload);
+            commit(mutation: keyof Mutations, payload: any): void {
+                getStore().commit(`${namespace}/${mutation}`, payload);
             },
-            async dispatch<T extends keyof Actions>(
-                store: Store<any>,
-                action: T,
-                payload?: any
-            ): Promise<Unpacked<ReturnType<Actions[T]>>> {
-                return await store.dispatch(`${namespace}/${action}`, payload);
+            async dispatch<T extends keyof Actions>(action: T, payload?: any): Promise<Unpacked<ReturnType<Actions[T]>>> {
+                return await getStore().dispatch(`${namespace}/${action}`, payload);
             }
         };
     }
