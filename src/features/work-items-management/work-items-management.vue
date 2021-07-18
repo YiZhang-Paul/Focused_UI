@@ -169,6 +169,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     get staleFocusSession(): FocusSessionDto | null {
+        /* istanbul ignore next */
         return store.timeSession.getters(store.timeSession.getter.StaleFocusSession);
     }
 
@@ -177,6 +178,7 @@ export default class WorkItemsManagement extends Vue {
     }
 
     get staleBreakSession(): BreakSession | null {
+        /* istanbul ignore next */
         return store.timeSession.getters(store.timeSession.getter.StaleBreakSession);
     }
 
@@ -219,7 +221,7 @@ export default class WorkItemsManagement extends Vue {
         this.showStopFocusSessionDialog = false;
 
         if (await store.timeSession.dispatch(store.timeSession.action.StopFocusSession, option.focusSessionId)) {
-            this.showRatingsChange();
+            await this.showRatingsChange();
             this.loadWorkItems();
             store.timeSession.dispatch(store.timeSession.action.StartBreakSession, breakOption);
             this.$emit('session:stop');

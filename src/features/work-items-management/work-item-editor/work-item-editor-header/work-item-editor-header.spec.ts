@@ -1,6 +1,7 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
 
 import { WorkItem } from '../../../../core/models/work-item/work-item';
+import { CompletionRecord } from '../../../../core/models/work-item/completion-record';
 import { WorkItemType } from '../../../../core/enums/work-item-type.enum';
 
 import WorkItemEditorHeader from './work-item-editor-header.vue';
@@ -33,7 +34,8 @@ describe('work item editor header unit test', () => {
             const item: WorkItem = {
                 ...new WorkItem(),
                 type: WorkItemType.Regular,
-                dueDate: new Date(2021, 0, 1).toISOString()
+                dueDate: new Date(2021, 0, 1).toISOString(),
+                completionRecords: [new CompletionRecord()]
             };
 
             await component.setProps({ item });

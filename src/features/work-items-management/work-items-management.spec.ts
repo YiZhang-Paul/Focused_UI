@@ -15,6 +15,7 @@ import { BreakSession } from '../../core/models/time-session/break-session';
 import { WorkItem } from '../../core/models/work-item/work-item';
 import { WorkItemStatus } from '../../core/enums/work-item-status.enum';
 import { UserProfileHttpService } from '../../core/services/http/user-profile-http/user-profile-http.service';
+import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
@@ -24,11 +25,13 @@ describe('work items management unit test', () => {
     let component: VueWrapper<any>;
     let store: ReturnType<typeof createStore>;
     let userProfileHttpStub: SinonStubbedInstance<UserProfileHttpService>;
+    let performanceHttpStub: SinonStubbedInstance<PerformanceHttpService>;
     let timeSessionHttpStub: SinonStubbedInstance<TimeSessionHttpService>;
     let workItemHttpStub: SinonStubbedInstance<WorkItemHttpService>;
 
     beforeEach(() => {
         userProfileHttpStub = createStubInstance(UserProfileHttpService);
+        performanceHttpStub = createStubInstance(PerformanceHttpService);
         timeSessionHttpStub = createStubInstance(TimeSessionHttpService);
         workItemHttpStub = createStubInstance(WorkItemHttpService);
         workItemHttpStub.getWorkItems.resolves([]);
@@ -36,6 +39,10 @@ describe('work items management unit test', () => {
         container
             .rebind<UserProfileHttpService>(types.UserProfileHttpService)
             .toConstantValue(userProfileHttpStub as unknown as UserProfileHttpService);
+
+        container
+            .rebind<PerformanceHttpService>(types.PerformanceHttpService)
+            .toConstantValue(performanceHttpStub as unknown as PerformanceHttpService);
 
         container
             .rebind<TimeSessionHttpService>(types.TimeSessionHttpService)
