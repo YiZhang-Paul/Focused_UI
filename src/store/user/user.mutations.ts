@@ -8,11 +8,11 @@ export enum MutationKey {
     SetProfile = 'set_profile'
 }
 
-export interface IMutations {
+export type Mutations = {
     [MutationKey.SetProfile](state: IState, profile: UserProfile | null): void;
 }
 
-export const mutations: MutationTree<IState> & IMutations = {
+export const mutations: MutationTree<IState> & Mutations = {
     [MutationKey.SetProfile](state: IState, profile: UserProfile | null): void {
         state.profile = profile;
     }

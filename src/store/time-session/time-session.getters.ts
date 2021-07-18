@@ -21,10 +21,10 @@ export enum GetterKey {
 }
 
 export type GettersAugments = {
-    [key in GetterKey]: ReturnType<IGetters[key]>;
+    [key in GetterKey]: ReturnType<Getters[key]>;
 }
 
-export interface IGetters {
+export type Getters = {
     [GetterKey.TimeSessionStatus](state: IState): TimeSessionStatus;
     [GetterKey.HasActiveFocusSession](state: IState): boolean;
     [GetterKey.HasOngoingTimeSession](state: IState, getters: GettersAugments): boolean;
@@ -35,7 +35,7 @@ export interface IGetters {
     [GetterKey.StaleBreakSession](state: IState): BreakSession | null;
 }
 
-export const getters: GetterTree<IState, IState> & IGetters = {
+export const getters: GetterTree<IState, IState> & Getters = {
     [GetterKey.TimeSessionStatus]: (state: IState): TimeSessionStatus => {
         const { activeFocusSession, activeBreakSession } = state;
 

@@ -17,7 +17,7 @@ export enum MutationKey {
     SetDueDateBreakdown = 'set_due_date_breakdown'
 }
 
-export interface IMutations {
+export type Mutations = {
     [MutationKey.SetCurrentDayProgression](state: IState, progression: ProgressionCounter<number> | null): void;
     [MutationKey.SetCurrentDayTimeTracking](state: IState, tracking: TimeTrackingBreakdownDto | null): void;
     [MutationKey.SetActivityBreakdown](state: IState, breakdown: ActivityBreakdownDto | null): void;
@@ -26,7 +26,7 @@ export interface IMutations {
     [MutationKey.SetDueDateBreakdown](state: IState, breakdown: DueDateBreakdownDto | null): void;
 }
 
-export const mutations: MutationTree<IState> & IMutations = {
+export const mutations: MutationTree<IState> & Mutations = {
     [MutationKey.SetCurrentDayProgression](state: IState, progression: ProgressionCounter<number> | null): void {
         state.currentDayProgression = progression;
     },

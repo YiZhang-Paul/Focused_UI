@@ -19,7 +19,7 @@ export enum GetterKey {
     DueDateBreakdown = 'due_date_breakdown'
 }
 
-export interface IGetters {
+export type Getters = {
     [GetterKey.DateRange](state: IState): DateRange;
     [GetterKey.CurrentDayProgression](state: IState): ProgressionCounter<number> | null;
     [GetterKey.CurrentDayTimeTracking](state: IState): TimeTrackingBreakdownDto | null;
@@ -29,7 +29,7 @@ export interface IGetters {
     [GetterKey.DueDateBreakdown](state: IState): DueDateBreakdownDto | null;
 }
 
-export const getters: GetterTree<IState, IState> & IGetters = {
+export const getters: GetterTree<IState, IState> & Getters = {
     [GetterKey.DateRange]: (state: IState): DateRange => state.dateRange,
     [GetterKey.CurrentDayProgression]: (state: IState): ProgressionCounter<number> | null => state.currentDayProgression,
     [GetterKey.CurrentDayTimeTracking]: (state: IState): TimeTrackingBreakdownDto | null => state.currentDayTimeTracking,

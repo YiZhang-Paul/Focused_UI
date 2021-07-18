@@ -12,14 +12,14 @@ export enum MutationKey {
     SetStaleBreakSession = 'set_stale_break_session'
 }
 
-export interface IMutations {
+export type Mutations = {
     [MutationKey.SetActiveFocusSession](state: IState, session: FocusSessionDto | null): void;
     [MutationKey.SetStaleFocusSession](state: IState, session: FocusSessionDto | null): void;
     [MutationKey.SetActiveBreakSession](state: IState, session: BreakSession | null): void;
     [MutationKey.SetStaleBreakSession](state: IState, session: BreakSession | null): void;
 }
 
-export const mutations: MutationTree<IState> & IMutations = {
+export const mutations: MutationTree<IState> & Mutations = {
     [MutationKey.SetActiveFocusSession](state: IState, session: FocusSessionDto | null): void {
         state.activeFocusSession = session;
     },

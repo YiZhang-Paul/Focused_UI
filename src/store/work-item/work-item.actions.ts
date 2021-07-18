@@ -6,7 +6,7 @@ import { WorkItemQuery } from '../../core/models/work-item/work-item-query';
 import { WorkItemHttpService } from '../../core/services/http/work-item-http/work-item-http.service';
 
 import { IState } from './work-item.state';
-import { IMutations, MutationKey } from './work-item.mutations';
+import { Mutations, MutationKey } from './work-item.mutations';
 
 let workItemHttpService: WorkItemHttpService;
 
@@ -21,10 +21,10 @@ export enum ActionKey {
 }
 
 interface ActionAugments extends Omit<ActionContext<IState, IState>, 'commit'> {
-    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
+    commit<T extends keyof Mutations>(key: T, payload: Parameters<Mutations[T]>[1]): ReturnType<Mutations[T]>;
 }
 
-export interface IActions {
+export type Actions = {
     [ActionKey.CreateWorkItem](context: ActionAugments): Promise<string | null>;
     [ActionKey.UpdateWorkItem](context: ActionAugments, payload: WorkItem): Promise<boolean>;
     [ActionKey.DeleteWorkItem](context: ActionAugments, id: string): Promise<boolean>;
@@ -38,7 +38,7 @@ export const setActionServices = (workItemHttp: WorkItemHttpService): void => {
     workItemHttpService = workItemHttp;
 }
 
-export const actions: ActionTree<IState, IState> & IActions = {
+export const actions: ActionTree<IState, IState> & Actions = {
     async [ActionKey.CreateWorkItem](context: ActionAugments): Promise<string | null> {
         const { state, commit } = context;
 

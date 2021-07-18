@@ -5,27 +5,28 @@ import { createStore as createPerformanceStore } from './performance/performance
 import { createStore as createTimeSessionStore } from './time-session/time-session.store';
 import { createStore as createWorkItemStore } from './work-item/work-item.store';
 
+const userKey = 'user';
+const performanceKey = 'performance';
+const timeSessionKey = 'timeSession';
+const workItemKey = 'workItem';
+
 export const createStore = () => {
-    const userNamespace = 'user';
-    const performanceNamespace = 'performance';
-    const timeSessionNamespace = 'timeSession';
-    const workItemNamespace = 'workItem';
-    const userStore = createUserStore(userNamespace);
-    const performanceStore = createPerformanceStore(performanceNamespace);
-    const timeSessionStore = createTimeSessionStore(timeSessionNamespace);
-    const workItemStore = createWorkItemStore(workItemNamespace);
+    const user = createUserStore(userKey);
+    const performance = createPerformanceStore(performanceKey);
+    const timeSession = createTimeSessionStore(timeSessionKey);
+    const workItem = createWorkItemStore(workItemKey);
 
     return {
-        [userNamespace]: userStore.utilities,
-        [performanceNamespace]: performanceStore.utilities,
-        [timeSessionNamespace]: timeSessionStore.utilities,
-        [workItemNamespace]: workItemStore.utilities,
+        [userKey]: user.handlers,
+        [performanceKey]: performance.handlers,
+        [timeSessionKey]: timeSession.handlers,
+        [workItemKey]: workItem.handlers,
         store: createBaseStore({
             modules: {
-                [userNamespace]: userStore.module,
-                [performanceNamespace]: performanceStore.module,
-                [timeSessionNamespace]: timeSessionStore.module,
-                [workItemNamespace]: workItemStore.module
+                [userKey]: user.module,
+                [performanceKey]: performance.module,
+                [timeSessionKey]: timeSession.module,
+                [workItemKey]: workItem.module
             }
         })
     };

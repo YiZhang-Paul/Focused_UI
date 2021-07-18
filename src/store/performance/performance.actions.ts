@@ -4,7 +4,7 @@ import { PerformanceRating } from '../../core/models/user/performance-rating';
 import { PerformanceHttpService } from '../../core/services/http/performance-http/performance-http.service';
 
 import { IState } from './performance.state';
-import { IMutations, MutationKey } from './performance.mutations';
+import { Mutations, MutationKey } from './performance.mutations';
 
 let performanceHttpService: PerformanceHttpService;
 
@@ -19,10 +19,10 @@ export enum ActionKey {
 }
 
 interface ActionAugments extends Omit<ActionContext<IState, IState>, 'commit'> {
-    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
+    commit<T extends keyof Mutations>(key: T, payload: Parameters<Mutations[T]>[1]): ReturnType<Mutations[T]>;
 }
 
-export interface IActions {
+export type Actions = {
     [ActionKey.LoadCurrentDayProgression](context: ActionAugments): Promise<void>;
     [ActionKey.LoadCurrentDayTimeTracking](context: ActionAugments): Promise<void>;
     [ActionKey.LoadActivityBreakdown](context: ActionAugments): Promise<void>
@@ -36,7 +36,7 @@ export const setActionServices = (performanceHttp: PerformanceHttpService): void
     performanceHttpService = performanceHttp;
 }
 
-export const actions: ActionTree<IState, IState> & IActions = {
+export const actions: ActionTree<IState, IState> & Actions = {
     async [ActionKey.LoadCurrentDayProgression](context: ActionAugments): Promise<void> {
         const now = new Date();
         const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()];

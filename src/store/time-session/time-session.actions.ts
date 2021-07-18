@@ -8,7 +8,7 @@ import { TimeSessionHttpService } from '../../core/services/http/time-session-ht
 
 import { IState } from './time-session.state';
 import { GettersAugments, GetterKey } from './time-session.getters';
-import { IMutations, MutationKey } from './time-session.mutations';
+import { Mutations, MutationKey } from './time-session.mutations';
 
 let timeSessionHttpService: TimeSessionHttpService;
 
@@ -26,10 +26,10 @@ export enum ActionKey {
 
 interface ActionAugments extends Omit<ActionContext<IState, IState>, 'getters' | 'commit'> {
     getters: GettersAugments;
-    commit<T extends keyof IMutations>(key: T, payload: Parameters<IMutations[T]>[1]): ReturnType<IMutations[T]>;
+    commit<T extends keyof Mutations>(key: T, payload: Parameters<Mutations[T]>[1]): ReturnType<Mutations[T]>;
 }
 
-export interface IActions {
+export type Actions = {
     [ActionKey.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean>;
     [ActionKey.StopFocusSession](context: ActionAugments, id: string): Promise<boolean>;
     [ActionKey.StartOverlearning](context: ActionAugments, targetStatus: WorkItemStatus): Promise<boolean>;
@@ -45,7 +45,7 @@ export const setActionServices = (timeSessionHttp: TimeSessionHttpService): void
     timeSessionHttpService = timeSessionHttp;
 }
 
-export const actions: ActionTree<IState, IState> & IActions = {
+export const actions: ActionTree<IState, IState> & Actions = {
     async [ActionKey.StartFocusSession](context: ActionAugments, payload: FocusSessionStartupOption): Promise<boolean> {
         const isStarted = await timeSessionHttpService.startFocusSession(payload);
 

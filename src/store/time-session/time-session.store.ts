@@ -1,18 +1,27 @@
-import { Module, Store } from 'vuex';
+import { Module } from 'vuex';
 
 import { types } from '../../core/ioc/types';
 import { container } from '../../core/ioc/container';
 import { TimeSessionHttpService } from '../../core/services/http/time-session-http/time-session-http.service';
+import { DataStoreUtility } from '../../core/utilities/data-store-utility/data-store-utility';
 
 import { IState, state } from './time-session.state';
-import { GetterKey, getters, IGetters } from './time-session.getters';
-import { IMutations, MutationKey, mutations } from './time-session.mutations';
-import { ActionKey, actions, IActions, setActionServices } from './time-session.actions';
-
-type Unpacked<T> = T extends Promise<infer U> ? U : T;
+import { GetterKey, getters, Getters } from './time-session.getters';
+import { Mutations, MutationKey, mutations } from './time-session.mutations';
+import { ActionKey, actions, Actions, setActionServices } from './time-session.actions';
 
 export const createStore = (namespace: string) => {
     setActionServices(container.get<TimeSessionHttpService>(types.TimeSessionHttpService));
+
+    const handlers = DataStoreUtility.getHandlers<
+        IState,
+        Getters,
+        Mutations,
+        Actions,
+        typeof GetterKey,
+        typeof MutationKey,
+        typeof ActionKey
+    >(namespace, GetterKey, MutationKey, ActionKey);
 
     const module: Module<IState, any> = {
         namespaced: true,
@@ -22,22 +31,5 @@ export const createStore = (namespace: string) => {
         actions
     };
 
-    const utilities = {
-        keys: {
-            getters: GetterKey,
-            mutations: MutationKey,
-            actions: ActionKey
-        },
-        getters<T extends keyof IGetters>(store: Store<any>, getter: T): ReturnType<IGetters[T]> {
-            return store.getters[`${namespace}/${getter}`];
-        },
-        commit(store: Store<any>, mutation: keyof IMutations, payload: any): void {
-            store.commit(`${namespace}/${mutation}`, payload);
-        },
-        async dispatch<T extends keyof IActions>(store: Store<any>, action: T, payload?: any): Promise<Unpacked<ReturnType<IActions[T]>>> {
-            return await store.dispatch(`${namespace}/${action}`, payload);
-        }
-    };
-
-    return { module, utilities };
+    return { handlers, module };
 }

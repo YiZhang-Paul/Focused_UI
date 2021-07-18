@@ -8,10 +8,10 @@ export enum GetterKey {
     Profile = 'profile'
 }
 
-export interface IGetters {
+export type Getters = {
     [GetterKey.Profile](state: IState): UserProfile | null;
 }
 
-export const getters: GetterTree<IState, IState> & IGetters = {
+export const getters: GetterTree<IState, IState> & Getters = {
     [GetterKey.Profile]: (state: IState): UserProfile | null => state.profile
 };

@@ -16,7 +16,7 @@ export enum MutationKey {
     SetWorkItems = 'set_work_items'
 }
 
-export interface IMutations {
+export type Mutations = {
     [MutationKey.SetLastQuery](state: IState, query: WorkItemQuery | null): void;
     [MutationKey.SetPendingWorkItem](state: IState, item: WorkItemDto | null): void;
     [MutationKey.SetEditedWorkItem](state: IState, item: WorkItem | null): void;
@@ -25,7 +25,7 @@ export interface IMutations {
     [MutationKey.SetWorkItems](state: IState, items: WorkItemDto[]): void;
 }
 
-export const mutations: MutationTree<IState> & IMutations = {
+export const mutations: MutationTree<IState> & Mutations = {
     [MutationKey.SetLastQuery](state: IState, query: WorkItemQuery | null): void {
         state.lastQuery = query;
     },

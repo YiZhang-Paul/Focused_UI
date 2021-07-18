@@ -12,14 +12,14 @@ export enum GetterKey {
     WorkItems = 'work_items'
 }
 
-export interface IGetters {
+export type Getters = {
     [GetterKey.PendingWorkItem](state: IState): WorkItemDto | null;
     [GetterKey.EditedWorkItem](state: IState): WorkItem | null;
     [GetterKey.EditedWorkItemMeta](state: IState): WorkItemDto | null;
     [GetterKey.WorkItems](state: IState): WorkItemDto[];
 }
 
-export const getters: GetterTree<IState, IState> & IGetters = {
+export const getters: GetterTree<IState, IState> & Getters = {
     [GetterKey.PendingWorkItem]: (state: IState): WorkItemDto | null => state.pendingWorkItem,
     [GetterKey.EditedWorkItem]: (state: IState): WorkItem | null => state.editedWorkItem,
     [GetterKey.EditedWorkItemMeta]: (state: IState): WorkItemDto | null => {
