@@ -77,7 +77,7 @@ export default class WorkItemsList extends Vue.with(WorkItemsListProp) {
     public activeIndex = -1;
 
     get workItems(): WorkItemDto[] {
-        return store.workItem.getters(this.$store, store.workItem.keys.getters.WorkItems);
+        return store.workItem.getters(this.$store, store.workItem.getter.WorkItems);
     }
 
     public onStatusSelected(item: WorkItemDto, status: WorkItemStatus): void {

@@ -47,15 +47,15 @@ import ActivityHistory from '../../../shared/widgets/activity-history/activity-h
 export default class WorkItemTrackingStatsGroup extends Vue {
 
     get dateRange(): DateRange {
-        return store.performance.getters(this.$store, store.performance.keys.getters.DateRange);
+        return store.performance.getters(this.$store, store.performance.getter.DateRange);
     }
 
     get activityBreakdown(): ActivityBreakdownDto | null {
-        return store.performance.getters(this.$store, store.performance.keys.getters.ActivityBreakdown);
+        return store.performance.getters(this.$store, store.performance.getter.ActivityBreakdown);
     }
 
     get activityHistories(): ActivityBreakdownDto[] {
-        return store.performance.getters(this.$store, store.performance.keys.getters.ActivityHistories);
+        return store.performance.getters(this.$store, store.performance.getter.ActivityHistories);
     }
 
     get timeTracked(): string {
@@ -78,7 +78,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get estimationBreakdown(): EstimationBreakdownDto | null {
-        return store.performance.getters(this.$store, store.performance.keys.getters.EstimationBreakdown);
+        return store.performance.getters(this.$store, store.performance.getter.EstimationBreakdown);
     }
 
     get inaccurateEstimate(): string {
@@ -99,7 +99,7 @@ export default class WorkItemTrackingStatsGroup extends Vue {
     }
 
     get radarSeries(): RadarSeries[] {
-        const items = store.workItem.getters(this.$store, store.workItem.keys.getters.WorkItems);
+        const items = store.workItem.getters(this.$store, store.workItem.getter.WorkItems);
 
         return items.filter(_ => !_.itemProgress.isCompleted).map(_ => ({
             quadrant: _.priority + 1,

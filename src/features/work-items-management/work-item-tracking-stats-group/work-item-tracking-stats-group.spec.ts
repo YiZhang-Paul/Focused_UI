@@ -26,7 +26,7 @@ describe('work item tracking stats group unit test', () => {
     describe('timeTracked', () => {
         test('should return total time tracked', () => {
             const breakdown: ActivityBreakdownDto = { regular: 15, recurring: 10, interruption: 8, overlearning: 10 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetActivityBreakdown, breakdown);
 
             expect(component.vm.timeTracked).toEqual('1.8 / 14 days');
         });
@@ -42,7 +42,7 @@ describe('work item tracking stats group unit test', () => {
             ];
 
             const breakdown: ActivityBreakdownDto = { regular: 25, recurring: 10, interruption: 5, overlearning: 10 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetActivityBreakdown, breakdown);
 
             expect(component.vm.timeTrackedSeries).toEqual(expected);
         });
@@ -51,14 +51,14 @@ describe('work item tracking stats group unit test', () => {
     describe('inaccurateEstimate', () => {
         test('should return inaccurate estimations', () => {
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 0.5, underestimate: 0.5 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetEstimationBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimate).toEqual('1 hour');
         });
 
         test('should handle plural for hours', () => {
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 4, underestimate: 6 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetEstimationBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimate).toEqual('10 hours');
         });
@@ -72,7 +72,7 @@ describe('work item tracking stats group unit test', () => {
             ];
 
             const breakdown: EstimationBreakdownDto = { normal: 10, overestimate: 4, underestimate: 6 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetEstimationBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetEstimationBreakdown, breakdown);
 
             expect(component.vm.inaccurateEstimateSeries).toEqual(expected);
         });
@@ -115,7 +115,7 @@ describe('work item tracking stats group unit test', () => {
                 { quadrant: 4, value: 7, colorType: 'priority-colors-3' }
             ];
 
-            store.workItem.commit(store.store, store.workItem.keys.mutations.SetWorkItems, items);
+            store.workItem.commit(store.store, store.workItem.mutation.SetWorkItems, items);
 
             expect(component.vm.radarSeries).toEqual(expected);
         });

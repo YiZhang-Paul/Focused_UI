@@ -15,11 +15,9 @@ export class DataStoreUtility {
         ActionKey
     >(namespace: string, getterKey: GetterKey, mutationKey: MutationKey, actionKey: ActionKey) {
         return {
-            keys: {
-                getters: getterKey,
-                mutations: mutationKey,
-                actions: actionKey
-            },
+            getter: getterKey,
+            mutation: mutationKey,
+            action: actionKey,
             state: (store: Store<any>): State => store.state[namespace],
             getters<T extends keyof Getters>(store: Store<any>, getter: T): ReturnType<Getters[T]> {
                 return store.getters[`${namespace}/${getter}`];

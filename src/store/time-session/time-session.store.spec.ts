@@ -30,38 +30,38 @@ describe('time session store unit test', () => {
 
     describe('timeSessionStatus', () => {
         test('should return correct status when no session is active', () => {
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, null);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.TimeSessionStatus)).toEqual(TimeSessionStatus.Idle);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.TimeSessionStatus)).toEqual(TimeSessionStatus.Idle);
         });
 
         test('should return correct status during break session', () => {
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, null);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, { ...new BreakSession(), id: '1' });
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, { ...new BreakSession(), id: '1' });
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.TimeSessionStatus)).toEqual(TimeSessionStatus.Resting);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.TimeSessionStatus)).toEqual(TimeSessionStatus.Resting);
         });
 
         test('should return correct status during focus session', () => {
             const session = new FocusSessionDto();
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, session);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, session);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
             session.workItems = [{ ...new WorkItemDto(), status: WorkItemStatus.Ongoing }];
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.TimeSessionStatus)).toEqual(TimeSessionStatus.Ongoing);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.TimeSessionStatus)).toEqual(TimeSessionStatus.Ongoing);
 
             session.workItems = [{ ...new WorkItemDto(), status: WorkItemStatus.Completed }];
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.TimeSessionStatus)).toEqual(TimeSessionStatus.Pending);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.TimeSessionStatus)).toEqual(TimeSessionStatus.Pending);
         });
     });
 
     describe('ongoingTimeSessionEnd', () => {
         test('should return correct session end for idle state', () => {
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, null);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.OngoingTimeSessionEnd)).toBeNull();
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.OngoingTimeSessionEnd)).toBeNull();
         });
 
         test('should return correct session end for break session', () => {
@@ -71,10 +71,10 @@ describe('time session store unit test', () => {
                 targetDuration: 2.5
             };
 
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, null);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, session);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, session);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.OngoingTimeSessionEnd)).toEqual(new Date(2021, 2, 1, 7, 45));
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.OngoingTimeSessionEnd)).toEqual(new Date(2021, 2, 1, 7, 45));
         });
 
         test('should return correct session end for focus session', () => {
@@ -84,10 +84,10 @@ describe('time session store unit test', () => {
                 targetDuration: 2.5
             };
 
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, session);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, session);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.OngoingTimeSessionEnd)).toEqual(new Date(2022, 5, 2, 7, 45));
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.OngoingTimeSessionEnd)).toEqual(new Date(2022, 5, 2, 7, 45));
         });
     });
 
@@ -96,7 +96,7 @@ describe('time session store unit test', () => {
             const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(false);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StartFocusSession, option);
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StartFocusSession, option);
 
             sinonExpect.calledOnce(timeSessionHttpStub.startFocusSession);
             sinonExpect.notCalled(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -108,7 +108,7 @@ describe('time session store unit test', () => {
             const option = new FocusSessionStartupOption('1234', 25);
             timeSessionHttpStub.startFocusSession.resolves(true);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StartFocusSession, option);
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StartFocusSession, option);
 
             sinonExpect.calledOnce(timeSessionHttpStub.startFocusSession);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -121,7 +121,7 @@ describe('time session store unit test', () => {
         test('should return false when failed to stop focus session', async() => {
             timeSessionHttpStub.stopFocusSession.resolves(false);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StopFocusSession, '1234');
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StopFocusSession, '1234');
 
             sinonExpect.calledOnce(timeSessionHttpStub.stopFocusSession);
             sinonExpect.notCalled(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -134,7 +134,7 @@ describe('time session store unit test', () => {
         test('should return true when successfully stopped focus session', async() => {
             timeSessionHttpStub.stopFocusSession.resolves(true);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StopFocusSession, '1234');
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StopFocusSession, '1234');
 
             sinonExpect.calledOnce(timeSessionHttpStub.stopFocusSession);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -150,7 +150,7 @@ describe('time session store unit test', () => {
             const option = new BreakSessionStartupOption('1234', 5);
             timeSessionHttpStub.startBreakSession.resolves(false);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StartBreakSession, option);
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StartBreakSession, option);
 
             sinonExpect.calledOnce(timeSessionHttpStub.startBreakSession);
             sinonExpect.notCalled(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -162,7 +162,7 @@ describe('time session store unit test', () => {
             const option = new BreakSessionStartupOption('1234', 5);
             timeSessionHttpStub.startBreakSession.resolves(true);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StartBreakSession, option);
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StartBreakSession, option);
 
             sinonExpect.calledOnce(timeSessionHttpStub.startBreakSession);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -175,7 +175,7 @@ describe('time session store unit test', () => {
         test('should return false when failed to stop break session', async() => {
             timeSessionHttpStub.stopBreakSession.resolves(false);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StopBreakSession, '1234');
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StopBreakSession, '1234');
 
             sinonExpect.calledOnce(timeSessionHttpStub.stopBreakSession);
             sinonExpect.notCalled(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -188,7 +188,7 @@ describe('time session store unit test', () => {
         test('should return true when successfully stopped break session', async() => {
             timeSessionHttpStub.stopBreakSession.resolves(true);
 
-            const result = await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.StopBreakSession, '1234');
+            const result = await store.timeSession.dispatch(store.store, store.timeSession.action.StopBreakSession, '1234');
 
             sinonExpect.calledOnce(timeSessionHttpStub.stopBreakSession);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
@@ -205,15 +205,15 @@ describe('time session store unit test', () => {
             const breakSession: BreakSession = { ...new BreakSession(), id: '2' };
             timeSessionHttpStub.getActiveFocusSessionMeta.resolves(focusSession);
             timeSessionHttpStub.getActiveBreakSession.resolves(breakSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveFocusSession)).not.toEqual(focusSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveBreakSession)).not.toEqual(breakSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveFocusSession)).not.toEqual(focusSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveBreakSession)).not.toEqual(breakSession);
 
-            await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.LoadActiveTimeSession);
+            await store.timeSession.dispatch(store.store, store.timeSession.action.LoadActiveTimeSession);
 
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveBreakSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveFocusSession)).toEqual(focusSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveBreakSession)).toEqual(breakSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveFocusSession)).toEqual(focusSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveBreakSession)).toEqual(breakSession);
         });
     });
 
@@ -223,15 +223,15 @@ describe('time session store unit test', () => {
             const breakSession: BreakSession = { ...new BreakSession(), id: '2' };
             timeSessionHttpStub.getStaleFocusSessionMeta.resolves(focusSession);
             timeSessionHttpStub.getStaleBreakSession.resolves(breakSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.StaleFocusSession)).not.toEqual(focusSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.StaleBreakSession)).not.toEqual(breakSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.StaleFocusSession)).not.toEqual(focusSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.StaleBreakSession)).not.toEqual(breakSession);
 
-            await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.LoadStaleTimeSession);
+            await store.timeSession.dispatch(store.store, store.timeSession.action.LoadStaleTimeSession);
 
             sinonExpect.calledOnce(timeSessionHttpStub.getStaleFocusSessionMeta);
             sinonExpect.calledOnce(timeSessionHttpStub.getStaleBreakSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.StaleFocusSession)).toEqual(focusSession);
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.StaleBreakSession)).toEqual(breakSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.StaleFocusSession)).toEqual(focusSession);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.StaleBreakSession)).toEqual(breakSession);
         });
     });
 
@@ -247,10 +247,10 @@ describe('time session store unit test', () => {
         test('should reload when stale session detected', async() => {
             const startTime = new Date(Date.now() - oneHour - oneMinute).toISOString();
             const session: FocusSessionDto = { ...new FocusSessionDto(), startTime, targetDuration: 1 };
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, session);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, session);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
-            await store.timeSession.dispatch(store.store, store.timeSession.keys.actions.SyncActiveTimeSession);
+            await store.timeSession.dispatch(store.store, store.timeSession.action.SyncActiveTimeSession);
 
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveFocusSessionMeta);
             sinonExpect.calledOnce(timeSessionHttpStub.getActiveBreakSession);
@@ -262,26 +262,26 @@ describe('time session store unit test', () => {
             const startTime = new Date().toISOString();
             const session: FocusSessionDto = { ...new FocusSessionDto(), startTime, targetDuration: 2 };
 
-            store.timeSession.dispatch(store.store, store.timeSession.keys.actions.SyncActiveTimeSession);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, session);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, null);
+            store.timeSession.dispatch(store.store, store.timeSession.action.SyncActiveTimeSession);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, session);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, null);
 
             jest.advanceTimersByTime(1000);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveFocusSession)).toEqual(session);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveFocusSession)).toEqual(session);
         });
 
         test('should sync break session time', () => {
             const startTime = new Date().toISOString();
             const session: BreakSession = { ...new BreakSession(), id: '1', startTime, targetDuration: 2 };
 
-            store.timeSession.dispatch(store.store, store.timeSession.keys.actions.SyncActiveTimeSession);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveFocusSession, null);
-            store.timeSession.commit(store.store, store.timeSession.keys.mutations.SetActiveBreakSession, session);
+            store.timeSession.dispatch(store.store, store.timeSession.action.SyncActiveTimeSession);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveFocusSession, null);
+            store.timeSession.commit(store.store, store.timeSession.mutation.SetActiveBreakSession, session);
 
             jest.advanceTimersByTime(1000);
 
-            expect(store.timeSession.getters(store.store, store.timeSession.keys.getters.ActiveBreakSession)).toEqual(session);
+            expect(store.timeSession.getters(store.store, store.timeSession.getter.ActiveBreakSession)).toEqual(session);
         });
     });
 });

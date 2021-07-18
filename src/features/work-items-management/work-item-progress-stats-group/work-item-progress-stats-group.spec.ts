@@ -25,7 +25,7 @@ describe('work item progress stats group unit test', () => {
     describe('pastDueAndLooming', () => {
         test('should return total past due and looming items', () => {
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetDueDateBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLooming).toEqual('5');
         });
@@ -39,7 +39,7 @@ describe('work item progress stats group unit test', () => {
             ];
 
             const breakdown: DueDateBreakdownDto = { pastDue: 2, looming: 3 };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetDueDateBreakdown, breakdown);
+            store.performance.commit(store.store, store.performance.mutation.SetDueDateBreakdown, breakdown);
 
             expect(component.vm.pastDueAndLoomingSeries).toEqual(expected);
         });
@@ -54,7 +54,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 2.5, recurring: 3, overlearning: 0, interruption: 0 }
             ];
 
-            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.mutation.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('4.5 hours');
         });
@@ -66,7 +66,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 0, recurring: 0, overlearning: 0, interruption: 0 }
             ];
 
-            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.mutation.SetActivityHistories, histories);
 
             expect(component.vm.averageFocus).toEqual('1 hour');
         });
@@ -86,7 +86,7 @@ describe('work item progress stats group unit test', () => {
                 { regular: 3, recurring: 3, overlearning: 2, interruption: 0 }
             ];
 
-            store.performance.commit(store.store, store.performance.keys.mutations.SetActivityHistories, histories);
+            store.performance.commit(store.store, store.performance.mutation.SetActivityHistories, histories);
 
             expect(component.vm.dailyFocusSeries).toEqual(expected);
         });
@@ -94,7 +94,7 @@ describe('work item progress stats group unit test', () => {
 
     describe('ratings', () => {
         test('should return default ratings when user rating is not available', () => {
-            store.user.commit(store.store, store.user.keys.mutations.SetProfile, null);
+            store.user.commit(store.store, store.user.mutation.SetProfile, null);
 
             expect(component.vm.ratings).toEqual(new PerformanceRating());
         });
@@ -108,7 +108,7 @@ describe('work item progress stats group unit test', () => {
                 sustainability: 40
             };
 
-            store.user.commit(store.store, store.user.keys.mutations.SetProfile, { ...new UserProfile(), ratings });
+            store.user.commit(store.store, store.user.mutation.SetProfile, { ...new UserProfile(), ratings });
 
             expect(component.vm.ratings).toEqual(ratings);
         });

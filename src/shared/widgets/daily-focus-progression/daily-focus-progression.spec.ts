@@ -21,14 +21,14 @@ describe('daily focus progression unit test', () => {
     describe('hoursFocused', () => {
         test('should return 0 when no hours focused', () => {
             const progress: ProgressionCounter<number> = { current: 0, target: 8, isCompleted: false };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetCurrentDayProgression, progress);
+            store.performance.commit(store.store, store.performance.mutation.SetCurrentDayProgression, progress);
 
             expect(component.vm.hoursFocused).toEqual('0 hour');
         });
 
         test('should return hours focused', () => {
             const progress: ProgressionCounter<number> = { current: 5.4, target: 8, isCompleted: false };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetCurrentDayProgression, progress);
+            store.performance.commit(store.store, store.performance.mutation.SetCurrentDayProgression, progress);
 
             expect(component.vm.hoursFocused).toEqual('5.4 hours');
         });
@@ -37,14 +37,14 @@ describe('daily focus progression unit test', () => {
     describe('percentage', () => {
         test('should return 0 when no hours focused', () => {
             const progress: ProgressionCounter<number> = { current: 0, target: 10, isCompleted: false };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetCurrentDayProgression, progress);
+            store.performance.commit(store.store, store.performance.mutation.SetCurrentDayProgression, progress);
 
             expect(component.vm.percentage).toEqual('0%');
         });
 
         test('should return correct percentage', () => {
             const progress: ProgressionCounter<number> = { current: 5.5, target: 10, isCompleted: false };
-            store.performance.commit(store.store, store.performance.keys.mutations.SetCurrentDayProgression, progress);
+            store.performance.commit(store.store, store.performance.mutation.SetCurrentDayProgression, progress);
 
             expect(component.vm.percentage).toEqual('55%');
         });
@@ -52,7 +52,7 @@ describe('daily focus progression unit test', () => {
 
     describe('percentageStyle', () => {
         test('should return correct percentage style', () => {
-            const mutation = store.performance.keys.mutations.SetCurrentDayProgression;
+            const mutation = store.performance.mutation.SetCurrentDayProgression;
 
             store.performance.commit(store.store, mutation, { ...new ProgressionCounter<number>(), current: 0 });
             expect(component.vm.percentageStyle.color).toEqual('var(--context-colors-alert-00)');

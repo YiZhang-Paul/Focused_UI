@@ -36,20 +36,20 @@ import DailyFocusProgression from './shared/widgets/daily-focus-progression/dail
 export default class App extends Vue {
 
     public created(): void {
-        store.user.dispatch(this.$store, store.user.keys.actions.LoadProfile);
-        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.LoadActiveTimeSession);
-        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.LoadStaleTimeSession);
-        store.timeSession.dispatch(this.$store, store.timeSession.keys.actions.SyncActiveTimeSession);
+        store.user.dispatch(this.$store, store.user.action.LoadProfile);
+        store.timeSession.dispatch(this.$store, store.timeSession.action.LoadActiveTimeSession);
+        store.timeSession.dispatch(this.$store, store.timeSession.action.LoadStaleTimeSession);
+        store.timeSession.dispatch(this.$store, store.timeSession.action.SyncActiveTimeSession);
         this.loadPerformanceBreakdowns();
     }
 
     public loadPerformanceBreakdowns(): void {
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadCurrentDayProgression);
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadCurrentDayTimeTracking);
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadActivityBreakdown);
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadActivityHistories);
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadEstimationBreakdown);
-        store.performance.dispatch(this.$store, store.performance.keys.actions.LoadDueDateBreakdown);
+        store.performance.dispatch(this.$store, store.performance.action.LoadCurrentDayProgression);
+        store.performance.dispatch(this.$store, store.performance.action.LoadCurrentDayTimeTracking);
+        store.performance.dispatch(this.$store, store.performance.action.LoadActivityBreakdown);
+        store.performance.dispatch(this.$store, store.performance.action.LoadActivityHistories);
+        store.performance.dispatch(this.$store, store.performance.action.LoadEstimationBreakdown);
+        store.performance.dispatch(this.$store, store.performance.action.LoadDueDateBreakdown);
     }
 }
 </script>
