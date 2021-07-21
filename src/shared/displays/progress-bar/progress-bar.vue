@@ -34,7 +34,9 @@ export default class ProgressBar extends Vue.with(ProgressBarProp) {
             return new BlockGroup(Math.round(blocks), backgroundColor, shadowColor);
         });
 
-        if (total >= 100) {
+        const blocks = GenericUtility.sum(groups, _ => _.total);
+
+        if (blocks > this.blocks) {
             const otherBlocks = GenericUtility.sum(groups.slice(0, -1), _ => _.total);
             groups.slice(-1)[0].total = this.blocks - otherBlocks;
         }
